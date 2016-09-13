@@ -9,3 +9,6 @@ we can choose between these games:
 5. Hex
 6. Stratego
 7. Tzaar
+
+-----------------------------------------
+We chose HEX
