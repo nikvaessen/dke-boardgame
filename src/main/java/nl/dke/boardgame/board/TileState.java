@@ -1,7 +1,7 @@
 package nl.dke.boardgame.board;
 
 /**
- *
+ * This enum represents the possible owners of a Tile.
  */
 public enum TileState
 {
