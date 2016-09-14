@@ -153,7 +153,7 @@ public class HexTile {
             st += i + ":";
             b = neighbors.get(i);
             if(!b.isComplete())
-                st += String.format("{%15s} ", "NO NEIGHBOUR");
+                st += String.format(" %-16s ", "NO NEIGHBOUR");
             else
                 // "{} are already included in the toString() method
                 st += String.format("%15s ", b.neighbour);
