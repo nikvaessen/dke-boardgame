@@ -182,6 +182,10 @@ public class HexGame
      * is over
      * @param player the player to currently make a move
      */
+    //// TODO: 21/09/16 There needs to be a functionality that allows the second
+    // to choose whether to switch positions with the first player after the
+    // first player makes the first move.
+    // this should also include changes in the Move class
     private void allowMove(HexPlayer player)
     {
         //check if game is over
