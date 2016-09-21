@@ -1,8 +1,8 @@
 package nl.dke.boardgame;
 
 import junit.framework.TestCase;
-import nl.dke.boardgame.board.HexTile;
-import nl.dke.boardgame.board.TileState;
+import nl.dke.boardgame.game.board.HexTile;
+import nl.dke.boardgame.game.board.TileState;
 import org.junit.Assert;
 import org.junit.Test;
 

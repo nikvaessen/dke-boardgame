@@ -1,6 +1,6 @@
 package nl.dke.boardgame;
 
-import nl.dke.boardgame.board.Board;
+import nl.dke.boardgame.game.board.Board;
 import org.junit.Test;
 
 /**
