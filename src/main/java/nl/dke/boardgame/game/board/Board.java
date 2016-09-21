@@ -1,4 +1,4 @@
-package nl.dke.boardgame.board;
+package nl.dke.boardgame.game.board;
 
 /**
  * This class represents a GameBoard of the boardgame Hex
@@ -145,6 +145,20 @@ public class Board
                     i, j, board.length, board[i].length));
         }
         return board[i][j];
+    }
+
+    /**
+     * Loops over all tiles and sets the states to NEUTRAL
+     */
+    public void resetTiles()
+    {
+        for(int i = 0; i < board.length; i++)
+        {
+            for(int j = 0; j < board[i].length; j++)
+            {
+                board[i][j].reset();
+            }
+        }
     }
 
 }

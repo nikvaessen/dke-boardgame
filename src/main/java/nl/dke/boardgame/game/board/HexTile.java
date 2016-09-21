@@ -1,4 +1,4 @@
-package nl.dke.boardgame.board;
+package nl.dke.boardgame.game.board;
 
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.exceptions.NoNeighbourException;
