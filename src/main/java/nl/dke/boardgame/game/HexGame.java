@@ -1,7 +1,9 @@
 package nl.dke.boardgame.game;
 
+import nl.dke.boardgame.exceptions.AlreadyClaimedException;
+import nl.dke.boardgame.exceptions.MoveNotCompletedException;
 import nl.dke.boardgame.game.board.Board;
-import nl.dke.boardgame.game.board.TileState;
+import nl.dke.boardgame.game.board.BoardWatcher;
 
 /**
  * This class has all the functionality to play a game of Hex, either with 2
@@ -33,14 +35,20 @@ public class HexGame
     private Board board;
 
     /**
+     * Object which will observe the board can will be able to tell
+     * if
+     */
+    private BoardWatcher boardWatcher;
+
+    /**
      * A player of the HexGame. Player 1 is allowed to move first
      */
-    private Player player1;
+    private HexPlayer player1;
 
     /**
      * The other player of the HexGame. Player 2 moves second
      */
-    private Player player2;
+    private HexPlayer player2;
 
     /**
      * Flag for the game start
@@ -57,7 +65,7 @@ public class HexGame
      */
     public HexGame()
     {
-        board = new Board(DEFAULT_BOARD_DIMENSION, DEFAULT_BOARD_DIMENSION);
+        this(DEFAULT_BOARD_DIMENSION, DEFAULT_BOARD_DIMENSION);
     }
 
     /**
@@ -73,6 +81,7 @@ public class HexGame
 
         //then create the board
         board = new Board(width, height);
+        boardWatcher = new BoardWatcher(board);
     }
 
     /**
@@ -138,10 +147,12 @@ public class HexGame
     public void reset()
         throws IllegalStateException
     {
-       if(isGameOver()){
+       if(isGameOver())
+       {
            resetGame();
        }
-       else{
+       else
+       {
            throw new IllegalStateException("The HexGame cannot be reset" +
                    " because it has not yet been completed");
        }
@@ -153,6 +164,7 @@ public class HexGame
     private void startGame()
     {
         started = true;
+        allowMove(player1);
     }
 
     /**
@@ -165,16 +177,45 @@ public class HexGame
         board.resetTiles();
     }
 
-    //// TODO: 21/09/16 document
-    private void allowMove(Player player)
+    /**
+     * Recursive method which will let players make moves until the game
+     * is over
+     * @param player the player to currently make a move
+     */
+    private void allowMove(HexPlayer player)
     {
+        //check if game is over
         if(checkWin())
         {
             return;
         }
+
+        //make the player make a move
+        Move move = new Move(board, player.claimsAs());
+        player.finishMove(move); //this method blocks until input has been given
+        try
+        {
+            board.claim(move.getRow(), move.getColumn(), player.claimsAs());
+        }
+        catch (MoveNotCompletedException e)
+        {
+            e.printStackTrace();
+            allowMove(player);
+        }
+        catch (AlreadyClaimedException e)
+        {
+            e.printStackTrace();
+            allowMove(player);
+        }
+
+        //and give the turn to the other player
+        if(player == player1)
+        {
+            allowMove(player2);
+        }
         else
         {
-             //Move move = new Move(board.c, TileState.PLAYER1);
+            allowMove(player1);
         }
     }
 
@@ -186,6 +227,15 @@ public class HexGame
      */
     private boolean checkWin()
     {
-        return false;
+        boolean result = false;
+        //// TODO: 21/09/16 write an efficient loop/function to check for win
+
+        //make the boolean flag for the end of the game true if the game is over
+        // TODO: 21/09/16 also set who won
+        if(result == true)
+        {
+            ended = true;
+        }
+        return result;
     }
 }

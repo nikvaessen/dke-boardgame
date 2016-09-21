@@ -1,6 +1,11 @@
 package nl.dke.boardgame.game.board;
 
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
+import nl.dke.boardgame.util.Watchable;
+import nl.dke.boardgame.util.Watcher;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a GameBoard of the boardgame Hex
@@ -14,12 +19,17 @@ import nl.dke.boardgame.exceptions.AlreadyClaimedException;
  * @author Nik
  */
 public class Board
+        implements Watchable
 {
-
     /**
      * The 2D array of Tiles which together make the game board
      */
     private HexTile[][] board;
+
+    /**
+     * List of watchers to notify when the board changes
+     */
+    private List<Watcher> watchers;
 
     /**
      * The width of the board
@@ -47,6 +57,7 @@ public class Board
         }
         this.width = width;
         this.height = height;
+        this.watchers = new ArrayList<Watcher>();
         initBoard(width, height);
     }
 
@@ -132,6 +143,26 @@ public class Board
     }
 
     /**
+     * Get the tile of the specified location in the board
+     *
+     * @param row the row of the Tile, starting at the top
+     * @param column the column of the Tile, starting at the left side
+     * @return the state of the HexTile at the given position
+     * @throws IllegalArgumentException when the given location is not valid
+     */
+    private HexTile getTile(int row, int column)
+            throws IllegalArgumentException
+    {
+        if (!canAccess(row, column))
+        {
+            throw new IllegalArgumentException(String.format("row:%d,column:%d" +
+                            " is out of bounds. Bounds are row:%d,column:%d",
+                    row, column, board.length, board[row].length));
+        }
+        return board[row][column];
+    }
+
+    /**
      * A string with where each tile is one line, along with all it's neighbours
      *
      * @return the String of all tiles of the board
@@ -151,14 +182,14 @@ public class Board
     }
 
     /**
-     * Get the HexTile of the specified location in the board
+     * Get the state of the specified location in the board
      *
      * @param row the row of the Tile, starting at the top
      * @param column the column of the Tile, starting at the left side
-     * @return the HexTile at the given position
+     * @return the state of the HexTile at the given position
      * @throws IllegalArgumentException when the given location is not valid
      */
-    public HexTile getTile(int row, int column)
+    public TileState getState(int row, int column)
             throws IllegalArgumentException
     {
         if (!canAccess(row, column))
@@ -167,7 +198,28 @@ public class Board
                             " is out of bounds. Bounds are row:%d,column:%d",
                     row, column, board.length, board[row].length));
         }
-        return board[row][column];
+        return board[row][column].getState();
+    }
+
+    /**
+     * claim the given location in the board for a player
+     *
+     * @param row the row of the Tile, starting at the top
+     * @param column the column of the Tile, starting at the left side
+     * @return the state of the HexTile at the given position
+     * @throws IllegalArgumentException when the given location is not valid
+     */
+    public void claim(int row, int column, TileState state)
+            throws IllegalArgumentException, AlreadyClaimedException
+    {
+        if (!canAccess(row, column))
+        {
+            throw new IllegalArgumentException(String.format("row:%d,column:%d" +
+                            " is out of bounds. Bounds are row:%d,column:%d",
+                    row, column, board.length, board[row].length));
+        }
+        board[row][column].claim(state);
+        notifyWatchers();
     }
 
     /**
@@ -242,5 +294,39 @@ public class Board
             }
         }
         return clone;
+    }
+
+    /**
+     * Add a watcher to the list so that they get notified when a Tile changes
+     * its state
+     * @param watcher
+     */
+    public void attachWatcher(Watcher watcher)
+    {
+       watchers.add(watcher);
+    }
+
+    /**
+     * Remove a watcher from the list so that it no longer gets notified
+     * @param watcher
+     */
+    public void detachWatcher(Watcher watcher)
+    {
+        if(watchers.contains(watcher))
+        {
+            watchers.remove(watcher);
+        }
+    }
+
+    /**
+     * Call the update method on each Watcher so that they know a Tile changed
+     * its state
+     */
+    public void notifyWatchers()
+    {
+        for(Watcher watcher: watchers)
+        {
+            watcher.update();
+        }
     }
 }

@@ -3,6 +3,9 @@ package nl.dke.boardgame.display;
 import javax.swing.*;
 import java.awt.*;
 
+//// TODO: 21/09/16 This class should probably watch a Board class and update
+// itself when it changes. It could maybe also implement a Table?
+
 public class MainPanel extends JPanel
 {
 
