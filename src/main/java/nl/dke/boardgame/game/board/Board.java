@@ -1,5 +1,7 @@
 package nl.dke.boardgame.game.board;
 
+import nl.dke.boardgame.exceptions.AlreadyClaimedException;
+
 /**
  * This class represents a GameBoard of the boardgame Hex
  * <p>
@@ -20,6 +22,16 @@ public class Board
     private HexTile[][] board;
 
     /**
+     * The width of the board
+     */
+    private int width;
+
+    /**
+     * The height of the board
+     */
+    private int height;
+
+    /**
      * Constructs the Hex game board
      *
      * @param width  the width of the board
@@ -27,6 +39,8 @@ public class Board
      */
     public Board(int width, int height)
     {
+        width = width;
+        height = height;
         initBoard(width, height);
     }
 
@@ -161,4 +175,31 @@ public class Board
         }
     }
 
+    /**
+     * Clones the board
+     * @return an identical Board class with the same claimed tiles
+     */
+    public Board clone()
+    {
+        Board clone = new Board(width, height);
+        for(int i = 0; i < height; i++)
+        {
+            for(int j = 0; j < width; j++)
+            {
+                TileState state = getTile(i, j).getState();
+                if(state != TileState.NEUTRAL)
+                {
+                    try
+                    {
+                        clone.getTile(i, j).claim(state);
+                    }
+                    catch (AlreadyClaimedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return clone;
+    }
 }
