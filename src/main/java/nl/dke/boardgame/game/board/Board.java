@@ -38,9 +38,15 @@ public class Board
      * @param height the height of the board
      */
     public Board(int width, int height)
+        throws IllegalArgumentException
     {
-        width = width;
-        height = height;
+        if(width <= 0 || height <= 0)
+        {
+            throw new IllegalArgumentException("A board cannot have a width " +
+                    "and height smaller than or equal to 0");
+        }
+        this.width = width;
+        this.height = height;
         initBoard(width, height);
     }
 
@@ -56,8 +62,10 @@ public class Board
      */
     private void initBoard(int width, int height)
     {
+        //create the 2d array
         board = new HexTile[width][height];
 
+        //populate it with HexTiles
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
@@ -66,6 +74,7 @@ public class Board
             }
         }
 
+        //Give each HexTile the correct neighbour
         for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
@@ -144,21 +153,53 @@ public class Board
     /**
      * Get the HexTile of the specified location in the board
      *
-     * @param i the row of the Tile, starting at the top
-     * @param j the column of the Tile, starting at the left side
+     * @param row the row of the Tile, starting at the top
+     * @param column the column of the Tile, starting at the left side
      * @return the HexTile at the given position
      * @throws IllegalArgumentException when the given location is not valid
      */
-    public HexTile getTile(int i, int j)
+    public HexTile getTile(int row, int column)
             throws IllegalArgumentException
     {
-        if (i < 0 || i >= board.length || j < 0 || j >= board[i].length)
+        if (!canAccess(row, column))
         {
-            throw new IllegalArgumentException(String.format("i:%d,j:%d" +
-                            " is out of bounds. Bounds are i:%d,j%d",
-                    i, j, board.length, board[i].length));
+            throw new IllegalArgumentException(String.format("row:%d,column:%d" +
+                            " is out of bounds. Bounds are row:%d,column:%d",
+                    row, column, board.length, board[row].length));
         }
-        return board[i][j];
+        return board[row][column];
+    }
+
+    /**
+     * Checks whether the given row and column are inside the dimensions of the
+     * board
+     * @param row the row to check
+     * @param column the column to check
+     * @return true if both are in the dimensions, false otherwise
+     */
+    public boolean canAccess(int row, int column)
+    {
+        return canAccessRow(row) && canAccessColumn(column);
+    }
+
+    /**
+     * Checks whether the given row number is in the span of the rows
+     * @param row the row to check
+     * @return true is the row exists, false otherwise
+     */
+    public boolean canAccessRow(int row)
+    {
+        return row > -1 && row < board.length;
+    }
+
+    /**
+     * Checks whether the given column number is in the span of the columns
+     * @param column the column to check
+     * @return true if the column exists, false otherwise
+     */
+    public boolean canAccessColumn(int column)
+    {
+        return column > -1 && column < board[0].length;
     }
 
     /**
