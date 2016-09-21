@@ -3,6 +3,7 @@ package nl.dke.boardgame.display;
 import javax.swing.*;
 import java.awt.*;
 
+//// TODO: 21/09/16 The whole display package needs to be documented
 public class MainFrame extends JFrame
 {
 
