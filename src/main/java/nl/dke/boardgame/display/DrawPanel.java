@@ -2,6 +2,9 @@ package nl.dke.boardgame.display;
 
 import java.awt.*;
 
+import nl.dke.boardgame.game.board.Board;
+import nl.dke.boardgame.game.board.TileState;
+
 public class DrawPanel
 {
 
@@ -12,19 +15,19 @@ public class DrawPanel
     public void draw(Graphics g, Board board)
     {
         char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-        for (int x = 0; x < board.getWidth; x++)
+        for (int x = 0; x < board.getWidth(); x++)
         {
-            for (int y = 0; y < board.getHeight; y++)
+            for (int y = 0; y < board.getHeight(); y++)
             {
                 int xCoor = OFFSET_X + (y * LENGTH) + (x * LENGTH * 2);
                 int yCoor = OFFSET_Y + (y * LENGTH * 2);
                 int xPoints[] = {xCoor + LENGTH, xCoor + (2 * LENGTH), xCoor + (2 * LENGTH), xCoor + LENGTH, xCoor, xCoor};
                 int yPoints[] = {yCoor, yCoor + LENGTH, yCoor + (2 * LENGTH), yCoor + (3 * LENGTH), yCoor + (2 * LENGTH), yCoor + LENGTH};
-                switch(board.getTile[x][y].getState())
+                switch(board.getState(x, y))
                 {
-                	case Tilestate.NEUTRAL: g.setColor(Color.WHITE); break;
-                	case Tilestate.PLAYER1: g.setColor(Color.RED); break;
-                	case Tilestate.PLAYER2: g.setColor(Color.BLUE); break;
+                	case NEUTRAL: g.setColor(Color.WHITE); break;
+                	case PLAYER1: g.setColor(Color.RED); break;
+                	case PLAYER2: g.setColor(Color.BLUE); break;
                 }
                 g.fillPolygon(xPoints, yPoints, 6);
                 g.setColor(Color.BLACK);

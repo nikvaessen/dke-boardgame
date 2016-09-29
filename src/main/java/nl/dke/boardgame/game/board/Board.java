@@ -72,12 +72,12 @@ public class Board
      * @param height the amount of rows
      */
     
-    private int getWidth() 
+    public int getWidth() 
     {
     	return width;
     }
     
-    private int getHight() 
+    public int getHeight() 
     {
     	return height;
     }

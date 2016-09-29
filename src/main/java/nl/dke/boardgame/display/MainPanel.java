@@ -1,6 +1,9 @@
 package nl.dke.boardgame.display;
 
 import javax.swing.*;
+
+import nl.dke.boardgame.game.board.Board;
+
 import java.awt.*;
 
 //// TODO: 21/09/16 This class should probably watch a Board class and update
@@ -14,17 +17,24 @@ public class MainPanel extends JPanel
 
     private static final long serialVersionUID = 1L;
     private DrawPanel draw;
+    private Board board;
 
-    public MainPanel()
+    public MainPanel(Board board)
     {
+    	this.board = board;
         draw = new DrawPanel();
         this.setPreferredSize(new Dimension(700, 520));
+    }
+    
+    public void setBoard(Board board) 
+    {
+    	this.board = board;
     }
 
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        draw.draw(g);
+        draw.draw(g, board);
     }
 
     //addNotifiers
