@@ -71,6 +71,19 @@ public class Board
      * @param width  the length of each row
      * @param height the amount of rows
      */
+    
+    private int getWidth() 
+    {
+    	return width;
+    }
+    
+    private int getHight() 
+    {
+    	return height;
+    }
+    /*
+     * Returns the height and width of the board 
+     */
     private void initBoard(int width, int height)
     {
         //create the 2d array
