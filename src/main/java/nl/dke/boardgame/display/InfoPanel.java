@@ -11,10 +11,11 @@ public class InfoPanel extends JPanel
     private static final long serialVersionUID = 1L;
     private JLabel label;
     private JTextField input;
+    private int playerGo = 1;
     
     public InfoPanel()
     {
-        this.setPreferredSize(new Dimension(150, 700));
+        this.setPreferredSize(new Dimension(150, 100));
         label = new JLabel("Please enter move");
         input = new JTextField(7);
         JButton button = new JButton("Enter");
@@ -26,11 +27,16 @@ public class InfoPanel extends JPanel
     	label.setText(newInput);
     }
     
+    public void updateLabel() {
+    	label.setText("Player " + playerGo + " go");
+    	if (playerGo == 1) playerGo = 2; else playerGo = 1;
+    }
+    
     public class buttonInput implements ActionListener
     {
 		public void actionPerformed(ActionEvent arg0) {
 			//would start the move function based on user input
-			updateLabel(input.getText());
+			updateLabel();
 		}
     }
 }
