@@ -106,6 +106,7 @@ public class Move
      * @param column the column on which the tile to claim is on
      */
     public void setColumn(int column)
+        throws IllegalArgumentException
     {
         if(board.canAccessColumn(column))
         {
@@ -117,6 +118,23 @@ public class Move
                     "given column %d is outside of the column dimension", column
             ));
         }
+    }
+
+    /**
+     * Checks whether the given row and column are a valid move
+     * @return true if it is a valid move, false otherwise
+     */
+    public boolean verify()
+    {
+        if(column == -1 && row == -1)
+        {
+            return false;
+        }
+        if(board.getState(row, column) != TileState.NEUTRAL)
+        {
+            return false;
+        }
+        return true;
     }
 
     /**

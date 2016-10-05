@@ -25,7 +25,7 @@ public abstract class Watcher
      * Gets called by the watchable when something happens. This
      * method should do something with this information
      */
-    public void update()
+    public void update(Object object)
     {
 
     }

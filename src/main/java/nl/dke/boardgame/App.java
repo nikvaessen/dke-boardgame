@@ -1,16 +1,15 @@
 package nl.dke.boardgame;
 
 import nl.dke.boardgame.display.MainFrame;
-import nl.dke.boardgame.game.board.Board;
+import nl.dke.boardgame.display.game.GameFrame;
 
 /**
- * Hello world!
+ * Launch the HexGame
  */
 public class App
 {
     public static void main(String[] args)
     {
-    	Board board = new Board(11,11);
-        new MainFrame(board);
+        new MainFrame();
     }
 }

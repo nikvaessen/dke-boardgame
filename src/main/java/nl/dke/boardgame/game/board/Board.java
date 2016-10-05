@@ -279,6 +279,7 @@ public class Board
                 board[i][j].reset();
             }
         }
+        notifyWatchers();
     }
 
     /**
@@ -339,7 +340,7 @@ public class Board
     {
         for(Watcher watcher: watchers)
         {
-            watcher.update();
+            watcher.update(clone());
         }
     }
 }

@@ -13,9 +13,9 @@ import java.util.List;
  * A HexTile has 6 neighbours. The sides are represented as integer values
  * between 0 and 5. The integers correspond with the following sides:
  * <p>
- * 5   0
+ *  5   0
  * 4  #  1     # = this tile
- * 3   2
+ *  3   2
  *
  * @author josevelasquez on 9/12/16.
  * @author Nik

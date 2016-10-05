@@ -14,6 +14,8 @@ public class BoardWatcher extends Watcher
      */
     private boolean changed = false;
 
+    private Board board;
+
     /**
      * Construct the BoardWatcher
      * @param board the board object to watch
@@ -21,6 +23,7 @@ public class BoardWatcher extends Watcher
     public BoardWatcher(Board board)
     {
         super(board);
+        this.board = board;
     }
 
     /**
@@ -28,8 +31,16 @@ public class BoardWatcher extends Watcher
      * changes itself
      */
     @Override
-    public void update()
+    public void update(Object object)
     {
+        try
+        {
+            board = (Board) object;
+        }
+        catch (ClassCastException e)
+        {
+            e.printStackTrace();
+        }
         changed = true;
     }
 
@@ -47,5 +58,10 @@ public class BoardWatcher extends Watcher
             return true;
         }
         return false;
+    }
+
+    public Board getBoard()
+    {
+        return board;
     }
 }

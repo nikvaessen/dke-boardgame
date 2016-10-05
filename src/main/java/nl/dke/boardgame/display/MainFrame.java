@@ -1,32 +1,27 @@
 package nl.dke.boardgame.display;
 
 import javax.swing.*;
-
-import nl.dke.boardgame.game.board.Board;
-
 import java.awt.*;
 
-//// TODO: 21/09/16 The whole display package needs to be documented
+/**
+ *
+ */
 public class MainFrame extends JFrame
 {
+    private JPanel selectPanel;
 
-    private static final long serialVersionUID = 1L;
-    private MainPanel mainPanel;
-    private InfoPanel infoPanel;
-    Board board;
-
-    public MainFrame(Board board)
+    public MainFrame()
     {
-    	this.board = board;
-        mainPanel = new MainPanel(board);
-        infoPanel = new InfoPanel();
+        //create game elements and set up panels
+        selectPanel = new SelectPanel(this);
+
+        //set main gui settings
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        getContentPane().add(mainPanel, BorderLayout.CENTER);
-        getContentPane().add(infoPanel, BorderLayout.EAST);
+        getContentPane().add(selectPanel, BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(null);
+        setResizable(false);
         setVisible(true);
     }
-
 }

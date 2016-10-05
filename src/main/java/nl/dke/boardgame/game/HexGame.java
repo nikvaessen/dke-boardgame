@@ -35,12 +35,6 @@ public class HexGame
     private Board board;
 
     /**
-     * Object which will observe the board can will be able to tell
-     * if
-     */
-    private BoardWatcher boardWatcher;
-
-    /**
      * A player of the HexGame. Player 1 is allowed to move first
      */
     private HexPlayer player1;
@@ -61,19 +55,17 @@ public class HexGame
     private boolean ended = false;
 
     /**
-     * Construct a board for a game of Hex with the default board dimension
-     */
-    public HexGame()
-    {
-        this(DEFAULT_BOARD_DIMENSION, DEFAULT_BOARD_DIMENSION);
-    }
-
-    /**
      * Construct a board for a game of Hex with the given board dimension
+     * and the players
+     *
      * @param width the width of the board
      * @param height the height of the board
+     * @param player1 the player who moves first
+     * @param player2 the player who moves second
+     * @throws IllegalArgumentException when the given width and height are not
+     * in between the bounds
      */
-    public HexGame(int width, int height)
+    public HexGame(int width, int height, HexPlayer player1, HexPlayer player2)
         throws IllegalArgumentException
     {
         //throws an IllegalArgumentException when not valid
@@ -81,7 +73,10 @@ public class HexGame
 
         //then create the board
         board = new Board(width, height);
-        boardWatcher = new BoardWatcher(board);
+
+        //and store the players
+        this.player1 = player1;
+        this.player2 = player2;
     }
 
     /**
@@ -236,10 +231,19 @@ public class HexGame
 
         //make the boolean flag for the end of the game true if the game is over
         // TODO: 21/09/16 also set who won
-        if(result == true)
+        if(result)
         {
             ended = true;
         }
         return result;
+    }
+
+    /**
+     * create a BoardWatcher which will get notified when the board changes
+     * @return a BoardWatcher watching the Board of the game
+     */
+    public BoardWatcher getBoardWatcher()
+    {
+        return new BoardWatcher(board);
     }
 }
