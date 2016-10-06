@@ -17,7 +17,6 @@ public class MainFrame extends JFrame
 
         //set main gui settings
         setLayout(new BorderLayout());
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().add(selectPanel, BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(null);

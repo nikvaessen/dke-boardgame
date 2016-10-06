@@ -40,12 +40,14 @@ public class InputProcessor
                 int row = Integer.parseInt(splittedText[0]);
                 char columnLetter = splittedText[1].toLowerCase().toCharArray()[0];
                 int column = columnLetter - 'a';
+                System.out.printf("Human entered: row: %d column %d%n", row, column);
                 process(row, column);
             }
         }
         catch (NumberFormatException e)
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Could not format the number " +
+                    "given as a row" );
         }
     }
 
@@ -62,13 +64,20 @@ public class InputProcessor
         if(row < 0 || column < 0 ||
                 row >= board.getHeight() || column >= board.getWidth())
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Given input is out of bounds");
         }
         else
         {
             currentMove.setRow(row);
             currentMove.setColumn(column);
-            currentMove = null;
+            if(currentMove.verify())
+            {
+                currentMove = null;
+            }
+            else
+            {
+                throw new IllegalArgumentException("Tile was already claimed");
+            }
         }
     }
 

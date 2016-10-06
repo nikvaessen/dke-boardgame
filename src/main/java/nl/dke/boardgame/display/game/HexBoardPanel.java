@@ -18,13 +18,15 @@ public class HexBoardPanel extends JPanel
     private static final long serialVersionUID = 1L;
     private DrawPanel draw;
     private BoardWatcher watcher;
+    private Thread updater;
 
     public HexBoardPanel(final BoardWatcher watcher)
     {
     	this.watcher = watcher;
         draw = new DrawPanel();
         this.setPreferredSize(new Dimension(700, 520));
-        new Thread(new Runnable()
+
+        updater = new Thread(new Runnable()
         {
             @Override
             public void run()
@@ -45,7 +47,8 @@ public class HexBoardPanel extends JPanel
                     }
                 }
             }
-        }).start();
+        });
+        updater.start();
     }
 
     protected void paintComponent(Graphics g)
@@ -54,7 +57,6 @@ public class HexBoardPanel extends JPanel
         draw.draw(g, watcher.getBoard());
     }
 
-    //addNotifiers
-    //{
+
 
 }

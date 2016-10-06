@@ -29,19 +29,24 @@ public class GameFrame extends JFrame
         //create game elements and set up panels
         hexBoardPanel = new HexBoardPanel(game.getBoardWatcher());
 
+        //set main gui settings
+        setLayout(new BorderLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        getContentPane().add(hexBoardPanel, BorderLayout.CENTER);
+
         //if there is a InputProcessor, we have human players
         if(inputProcessor != null)
         {
             infoPanel = new InputPanel(inputProcessor);
             getContentPane().add(infoPanel, BorderLayout.EAST);
         }
-        //set main gui settings
-        setLayout(new BorderLayout());
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        getContentPane().add(hexBoardPanel, BorderLayout.CENTER);
+
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+
+        //and start game
+        game.start();
     }
 
 }

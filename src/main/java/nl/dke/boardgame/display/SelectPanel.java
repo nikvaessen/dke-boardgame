@@ -50,13 +50,14 @@ public class SelectPanel extends JPanel
         startButton.addActionListener(new StartButton());
 
         boardDimensionBox = new JTextField(3);
-        //boardDimensionBox.setText(Integer.toString(HexGame.DEFAULT_BOARD_DIMENSION));
+        boardDimensionBox.setText((Integer.toString(HexGame.DEFAULT_BOARD_DIMENSION)));
         textFieldLabel = new JLabel("Enter board dimension(" +
                 Integer.toString(HexGame.MINIMUM_BOARD_DIMENSION) +
                 "-" + Integer.toString(HexGame.MAXIMUM_BOARD_DIMENSION) + ")");
 
         player1 = new JComboBox<>(PossiblePlayers.values());
         player1Label = new JLabel("Player 1:");
+        player1.setSelectedIndex(1);
 
         player2 = new JComboBox<>(PossiblePlayers.values());
         player2Label = new JLabel("Player 2:");
@@ -100,7 +101,6 @@ public class SelectPanel extends JPanel
 
         c.gridx = 0;
         c.gridy = 4;
-        c.gridwidth = 2;
         this.add(errorLabel, c);
     }
 
@@ -117,6 +117,37 @@ public class SelectPanel extends JPanel
             else
             {
                 InputProcessor processor = null;
+                PossiblePlayers pType =(PossiblePlayers) player1.getSelectedItem();
+                if(pType == PossiblePlayers.human)
+                {
+                    processor = new InputProcessor();
+                    table.setPlayer1(processor);
+                    System.out.println("set Player 1 as " + pType);
+                }
+                else
+                {
+                    table.setPlayer1((PossiblePlayers) player1.getSelectedItem());
+                    System.out.println("set Player 1 as " + pType);
+                }
+
+                pType = (PossiblePlayers) player2.getSelectedItem();
+                if(pType == PossiblePlayers.human)
+                {
+                    if(processor == null)
+                    {
+                        processor = new InputProcessor();
+                    }
+                    table.setPlayer2(processor);
+                    System.out.println("set Player 2 as " + pType);
+                }
+                else
+                {
+                    table.setPlayer2(pType);
+                    System.out.println("set Player 2 as " + pType);
+                }
+                table.setBoardDimensions(dim, dim);
+                System.out.printf("set board dim as: %d %d\n" ,dim, dim);
+
 
                 if(processor == null)
                 {
@@ -126,7 +157,7 @@ public class SelectPanel extends JPanel
                 {
                     new GameFrame(table.createNewGame(), processor);
                 }
-                selectFrame.setVisible(false);
+                selectFrame.dispose();
             }
         }
 
@@ -135,7 +166,6 @@ public class SelectPanel extends JPanel
             try
             {
                 int dim = Integer.parseInt(boardDimensionBox.getText());
-                System.out.println(dim);
                 if(dim >= HexGame.MINIMUM_BOARD_DIMENSION ||
                         dim > HexGame.MAXIMUM_BOARD_DIMENSION)
                 {

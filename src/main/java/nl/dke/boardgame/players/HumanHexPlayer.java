@@ -1,5 +1,6 @@
-package nl.dke.boardgame.display.game;
+package nl.dke.boardgame.players;
 
+import nl.dke.boardgame.display.game.InputProcessor;
 import nl.dke.boardgame.exceptions.NotAcceptingInputException;
 import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.Move;
@@ -36,22 +37,21 @@ public class HumanHexPlayer extends HexPlayer
         try
         {
             inputProcessor.give(move);
+            while(!move.isSet())
+            {
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
         }
         catch (NotAcceptingInputException e)
         {
             e.printStackTrace();
-            return;
-        }
-        while(!move.isSet())
-        {
-            try
-            {
-                Thread.sleep(100);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
         }
     }
 

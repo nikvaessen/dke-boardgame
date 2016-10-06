@@ -52,7 +52,7 @@ public class InputPanel extends JPanel
             }
             catch (IllegalArgumentException e)
             {
-                System.out.println("Invalid input: Try <row>:<column>." +
+                System.out.println("Invalid input: Try <row>:<column>. " +
                         "Note that the rows are integers and the columns " +
                         "letters!");
                 e.printStackTrace();

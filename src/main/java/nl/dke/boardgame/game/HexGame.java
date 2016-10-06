@@ -45,6 +45,12 @@ public class HexGame
     private HexPlayer player2;
 
     /**
+     * Thread which will handle all the game logic
+     */
+
+    private GameLoop gameLoop;
+
+    /**
      * Flag for the game start
      */
     private boolean started = false;
@@ -159,7 +165,8 @@ public class HexGame
     private void startGame()
     {
         started = true;
-        allowMove(player1);
+        gameLoop = new GameLoop();
+        new Thread(gameLoop).start();
     }
 
     /**
@@ -173,77 +180,94 @@ public class HexGame
     }
 
     /**
-     * Recursive method which will let players make moves until the game
-     * is over
-     * @param player the player to currently make a move
-     */
-    //// TODO: 21/09/16 There needs to be a functionality that allows the second
-    // to choose whether to switch positions with the first player after the
-    // first player makes the first move.
-    // this should also include changes in the Move class
-    private void allowMove(HexPlayer player)
-    {
-        //check if game is over
-        if(checkWin())
-        {
-            return;
-        }
-
-        //make the player make a move
-        Move move = new Move(board, player.claimsAs());
-        player.finishMove(move); //this method blocks until input has been given
-        try
-        {
-            board.claim(move.getRow(), move.getColumn(), player.claimsAs());
-        }
-        catch (MoveNotCompletedException e)
-        {
-            e.printStackTrace();
-            allowMove(player);
-        }
-        catch (AlreadyClaimedException e)
-        {
-            e.printStackTrace();
-            allowMove(player);
-        }
-
-        //and give the turn to the other player
-        if(player == player1)
-        {
-            allowMove(player2);
-        }
-        else
-        {
-            allowMove(player1);
-        }
-    }
-
-    /**
-     * Checks if one of the players has won the game.
-     * If someone has, it will set the boolean flag ended to true, so that
-     * the isGameOver() method will return true as well
-     * @return true if someone has won, false otherwise
-     */
-    private boolean checkWin()
-    {
-        boolean result = false;
-        //// TODO: 21/09/16 write an efficient loop/function to check for win
-
-        //make the boolean flag for the end of the game true if the game is over
-        // TODO: 21/09/16 also set who won
-        if(result)
-        {
-            ended = true;
-        }
-        return result;
-    }
-
-    /**
      * create a BoardWatcher which will get notified when the board changes
      * @return a BoardWatcher watching the Board of the game
      */
     public BoardWatcher getBoardWatcher()
     {
         return new BoardWatcher(board);
+    }
+
+    private class GameLoop implements Runnable
+    {
+
+
+        @Override
+        public void run()
+        {
+            allowMove(player1);
+        }
+
+        /**
+         * Recursive method which will let players make moves until the game
+         * is over
+         * @param player the player to currently make a move
+         */
+        //// TODO: 21/09/16 There needs to be a functionality that allows the second
+        // to choose whether to switch positions with the first player after the
+        // first player makes the first move.
+        // this should also include changes in the Move class
+        private void allowMove(HexPlayer player)
+        {
+            System.out.println("Turn: " + player.claimsAs().toString());
+            //grace period
+            try
+            {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+
+            //check if game is over
+            if(checkWin())
+            {
+                return;
+            }
+
+            //make the player make a move
+            Move move = new Move(board, player.claimsAs());
+            player.finishMove(move); //this method blocks until input has been given
+            try
+            {
+                board.claim(move.getRow(), move.getColumn(), player.claimsAs());
+            }
+            catch (MoveNotCompletedException | AlreadyClaimedException e)
+            {
+                e.printStackTrace();
+                allowMove(player);
+            }
+
+            //and give the turn to the other player
+            if(player == player1)
+            {
+                allowMove(player2);
+            }
+            else
+            {
+                allowMove(player1);
+            }
+        }
+
+        /**
+         * Checks if one of the players has won the game.
+         * If someone has, it will set the boolean flag ended to true, so that
+         * the isGameOver() method will return true as well
+         * @return true if someone has won, false otherwise
+         */
+        private boolean checkWin()
+        {
+            boolean result = false;
+            //// TODO: 21/09/16 write an efficient loop/function to check for win
+
+            //make the boolean flag for the end of the game true if the game is over
+            // TODO: 21/09/16 also set who won
+            if(result)
+            {
+                ended = true;
+            }
+            return result;
+        }
     }
 }
