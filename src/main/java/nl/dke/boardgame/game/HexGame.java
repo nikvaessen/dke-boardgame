@@ -231,6 +231,8 @@ public class HexGame
             player.finishMove(move); //this method blocks until input has been given
             try
             {
+                System.out.printf("Claiming row %d and column %d as %s%n",
+                        move.getRow(), move.getColumn(),  player.claimsAs());
                 board.claim(move.getRow(), move.getColumn(), player.claimsAs());
             }
             catch (MoveNotCompletedException | AlreadyClaimedException e)

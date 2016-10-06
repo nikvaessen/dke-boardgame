@@ -21,30 +21,29 @@ public class InputPanel extends JPanel
     {
         this.setPreferredSize(new Dimension(150, 100));
         this.inputProcessor = inputProcessor;
-        label = new JLabel("Please enter move");
+        label = new JLabel("Please enter move:");
         input = new JTextField(7);
         JButton button = new JButton("Enter");
         button.addActionListener(new buttonInput());
         this.add(label); this.add(input);; this.add(button);
     }
-    
-    public void updateLabel(String newInput) {
-    	label.setText(newInput);
+
+    private void clearTextField()
+    {
+        input.setText("");
     }
-    
-    public void updateLabel() {
-    	label.setText("Player " + playerGo + " go");
-    	if (playerGo == 1) playerGo = 2; else playerGo = 1;
-    }
-    
+
     private class buttonInput implements ActionListener
     {
 		public void actionPerformed(ActionEvent arg0) {
 			//would start the move function based on user input
             try
             {
-                inputProcessor.in(input.getText());
-                updateLabel();
+                if (inputProcessor.accepting())
+                {
+                    inputProcessor.in(input.getText());
+                    clearTextField();
+                }
             }
             catch (NotAcceptingInputException e)
             {
@@ -52,9 +51,11 @@ public class InputPanel extends JPanel
             }
             catch (IllegalArgumentException e)
             {
-                System.out.println("Invalid input: Try <row>:<column>. " +
-                        "Note that the rows are integers and the columns " +
-                        "letters!");
+                System.out.println("Invalid input: Try <column>:<row>. A " +
+                        "syntactically correct input would be A:5. " +
+                        "Note that the columns are letters and " +
+                        "the rows are integers! Tile could also already havea:11 " +
+                        "been claimed");
                 e.printStackTrace();
             }
 		}

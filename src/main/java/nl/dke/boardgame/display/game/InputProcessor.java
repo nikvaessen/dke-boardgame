@@ -31,29 +31,29 @@ public class InputProcessor
         try
         {
             String[] splittedText = textInput.split(":");
-            if (splittedText.length != 2 || splittedText[1].length() != 1)
+            if (splittedText.length != 2 || splittedText[0].length() != 1)
             {
-                throw new IllegalArgumentException("input has wrong syntax");
+                throw new IllegalArgumentException("Input has wrong syntax.  ");
             }
             else
             {
-                int row = Integer.parseInt(splittedText[0]);
-                char columnLetter = splittedText[1].toLowerCase().toCharArray()[0];
+                char columnLetter = splittedText[0].toLowerCase().toCharArray()[0];
                 int column = columnLetter - 'a';
-                System.out.printf("Human entered: row: %d column %d%n", row, column);
+                int row = Integer.parseInt(splittedText[1]);
+                System.out.printf("Human entered: column: %d row %d%n", column, row);
                 process(row, column);
             }
         }
         catch (NumberFormatException e)
         {
-            throw new IllegalArgumentException("Could not format the number " +
-                    "given as a row" );
+            throw new IllegalArgumentException("Could not format the given" +
+                    " row number");
         }
     }
 
-    public synchronized boolean isProccesing()
+    public synchronized boolean accepting()
     {
-        return currentMove == null;
+        return currentMove != null;
     }
 
     private void process(int row, int column)
@@ -72,6 +72,7 @@ public class InputProcessor
             currentMove.setColumn(column);
             if(currentMove.verify())
             {
+                System.out.println("was a correct move, move is now null");
                 currentMove = null;
             }
             else

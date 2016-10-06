@@ -37,7 +37,7 @@ public class HumanHexPlayer extends HexPlayer
         try
         {
             inputProcessor.give(move);
-            while(!move.isSet())
+            while(!move.isSet() || !move.verify())
             {
                 try
                 {
