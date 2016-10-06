@@ -61,18 +61,7 @@ public class Board
         initBoard(width, height);
     }
 
-    /**
-     * Constructs the 2d array of HexTiles. Each tile in a new row will connect
-     * to the down right side of the row above it. This will cause a shift like:
-     * r1: #####
-     * r2:  #####
-     * ect.
-     *
-     * @param width  the length of each row
-     * @param height the amount of rows
-     */
-    
-    public int getWidth() 
+    public int getWidth()
     {
     	return width;
     }
@@ -215,6 +204,24 @@ public class Board
     }
 
     /**
+     * gets all the coordinates(row and column) of the neighbours of the specified tile.
+     * If there is none, the values will be null instead
+     * @param row the row of the tile which neighours are requested
+     * @param column the column of the tile hwich neighbours are requisted
+     * @return an array of length 6 with array of size 2 for every element, where the first element is the row and
+     * the second the column
+     */
+    public int[][] getNeighbours(int row, int column)
+        throws IllegalArgumentException
+    {
+        HexTile tile = getTile(row, column);
+
+        int[][] neighbours = new int[6][2];
+
+        return neighbours;
+    }
+
+    /**
      * claim the given location in the board for a player
      *
      * @param row the row of the Tile, starting at the top
@@ -343,4 +350,5 @@ public class Board
             watcher.update(clone());
         }
     }
+
 }

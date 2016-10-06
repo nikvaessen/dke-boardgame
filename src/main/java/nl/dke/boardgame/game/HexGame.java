@@ -263,6 +263,12 @@ public class HexGame
             boolean result = false;
             //// TODO: 21/09/16 write an efficient loop/function to check for win
 
+            //check if player1 has won
+            for(int i = 0; i < board.getHeight(); i++)
+            {
+                board.get
+            }
+
             //make the boolean flag for the end of the game true if the game is over
             // TODO: 21/09/16 also set who won
             if(result)
