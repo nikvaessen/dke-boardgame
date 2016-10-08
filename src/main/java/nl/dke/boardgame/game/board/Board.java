@@ -61,22 +61,33 @@ public class Board
         initBoard(width, height);
     }
 
+    /**
+     * Return the width of the board, or the amount of columns in each row
+     * @return the width of the board as an integer
+     */
     public int getWidth()
     {
     	return width;
     }
-    
+
+    /**
+     * returns the height of the board, or the total amount of rows
+     * @return the height of the board, as an integer
+     */
     public int getHeight() 
     {
     	return height;
     }
-    /*
-     * Returns the height and width of the board 
+
+    /**
+     * Creates and fills a board of hextiles, and the connections from each tile
+     * @param width the width of the board to create
+     * @param height the height of the board to create
      */
     private void initBoard(int width, int height)
     {
         //create the 2d array
-        board = new HexTile[width][height];
+        board = new HexTile[height][width];
 
         //populate it with HexTiles
         for (int i = 0; i < width; i++)
@@ -205,20 +216,17 @@ public class Board
 
     /**
      * gets all the coordinates(row and column) of the neighbours of the specified tile.
-     * If there is none, the values will be null instead
-     * @param row the row of the tile which neighours are requested
-     * @param column the column of the tile hwich neighbours are requisted
-     * @return an array of length 6 with array of size 2 for every element, where the first element is the row and
+     * If there is none, the values will be -1 instead
+     * @param row the row of the tile whose neighbours are requested
+     * @param column the column of the tile which neighbours are requested
+     * @return an array of length 6 with array of size 2 for every element,
+     * where the first element is the row and
      * the second the column
      */
-    public int[][] getNeighbours(int row, int column)
+    public List<HexTile> getNeighbours(int row, int column)
         throws IllegalArgumentException
     {
-        HexTile tile = getTile(row, column);
-
-        int[][] neighbours = new int[6][2];
-
-        return neighbours;
+        return getTile(row, column).getNeighbours();
     }
 
     /**
@@ -226,7 +234,6 @@ public class Board
      *
      * @param row the row of the Tile, starting at the top
      * @param column the column of the Tile, starting at the left side
-     * @return the state of the HexTile at the given position
      * @throws IllegalArgumentException when the given location is not valid
      */
     public void claim(int row, int column, TileState state)

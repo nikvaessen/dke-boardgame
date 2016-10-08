@@ -29,10 +29,19 @@ public class HexTile
     private List<Bridge> neighbors;
 
     /**
-     * String which represents the co-ordinates of this tile in a 2d array
-     * x and y coordinates in a String "x,y", where each number has 2 chars
+     *
      */
-    private String coordString;
+    private List<HexTile> neighbourHexTiles;
+
+    /**
+     * The row of this tile in the hexboard
+     */
+    private int row;
+
+    /**
+     * the column of this tile in the hexboard
+     */
+    private int column;
 
     /**
      * Holds who owns the tile (player1, player2, or no one)
@@ -43,13 +52,15 @@ public class HexTile
      * Construct a HexTile. The co-ordinates are purely for representation
      * reasons
      *
-     * @param i the y or height co-ordinate of this tile in a 2d array
-     * @param j the x or width  co-ordinate of this tile in a 2d array
+     * @param row the x or height co-ordinate of this tile in a 2d array
+     * @param column the y or width co-ordinate of this tile in a 2d array
      */
-    public HexTile(int i, int j)
+    public HexTile(int row, int column)
     {
-        coordString = String.format("%2d,%2d", i, j);
-        neighbors = new ArrayList<Bridge>(6);
+        this.row = row;
+        this.column = column;
+        neighbors = new ArrayList<>(6);
+        neighbourHexTiles = new ArrayList<>(6);
         state = TileState.NEUTRAL;
         initBridges();
     }
@@ -115,6 +126,7 @@ public class HexTile
                     "side " + side + " but this side already has one");
         }
         neighbors.get(side).addTile(newNeighbor);
+        neighbourHexTiles.add(newNeighbor);
     }
 
     /**
@@ -140,13 +152,50 @@ public class HexTile
     }
 
     /**
+     * Get a list of all the neighbouring hextiles
+     * @return a list of all neighbouring HexTiles
+     */
+    public List<HexTile> getNeighbours()
+    {
+        return neighbourHexTiles;
+    }
+
+    /**
+     * check if this tile has a neighbour at a specific side
+     * @param side the side where the neighbour can be
+     * @return if there is a neighbour at the specified side
+     */
+    public boolean hasNeighbour(int side)
+    {
+        return side > 0 && side < 5 && neighbors.get(side).isComplete();
+    }
+
+    /**
+     * Get the row of this tile
+     * @return the row of this tile
+     */
+    public int getRow()
+    {
+        return row;
+    }
+
+    /**
+     * Get the column of this tile
+     * @return the column of this tile
+     */
+    public int getColumn()
+    {
+        return column;
+    }
+
+    /**
      * String representation of the tile
      *
      * @return the tile as "{(x,y);state}"
      */
     public String toString()
     {
-        return String.format("{(%s);%s}", coordString, state);
+        return String.format("{(%s);%s}", row, column, state);
     }
 
     /**
