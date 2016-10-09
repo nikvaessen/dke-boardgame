@@ -30,7 +30,9 @@ public class InputProcessor
         }
         try
         {
-            String[] splittedText = textInput.split(":");
+            String[] splittedText = new String[2];
+            splittedText[0] = textInput.substring(0, 1);
+            splittedText[1] = textInput.substring(1);
             if (splittedText.length != 2 || splittedText[0].length() != 1)
             {
                 throw new IllegalArgumentException("Input has wrong syntax.  ");

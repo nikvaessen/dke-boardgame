@@ -13,8 +13,6 @@ import nl.dke.boardgame.game.board.TileState;
 //// TODO: 21/09/16 implement this class
 public class Table
 {
-    private HexGame game;
-
     private HexPlayer player1;
 
     private HexPlayer player2;
@@ -57,15 +55,15 @@ public class Table
                 return new RandomHexPlayer(player);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
-                        "HexPlayer, given argument" + type +" is not " +
+                        "HexPlayer, given argument" + type + " is not " +
                         "implemented");
         }
     }
 
     public void setBoardDimensions(int width, int height)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
-        if(width < HexGame.MINIMUM_BOARD_DIMENSION ||
+        if (width < HexGame.MINIMUM_BOARD_DIMENSION ||
                 width > HexGame.MAXIMUM_BOARD_DIMENSION ||
                 height < HexGame.MINIMUM_BOARD_DIMENSION ||
                 height > HexGame.MAXIMUM_BOARD_DIMENSION)
@@ -75,6 +73,5 @@ public class Table
         this.currentHeight = height;
         this.currentWidth = width;
     }
-
 
 }

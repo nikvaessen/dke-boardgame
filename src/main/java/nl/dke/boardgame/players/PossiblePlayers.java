@@ -5,6 +5,8 @@ package nl.dke.boardgame.players;
  */
 public enum PossiblePlayers
 {
+    //NOTE: if you add a new ENUM, also edit the Table class so it supports
+    //      the creation of this HexPlayer (createPlayer() method)
     random,
     human
 }

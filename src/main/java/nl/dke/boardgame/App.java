@@ -11,7 +11,7 @@ public class App
 {
     public static void main(String[] args)
     {
-        HexGame.DELAY_BETWEEN_TURNS = 1;
+        HexGame.DELAY_BETWEEN_TURNS = 10;
         new MainFrame();
     }
 }

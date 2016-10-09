@@ -354,7 +354,7 @@ public class Board
     {
         for(Watcher watcher: watchers)
         {
-            watcher.update(clone());
+            watcher.update();
         }
     }
 

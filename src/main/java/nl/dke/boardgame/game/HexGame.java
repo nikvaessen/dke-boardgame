@@ -3,11 +3,8 @@ package nl.dke.boardgame.game;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.exceptions.MoveNotCompletedException;
 import nl.dke.boardgame.game.board.Board;
-import nl.dke.boardgame.game.board.BoardWatcher;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
-
-import java.util.List;
 
 /**
  * This class has all the functionality to play a game of Hex, either with 2
@@ -64,6 +61,16 @@ public class HexGame
     private boolean ended = false;
 
     /**
+     * Stores who won the game when the game has been over
+     */
+    private TileState playerWon;
+
+    /**
+     * Stores information about the progress of the game
+     */
+    private GameState gameState;
+
+    /**
      * Construct a board for a game of Hex with the given board dimension
      * and the players
      *
@@ -86,6 +93,9 @@ public class HexGame
         //and store the players
         this.player1 = player1;
         this.player2 = player2;
+
+        gameState = new GameState(getBoardState(),
+                player1.getTypeOfPlayer(), player2.getTypeOfPlayer());
     }
 
     /**
@@ -172,22 +182,47 @@ public class HexGame
     }
 
     /**
-     * Reset the game so it is possible to play it again
+     * Reset the game so it is possible to play it again.
+     * This will also create a new GameState object, so if an old
+     * one if being used, it will not be used any more
      */
     private void resetGame()
     {
         started = false;
         ended = false;
         board.resetTiles();
+        gameState = new GameState(getBoardState(),
+                player1.getTypeOfPlayer(), player2.getTypeOfPlayer());
     }
 
     /**
-     * create a BoardWatcher which will get notified when the board changes
-     * @return a BoardWatcher watching the Board of the game
+     * Creates a matrix of TileStates with the same claimed tiles as
+     * the board
+     * @return A 2d array of TileStates with the same states as the board
      */
-    public BoardWatcher getBoardWatcher()
+    private TileState[][] getBoardState()
     {
-        return new BoardWatcher(board);
+        TileState[][] dummyBoard =
+                new TileState[board.getHeight()][board.getWidth()];
+
+        for(int i = 0; i < board.getHeight(); i++)
+        {
+            for(int j = 0; j < board.getWidth(); j++)
+            {
+                dummyBoard[i][j] = board.getState(i, j);
+            }
+        }
+        return dummyBoard;
+    }
+
+    /**
+     * Get the GameState object, which will be updated everytime
+     * a turn gets completed
+     * @return the GameState object belonging to this game
+     */
+    public GameState getGameState()
+    {
+        return gameState;
     }
 
     /**
@@ -225,7 +260,7 @@ public class HexGame
             //grace period
             try
             {
-                Thread.sleep(100);
+                Thread.sleep(DELAY_BETWEEN_TURNS);
             }
             catch (InterruptedException e)
             {
@@ -253,7 +288,8 @@ public class HexGame
                 allowMove(player);
             }
 
-            //and give the turn to the other player
+            //mark the turn as completed and give the turn to the other player
+            gameState.completedTurn(getBoardState(), player.claimsAs());
             if(player == player1)
             {
                 allowMove(player2);
@@ -301,24 +337,28 @@ public class HexGame
         }
 
         /**
-         *
-         * @param row
-         * @param column
-         * @param map
-         * @param player
+         * looks for a path from one side of the board to other by visiting a
+         * tile on a specific tile and row and going to each neighbour until
+         * it has reached the other side.
+         * @param row the row where the algorithm currently is
+         * @param column the column where the algorithm currently is
+         * @param map the map of the whole board, which stores which
+         *            tiles have already been visited
+         * @param player for which player the algorithm is currently checking
+         *               for a path
          */
         private void isPathToOtherSide(int row, int column, boolean[][] map,
                                           TileState player)
         {
-            if(map[row][column])
+            if(map[row][column] || board.getState(row, column ) != player)
             {
                return;
             }
-            else if(player == TileState.PLAYER1 && column == board.getWidth() - 1)
+            else if(column == board.getWidth() - 1 && player == TileState.PLAYER1)
             {
                 player1Won = true;
             }
-            else if(player == TileState.PLAYER2 && row == board.getHeight() - 1)
+            else if(row == board.getHeight() - 1 && player == TileState.PLAYER2)
             {
                 player2Won = true;
             }
@@ -327,10 +367,10 @@ public class HexGame
                 //set that this location has been visited
                 map[row][column] = true;
 
-                //
+                //go to each neighbour which the same owner
                 for(HexTile neighbourTile : board.getNeighbours(row, column))
                 {
-                    if(neighbourTile.getState() == player && (!player1Won || !player2Won) )
+                    if(neighbourTile.getState() == player && (!player1Won || !player2Won))
                     {
                         isPathToOtherSide(neighbourTile.getRow(),
                                 neighbourTile.getColumn(), map, player);
