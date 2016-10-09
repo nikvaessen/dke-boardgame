@@ -1,7 +1,6 @@
 package nl.dke.boardgame;
 
 import nl.dke.boardgame.display.MainFrame;
-import nl.dke.boardgame.display.game.GameFrame;
 import nl.dke.boardgame.game.HexGame;
 
 /**

@@ -1,5 +1,6 @@
 package nl.dke.boardgame.game;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.exceptions.MoveNotCompletedException;
 import nl.dke.boardgame.game.board.Board;
@@ -256,7 +257,6 @@ public class HexGame
         // this should also include changes in the Move class
         private void allowMove(HexPlayer player)
         {
-            System.out.println("Turn: " + player.claimsAs().toString());
             //grace period
             try
             {
@@ -270,10 +270,13 @@ public class HexGame
             //check if game is over
             if(checkWin())
             {
+                gameState.playerWon(playerWon);
+                System.out.println(playerWon + " won!");
                 return;
             }
 
             //make the player make a move
+            System.out.println("Turn: " + player.claimsAs().toString());
             Move move = new Move(board, player.claimsAs());
             player.finishMove(move); //this method blocks until input has been given
             try
@@ -331,6 +334,14 @@ public class HexGame
             //if anyone one, make it be so
             if(player1Won || player2Won)
             {
+                if(player1Won)
+                {
+                    playerWon = TileState.PLAYER1;
+                }
+                else
+                {
+                    playerWon = TileState.PLAYER2;
+                }
                 ended = true;
             }
             return ended;

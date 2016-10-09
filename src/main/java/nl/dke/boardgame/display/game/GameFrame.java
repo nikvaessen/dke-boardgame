@@ -30,24 +30,32 @@ public class GameFrame extends JFrame
         this.game = game;
 
         //set main gui settings
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        GridBagConstraints c = new GridBagConstraints();
 
         //create panel which draws the board
         hexBoardPanel = new HexBoardPanel(game.getGameState());
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridheight = 2;
+        getContentPane().add(hexBoardPanel, c);
 
-        getContentPane().add(hexBoardPanel, BorderLayout.CENTER);
+        //create the panel with information about the game
+        infoPanel = new InfoPanel(game.getGameState());
+        c.gridx = 1;
+        c.gridy = 0;
+        c.gridheight = 1;
+        getContentPane().add(infoPanel, c);
 
         //if there is a InputProcessor, we have human players
         if(inputProcessor != null)
         {
             inputPanel = new InputPanel(inputProcessor);
-            getContentPane().add(inputPanel, BorderLayout.EAST);
+            c.gridx = 1;
+            c.gridy = 1;
+            getContentPane().add(inputPanel, c);
         }
-
-        //create the panel with information about the game
-        infoPanel = new InfoPanel(game.getGameState());
-        getContentPane().add(infoPanel, BorderLayout.WEST);
 
         pack();
         setLocationRelativeTo(null);

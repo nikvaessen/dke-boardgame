@@ -13,13 +13,32 @@ import java.awt.*;
 public class InfoPanel extends JPanel implements Watcher
 {
 
+    /**
+     * Constant Strings for current game information
+     */
+    private final static String CURRENT_TURN = "Current turn is for:";
+    private final static String CURRENT_WINNER = "The winner is:";
+
+    /**
+     * Constant Strings for player 1 display
+     */
+    private final static String PLAYER_1_INFO = "Player 1:";
     private final static String PLAYER_1 = "player 1";
     private final static String PLAYER_1_COLOR_STRING = "RED";
     private final static Color  PLAYER_1_COLOR = Color.RED;
 
+    /**
+     * Constant Strings for player 2 display
+     */
+    private final static String PLAYER_2_INFO = "Player 2:";
     private final static String PLAYER_2 = "player 2";
     private final static String PLAYER_2_COLOR_STRING = "BLUE";
     private final static Color  PLAYER_2_COLOR = Color.BLUE;
+
+    /**
+     * Constant Strings for total turns display
+     */
+    private final static String TOTAL_TURNS = "Total turns:";
 
     /**
      * object holding all information about the current game
@@ -65,92 +84,86 @@ public class InfoPanel extends JPanel implements Watcher
         gameState.attachWatcher(this);
 
         //set general settings of this panel
-        this.setPreferredSize(new Dimension(200, 125));
+        //this.setPreferredSize(new Dimension(200, 125));
         this.setLayout(new GridBagLayout());
 
         //all objects related to displaying who's turn it is
-        currentTurnInfo = new JLabel("Currently playing:");
+        currentTurnInfo = new JLabel(CURRENT_TURN);
         currentTurnPlayer = new JLabel();
         setPlayerString(currentTurnPlayer, gameState.currentTurn());
         currentTurnColor = new JLabel();
         setColorString(currentTurnColor, gameState.currentTurn());
 
         //all objects related to displaying information about player 1
-        player1Info = new JLabel();
-        setPlayerString(player1Info, TileState.PLAYER1);
+        player1Info = new JLabel(PLAYER_1_INFO);
         player1Type = new JLabel(gameState.player1is().toString());
         player1Color = new JLabel();
         setColorString(player1Color, TileState.PLAYER1);
         player1TurnCounter = new JLabel("0");
 
         //all objects related to displaying information about player 2
-        player2Info = new JLabel();
-        setPlayerString(player2Info, TileState.PLAYER2);
+        player2Info = new JLabel(PLAYER_2_INFO);
         player2Type = new JLabel(gameState.player2is().toString());
         player2Color = new JLabel();
         setColorString(player2Color, TileState.PLAYER2);
         player2TurnCounter = new JLabel("0");
 
         //all objects related to displaying the amount of turns
-        totalTurnInfo = new JLabel("total turns:");
+        totalTurnInfo = new JLabel(TOTAL_TURNS);
         totalTurnCounter = new JLabel("0");
 
         //place the objects in the panel
         GridBagConstraints c = new GridBagConstraints();
 
         //add the current player panels
-        c.gridx = 0;
+        c.anchor = GridBagConstraints.LINE_START;
         c.gridy = 0;
         add(currentTurnInfo, c);
 
-        c.gridx = 1;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridy++;
         add(currentTurnPlayer, c);
 
-        c.gridx = 1;
         c.gridy++;
         add(currentTurnColor, c);
 
         //add the player1 panels
-        c.gridx = 0;
+        c.anchor = GridBagConstraints.LINE_START;
+        //c.gridx = 0;
         c.gridy++;
         add(player1Info, c);
 
-        c.gridx = 1;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridy++;
         add(player1Type, c);
 
-        c.gridx = 1;
         c.gridy++;
         add(player1Color, c);
 
-        c.gridx = 1;
         c.gridy++;
         add(player1TurnCounter, c);
 
         //add the player2 panels
-        c.gridx = 0;
+        c.anchor = GridBagConstraints.LINE_START;
         c.gridy++;
         add(player2Info, c);
 
-        c.gridx = 1;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridy++;
         add(player2Type, c);
 
-        c.gridx = 1;
         c.gridy++;
         add(player2Color, c);
 
-        c.gridx = 1;
         c.gridy++;
         add(player2TurnCounter, c);
 
         //add panels about total turns
-        c.gridx = 0;
+        c.anchor = GridBagConstraints.LINE_START;
         c.gridy++;
         add(totalTurnInfo, c);
 
-        c.gridx = 1;
+        c.anchor = GridBagConstraints.CENTER;
         c.gridy++;
         add(totalTurnCounter, c);
     }
@@ -204,7 +217,7 @@ public class InfoPanel extends JPanel implements Watcher
 
     private void setWinner(TileState player)
     {
-        currentTurnInfo.setText("The winner is:");
+        currentTurnInfo.setText(CURRENT_WINNER);
         setPlayerString(currentTurnPlayer, player);
         setColorString(currentTurnColor, player);
     }

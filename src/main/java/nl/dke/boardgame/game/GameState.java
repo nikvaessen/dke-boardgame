@@ -128,6 +128,7 @@ public class GameState implements Watchable
                     "player1 or player2");
         }
         winner = player;
+        notifyWatchers();
     }
 
     /**

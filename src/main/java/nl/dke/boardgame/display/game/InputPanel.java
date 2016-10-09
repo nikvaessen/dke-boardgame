@@ -17,8 +17,10 @@ public class InputPanel extends JPanel
 
     public InputPanel(InputProcessor inputProcessor)
     {
-        this.setPreferredSize(new Dimension(150, 100));
         this.inputProcessor = inputProcessor;
+
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
 
         //label above the textfield
         textFieldLabel = new JLabel("Please enter move:");
@@ -31,7 +33,9 @@ public class InputPanel extends JPanel
         JButton button = new JButton("Enter");
         button.addActionListener(new UserInputCompleteListener());
 
-        this.add(textFieldLabel); this.add(input); this.add(button);
+        c.gridy = 0; this.add(textFieldLabel, c);
+        c.gridy = 1; this.add(input, c);
+        c.gridy = 2; this.add(button, c);
     }
 
     private void clearTextField()
