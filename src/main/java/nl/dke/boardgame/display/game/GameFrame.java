@@ -16,7 +16,9 @@ public class GameFrame extends JFrame
 
     private HexBoardPanel hexBoardPanel;
 
-    private InputPanel infoPanel;
+    private InputPanel inputPanel;
+
+    private InfoPanel infoPanel;
 
     public GameFrame(HexGame game)
     {
@@ -26,19 +28,33 @@ public class GameFrame extends JFrame
     public GameFrame(HexGame game, InputProcessor inputProcessor)
     {
         this.game = game;
-        //create game elements and set up panels
-        hexBoardPanel = new HexBoardPanel(game.getBoardWatcher());
 
         //set main gui settings
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getContentPane().add(hexBoardPanel, BorderLayout.CENTER);
+        GridBagConstraints c = new GridBagConstraints();
+
+        //create panel which draws the board
+        hexBoardPanel = new HexBoardPanel(game.getGameState());
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridheight = 2;
+        getContentPane().add(hexBoardPanel, c);
+
+        //create the panel with information about the game
+        infoPanel = new InfoPanel(game.getGameState());
+        c.gridx = 1;
+        c.gridy = 0;
+        c.gridheight = 1;
+        getContentPane().add(infoPanel, c);
 
         //if there is a InputProcessor, we have human players
         if(inputProcessor != null)
         {
-            infoPanel = new InputPanel(inputProcessor);
-            getContentPane().add(infoPanel, BorderLayout.EAST);
+            inputPanel = new InputPanel(inputProcessor);
+            c.gridx = 1;
+            c.gridy = 1;
+            getContentPane().add(inputPanel, c);
         }
 
         pack();

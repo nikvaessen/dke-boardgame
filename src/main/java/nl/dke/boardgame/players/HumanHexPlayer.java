@@ -37,6 +37,7 @@ public class HumanHexPlayer extends HexPlayer
         try
         {
             inputProcessor.give(move);
+            //block thread until a correct input is given
             while(!move.isSet() || !move.verify())
             {
                 try
@@ -55,4 +56,9 @@ public class HumanHexPlayer extends HexPlayer
         }
     }
 
+    @Override
+    public PossiblePlayers getTypeOfPlayer()
+    {
+        return PossiblePlayers.human;
+    }
 }

@@ -1,7 +1,6 @@
 package nl.dke.boardgame.display.game;
 
 import nl.dke.boardgame.exceptions.NotAcceptingInputException;
-import nl.dke.boardgame.game.Table;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,20 +11,31 @@ public class InputPanel extends JPanel
 {
 
     private static final long serialVersionUID = 1L;
-    private JLabel label;
+    private JLabel textFieldLabel;
     private JTextField input;
-    private int playerGo = 1;
     private InputProcessor inputProcessor;
 
     public InputPanel(InputProcessor inputProcessor)
     {
-        this.setPreferredSize(new Dimension(150, 100));
         this.inputProcessor = inputProcessor;
-        label = new JLabel("Please enter move:");
+
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        //label above the textfield
+        textFieldLabel = new JLabel("Please enter move:");
+
+        //text field to type the hextile to claim in
         input = new JTextField(7);
+        input.addActionListener(new UserInputCompleteListener());
+
+        //button to enter the tile typed into the text field
         JButton button = new JButton("Enter");
-        button.addActionListener(new buttonInput());
-        this.add(label); this.add(input);; this.add(button);
+        button.addActionListener(new UserInputCompleteListener());
+
+        c.gridy = 0; this.add(textFieldLabel, c);
+        c.gridy = 1; this.add(input, c);
+        c.gridy = 2; this.add(button, c);
     }
 
     private void clearTextField()
@@ -33,7 +43,7 @@ public class InputPanel extends JPanel
         input.setText("");
     }
 
-    private class buttonInput implements ActionListener
+    private class UserInputCompleteListener implements ActionListener
     {
 		public void actionPerformed(ActionEvent arg0) {
 			//would start the move function based on user input
@@ -42,7 +52,6 @@ public class InputPanel extends JPanel
                 if (inputProcessor.accepting())
                 {
                     inputProcessor.in(input.getText());
-                    clearTextField();
                 }
             }
             catch (NotAcceptingInputException e)
@@ -54,10 +63,15 @@ public class InputPanel extends JPanel
                 System.out.println("Invalid input: Try <column>:<row>. A " +
                         "syntactically correct input would be A:5. " +
                         "Note that the columns are letters and " +
-                        "the rows are integers! Tile could also already havea:11 " +
+                        "the rows are integers! Tile could also already have " +
                         "been claimed");
                 e.printStackTrace();
+             }
+            finally
+            {
+                clearTextField();
             }
-		}
+        }
     }
+
 }

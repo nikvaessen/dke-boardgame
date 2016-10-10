@@ -1,6 +1,7 @@
 package nl.dke.boardgame.game;
 
 import nl.dke.boardgame.game.board.TileState;
+import nl.dke.boardgame.players.PossiblePlayers;
 
 /**
  *
@@ -43,5 +44,11 @@ public abstract class HexPlayer
      * @param move the move the player needs to make
      */
     public abstract void finishMove(Move move);
+
+    /**
+     * Get the type of player the class implements
+     * @return the type of player
+     */
+    public abstract PossiblePlayers getTypeOfPlayer();
 
 }

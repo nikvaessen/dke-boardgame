@@ -47,4 +47,10 @@ public class RandomHexPlayer extends HexPlayer
             }
         }
     }
+
+    @Override
+    public PossiblePlayers getTypeOfPlayer()
+    {
+        return PossiblePlayers.random;
+    }
 }

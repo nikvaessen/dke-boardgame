@@ -1,9 +1,11 @@
 package nl.dke.boardgame.game;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.exceptions.MoveNotCompletedException;
 import nl.dke.boardgame.game.board.Board;
-import nl.dke.boardgame.game.board.BoardWatcher;
+import nl.dke.boardgame.game.board.HexTile;
+import nl.dke.boardgame.game.board.TileState;
 
 /**
  * This class has all the functionality to play a game of Hex, either with 2
@@ -30,6 +32,11 @@ public class HexGame
     public final static int MAXIMUM_BOARD_DIMENSION = 19;
 
     /**
+     * A editable delay between turn times
+     */
+    public static int DELAY_BETWEEN_TURNS = 100;
+
+    /**
      * The board of HexTiles to play the game on
      */
     private Board board;
@@ -45,12 +52,6 @@ public class HexGame
     private HexPlayer player2;
 
     /**
-     * Thread which will handle all the game logic
-     */
-
-    private GameLoop gameLoop;
-
-    /**
      * Flag for the game start
      */
     private boolean started = false;
@@ -59,6 +60,16 @@ public class HexGame
      * Flag for when the game is over
      */
     private boolean ended = false;
+
+    /**
+     * Stores who won the game when the game has been over
+     */
+    private TileState playerWon;
+
+    /**
+     * Stores information about the progress of the game
+     */
+    private GameState gameState;
 
     /**
      * Construct a board for a game of Hex with the given board dimension
@@ -83,6 +94,9 @@ public class HexGame
         //and store the players
         this.player1 = player1;
         this.player2 = player2;
+
+        gameState = new GameState(getBoardState(),
+                player1.getTypeOfPlayer(), player2.getTypeOfPlayer());
     }
 
     /**
@@ -165,37 +179,71 @@ public class HexGame
     private void startGame()
     {
         started = true;
-        gameLoop = new GameLoop();
-        new Thread(gameLoop).start();
+        new Thread(new GameLoop()).start();
     }
 
     /**
-     * Reset the game so it is possible to play it again
+     * Reset the game so it is possible to play it again.
+     * This will also create a new GameState object, so if an old
+     * one if being used, it will not be used any more
      */
     private void resetGame()
     {
         started = false;
         ended = false;
         board.resetTiles();
+        gameState = new GameState(getBoardState(),
+                player1.getTypeOfPlayer(), player2.getTypeOfPlayer());
     }
 
     /**
-     * create a BoardWatcher which will get notified when the board changes
-     * @return a BoardWatcher watching the Board of the game
+     * Creates a matrix of TileStates with the same claimed tiles as
+     * the board
+     * @return A 2d array of TileStates with the same states as the board
      */
-    public BoardWatcher getBoardWatcher()
+    private TileState[][] getBoardState()
     {
-        return new BoardWatcher(board);
+        TileState[][] dummyBoard =
+                new TileState[board.getHeight()][board.getWidth()];
+
+        for(int i = 0; i < board.getHeight(); i++)
+        {
+            for(int j = 0; j < board.getWidth(); j++)
+            {
+                dummyBoard[i][j] = board.getState(i, j);
+            }
+        }
+        return dummyBoard;
     }
 
+    /**
+     * Get the GameState object, which will be updated everytime
+     * a turn gets completed
+     * @return the GameState object belonging to this game
+     */
+    public GameState getGameState()
+    {
+        return gameState;
+    }
+
+    /**
+     * This class runs in a separate Thread and controls player turn and
+     * game over logic
+     */
     private class GameLoop implements Runnable
     {
 
+        private boolean player1Won = false;
+
+        private boolean player2Won = false;
 
         @Override
         public void run()
         {
+            long start = System.currentTimeMillis();
             allowMove(player1);
+            long end = System.currentTimeMillis();
+            System.out.println("Total game time: " + (end - start) + " ms");
         }
 
         /**
@@ -209,11 +257,10 @@ public class HexGame
         // this should also include changes in the Move class
         private void allowMove(HexPlayer player)
         {
-            System.out.println("Turn: " + player.claimsAs().toString());
             //grace period
             try
             {
-                Thread.sleep(100);
+                Thread.sleep(DELAY_BETWEEN_TURNS);
             }
             catch (InterruptedException e)
             {
@@ -223,10 +270,13 @@ public class HexGame
             //check if game is over
             if(checkWin())
             {
+                gameState.playerWon(playerWon);
+                System.out.println(playerWon + " won!");
                 return;
             }
 
             //make the player make a move
+            System.out.println("Turn: " + player.claimsAs().toString());
             Move move = new Move(board, player.claimsAs());
             player.finishMove(move); //this method blocks until input has been given
             try
@@ -241,7 +291,8 @@ public class HexGame
                 allowMove(player);
             }
 
-            //and give the turn to the other player
+            //mark the turn as completed and give the turn to the other player
+            gameState.completedTurn(getBoardState(), player.claimsAs());
             if(player == player1)
             {
                 allowMove(player2);
@@ -260,22 +311,84 @@ public class HexGame
          */
         private boolean checkWin()
         {
-            boolean result = false;
             //// TODO: 21/09/16 write an efficient loop/function to check for win
+
+            boolean[][] map = new boolean[board.getHeight()][board.getWidth()];
 
             //check if player1 has won
             for(int i = 0; i < board.getHeight(); i++)
             {
-                board.get
+                board.getNeighbours(i, 0);
+                isPathToOtherSide(i, 0, map, TileState.PLAYER1);
             }
 
-            //make the boolean flag for the end of the game true if the game is over
-            // TODO: 21/09/16 also set who won
-            if(result)
+            //check if player2 has won
+            if(!ended)
             {
+                for(int i = 0; i < board.getWidth(); i++)
+                {
+                    isPathToOtherSide(0, i, map, TileState.PLAYER2);
+                }
+            }
+
+            //if anyone one, make it be so
+            if(player1Won || player2Won)
+            {
+                if(player1Won)
+                {
+                    playerWon = TileState.PLAYER1;
+                }
+                else
+                {
+                    playerWon = TileState.PLAYER2;
+                }
                 ended = true;
             }
-            return result;
+            return ended;
         }
+
+        /**
+         * looks for a path from one side of the board to other by visiting a
+         * tile on a specific tile and row and going to each neighbour until
+         * it has reached the other side.
+         * @param row the row where the algorithm currently is
+         * @param column the column where the algorithm currently is
+         * @param map the map of the whole board, which stores which
+         *            tiles have already been visited
+         * @param player for which player the algorithm is currently checking
+         *               for a path
+         */
+        private void isPathToOtherSide(int row, int column, boolean[][] map,
+                                          TileState player)
+        {
+            if(map[row][column] || board.getState(row, column ) != player)
+            {
+               return;
+            }
+            else if(column == board.getWidth() - 1 && player == TileState.PLAYER1)
+            {
+                player1Won = true;
+            }
+            else if(row == board.getHeight() - 1 && player == TileState.PLAYER2)
+            {
+                player2Won = true;
+            }
+            else
+            {
+                //set that this location has been visited
+                map[row][column] = true;
+
+                //go to each neighbour which the same owner
+                for(HexTile neighbourTile : board.getNeighbours(row, column))
+                {
+                    if(neighbourTile.getState() == player && (!player1Won || !player2Won))
+                    {
+                        isPathToOtherSide(neighbourTile.getRow(),
+                                neighbourTile.getColumn(), map, player);
+                    }
+                }
+            }
+        }
+
     }
 }
