@@ -112,7 +112,7 @@ public class DrawPanel
                     };
             g.setColor(Color.RED);
             g.drawLine(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
-            if (y != 10) g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
+            if (y != board[0].length - 1) g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
     	}
     }
     
@@ -141,7 +141,7 @@ public class DrawPanel
                     };
             g.setColor(Color.RED);
             g.drawLine(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
-            if (y != 10) g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
+            if (y != board[0].length - 1) g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
     	}
     }
     
