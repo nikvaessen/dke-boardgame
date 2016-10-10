@@ -55,11 +55,11 @@ public class SelectPanel extends JPanel
                 Integer.toString(HexGame.MINIMUM_BOARD_DIMENSION) +
                 "-" + Integer.toString(HexGame.MAXIMUM_BOARD_DIMENSION) + ")");
 
-        player1 = new JComboBox<>(PossiblePlayers.values());
+        player1 = new JComboBox<PossiblePlayers>(PossiblePlayers.values());
         player1Label = new JLabel("Player 1:");
         player1.setSelectedIndex(1);
 
-        player2 = new JComboBox<>(PossiblePlayers.values());
+        player2 = new JComboBox<PossiblePlayers>(PossiblePlayers.values());
         player2Label = new JLabel("Player 2:");
 
         errorLabel = new JLabel();

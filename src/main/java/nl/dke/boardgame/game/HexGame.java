@@ -237,7 +237,7 @@ public class HexGame
 
         private boolean player2Won = false;
 
-        @Override
+        //@Override
         public void run()
         {
             long start = System.currentTimeMillis();
@@ -285,7 +285,7 @@ public class HexGame
                         move.getRow(), move.getColumn(),  player.claimsAs());
                 board.claim(move.getRow(), move.getColumn(), player.claimsAs());
             }
-            catch (MoveNotCompletedException | AlreadyClaimedException e)
+            catch (/*MoveNotCompletedException  |*/ AlreadyClaimedException e)
             {
                 e.printStackTrace();
                 allowMove(player);
