@@ -81,5 +81,125 @@ public class DrawPanel
             g.drawString(Integer.toString(y), OFFSET_X / 2 + (y * LENGTH),
                     OFFSET_Y + (LENGTH * 2) + (y * LENGTH * 2)); // draws the number column along the bottom
         }
+        drawLeftEdge(g, board);
+        drawRightEdge(g, board);
+        drawTopEdge(g, board);
+        drawBotEdge(g, board);
+    }
+    
+    public void drawLeftEdge(Graphics g, TileState[][] board ) {
+    	for (int y = 0; y < board[0].length; y++) {
+    		// the x coordinate of a hex if it were a square
+    		int xCoor = OFFSET_X + (y * LENGTH);
+
+	        // the y coordinate of a hex if it were a square
+	        int yCoor = OFFSET_Y + (y * LENGTH * 2);
+	        
+	        // list of x coordinates for the hex based on the initial x cooridanate
+            int xPoints[] =
+                    {
+                            xCoor,
+                            xCoor,
+                            xCoor + LENGTH
+                    };
+
+            // list of y coordinates for the hex based on the initial y cooridanate
+            int yPoints[] =
+                    {
+                            yCoor + LENGTH,
+                            yCoor + (2 * LENGTH),
+                            yCoor + (3 * LENGTH)
+                    };
+            g.setColor(Color.RED);
+            g.drawLine(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
+            if (y != 10) g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
+    	}
+    }
+    
+    public void drawRightEdge(Graphics g, TileState[][] board ) {
+    	for (int y = 0; y < board[0].length; y++) {
+    		// the x coordinate of a hex if it were a square
+    		int xCoor = OFFSET_X + (y * LENGTH) + (board.length * LENGTH * 2);
+
+	        // the y coordinate of a hex if it were a square
+	        int yCoor = OFFSET_Y + (y * LENGTH * 2);
+	        
+	        // list of x coordinates for the hex based on the initial x cooridanate
+            int xPoints[] =
+                    {
+                            xCoor,
+                            xCoor,
+                            xCoor + LENGTH
+                    };
+
+            // list of y coordinates for the hex based on the initial y cooridanate
+            int yPoints[] =
+                    {
+                            yCoor + LENGTH,
+                            yCoor + (2 * LENGTH),
+                            yCoor + (3 * LENGTH)
+                    };
+            g.setColor(Color.RED);
+            g.drawLine(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
+            if (y != 10) g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
+    	}
+    }
+    
+    public void drawTopEdge(Graphics g, TileState[][] board ) {
+    	for (int x = 0; x < board.length; x++) {
+    		// the x coordinate of a hex if it were a square
+    		int xCoor = OFFSET_X + (x * LENGTH * 2);
+
+	        // the y coordinate of a hex if it were a square
+	        int yCoor = OFFSET_Y;
+	        
+	        // list of x coordinates for the hex based on the initial x cooridanate
+            int xPoints[] =
+                    {
+                            xCoor,
+                            xCoor + LENGTH,
+                            xCoor + (LENGTH * 2)
+                    };
+
+            // list of y coordinates for the hex based on the initial y cooridanate
+            int yPoints[] =
+                    {
+                            yCoor + LENGTH,
+                            yCoor,
+                            yCoor + LENGTH
+                    };
+            g.setColor(Color.BLUE);
+            g.drawLine(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
+            g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
+    	}
+    }
+    
+    public void drawBotEdge(Graphics g, TileState[][] board ) {
+    	for (int x = 0; x < board.length; x++) {
+    		// the x coordinate of a hex if it were a square
+    		int xCoor = OFFSET_X + ((board.length - 1) * LENGTH) +(x * LENGTH * 2);
+
+	        // the y coordinate of a hex if it were a square
+	        int yCoor = OFFSET_Y + ((board[0].length - 1) * LENGTH * 2);
+	        
+	        // list of x coordinates for the hex based on the initial x cooridanate
+            int xPoints[] =
+                    {
+                            xCoor,
+                            xCoor + LENGTH,
+                            xCoor + (LENGTH * 2)
+                    };
+
+            // list of y coordinates for the hex based on the initial y cooridanate
+            int yPoints[] =
+                    {
+                            yCoor + (LENGTH * 2),
+                            yCoor + (LENGTH * 3),
+                            yCoor + (LENGTH * 2)
+                    };
+            g.setColor(Color.BLUE);
+            g.drawLine(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
+            g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
+    	}
     }
 }
