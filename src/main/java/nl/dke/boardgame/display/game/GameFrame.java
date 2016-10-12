@@ -35,7 +35,7 @@ public class GameFrame extends JFrame
         GridBagConstraints c = new GridBagConstraints();
 
         //create panel which draws the board
-        hexBoardPanel = new HexBoardPanel(game.getGameState());
+        hexBoardPanel = new HexBoardPanel(game.getGameState(), inputProcessor);
         c.gridx = 0;
         c.gridy = 0;
         c.gridheight = 2;
@@ -51,7 +51,7 @@ public class GameFrame extends JFrame
         //if there is a InputProcessor, we have human players
         if(inputProcessor != null)
         {
-            inputPanel = new InputPanel(inputProcessor);
+            inputPanel = new InputPanel(game.getGameState(), inputProcessor);
             c.gridx = 1;
             c.gridy = 1;
             getContentPane().add(inputPanel, c);

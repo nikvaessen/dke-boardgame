@@ -21,12 +21,24 @@ public class InputProcessor
         currentMove = move;
     }
 
+    public synchronized void in(int row, int column)
+        throws IllegalArgumentException, NotAcceptingInputException
+    {
+        if(!accepting())
+        {
+            throw new NotAcceptingInputException("InputProcessor is not" +
+                    "currently waiting for input");
+        }
+        process(row, column);
+    }
+
     public synchronized void in(String textInput)
         throws IllegalArgumentException, NotAcceptingInputException
     {
-        if(currentMove == null)
+        if(!accepting())
         {
-            throw new NotAcceptingInputException();
+            throw new NotAcceptingInputException("InputProcessor is not" +
+                    "currently waiting for input");
         }
         try
         {

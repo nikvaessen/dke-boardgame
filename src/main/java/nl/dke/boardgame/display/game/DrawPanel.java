@@ -1,13 +1,15 @@
 package nl.dke.boardgame.display.game;
 
 import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.TileState;
 
 public class DrawPanel
 {
-
     /**
      * the length of one side of the hexagon
      */
@@ -23,9 +25,15 @@ public class DrawPanel
      */
     public static final int OFFSET_Y = 40;
 
-    public void draw(Graphics g, TileState[][] board)
+    private List<Hexagon> hexagons;
+
+    public DrawPanel()
     {
-        char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray(); // to convert a for counter into letters
+        hexagons = new ArrayList<>();
+    }
+
+    private void calculatePolygons(TileState[][] board)
+    {
         for (int x = 0; x < board.length; x++)
         {
             for (int y = 0; y < board[x].length; y++)
@@ -58,18 +66,46 @@ public class DrawPanel
                                 yCoor + LENGTH
                         };
 
+                hexagons.add(new Hexagon(xPoints, yPoints, 6, y, x));
+            }
+        }
+    }
+
+    public Hexagon getHexagon(Point p)
+    {
+        for(Hexagon hex : hexagons)
+        {
+            if(hex.contains(p))
+            {
+                return hex;
+            }
+        }
+        return null;
+    }
+
+
+    public void draw(Graphics g, TileState[][] board)
+    {
+        if(board.length * board[0].length != hexagons.size())
+        {
+            calculatePolygons(board);
+        }
+
+        char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray(); // to convert a for counter into letters
+        for (Hexagon hex : hexagons)
+        {
                 //// TODO: 06/10/16 The board is drawn rotated by 90 degrees
                 //// which means the row and columns are inverted
-                switch(board[y][x]) // sets the colour of the hex
+                switch(board[hex.getColumn()][hex.getRow()]) // sets the colour of the hex
                 {
                     case NEUTRAL: g.setColor(Color.WHITE); break;
                     case PLAYER1: g.setColor(Color.RED); break;
                     case PLAYER2: g.setColor(Color.BLUE); break;
                 }
-                g.fillPolygon(xPoints, yPoints, 6);
+                g.fillPolygon(hex);
                 g.setColor(Color.BLACK); //  draws an outline
-                g.drawPolygon(xPoints, yPoints, 6);
-            }
+                g.drawPolygon(hex);
+
         }
         for (int x = 0; x < board.length; x++)
         {

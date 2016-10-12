@@ -72,6 +72,14 @@ public class HexGame
     private GameState gameState;
 
     /**
+     * Flag for is this game used the pie rule. The pie rules means that the
+     * second player can claim the tile of the first Player in the first move.
+     *
+     * Defaults to false
+     */
+    private boolean pieRule = false;
+
+    /**
      * Construct a board for a game of Hex with the given board dimension
      * and the players
      *
@@ -124,6 +132,32 @@ public class HexGame
                     width, height,
                     MINIMUM_BOARD_DIMENSION, MAXIMUM_BOARD_DIMENSION));
         }
+    }
+
+    /**
+     * get is the pie rule is enabled
+     * @return true is it is, false if it is not
+     */
+    public boolean isPieRule()
+    {
+        return pieRule;
+    }
+
+    /**
+     * set whether the pie rule is used to play the game
+     * @param flag if the pie rule is enabled
+     * @throws IllegalStateException when the game is already started or over
+     */
+    public void enablePieRule(boolean flag)
+        throws IllegalStateException
+    {
+        if(started)
+        {
+           throw new IllegalStateException("Cannot enable the pie rule" +
+                   "because the game has already started");
+        }
+        pieRule = flag;
+        gameState.setPieRuleEnabled(flag);
     }
 
     /**
@@ -241,7 +275,16 @@ public class HexGame
         public void run()
         {
             long start = System.currentTimeMillis();
-            allowMove(player1);
+
+            if(pieRule)
+            {
+                allowMove(player1);
+            }
+            else
+            {
+                allowMove(player1);
+            }
+
             long end = System.currentTimeMillis();
             System.out.println("Total game time: " + (end - start) + " ms");
         }
