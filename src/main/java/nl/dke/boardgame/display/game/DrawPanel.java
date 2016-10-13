@@ -94,8 +94,6 @@ public class DrawPanel
         char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray(); // to convert a for counter into letters
         for (Hexagon hex : hexagons)
         {
-                //// TODO: 06/10/16 The board is drawn rotated by 90 degrees
-                //// which means the row and columns are inverted
                 switch(board[hex.getRow()][hex.getColumn()]) // sets the colour of the hex
                 {
                     case NEUTRAL: g.setColor(Color.WHITE); break;

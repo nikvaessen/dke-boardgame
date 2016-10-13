@@ -6,7 +6,6 @@ import nl.dke.boardgame.players.PossiblePlayers;
 /**
  * A basis class for an AI or human class being able to play the HexGame
  */
-//// TODO: 21/09/16 Document this abstract class
 public abstract class HexPlayer
 {
 

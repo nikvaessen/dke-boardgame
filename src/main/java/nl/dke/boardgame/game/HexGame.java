@@ -407,8 +407,6 @@ public class HexGame
          */
         private boolean checkWin()
         {
-            //// TODO: 21/09/16 write an efficient loop/function to check for win
-
             boolean[][] map = new boolean[board.getHeight()][board.getWidth()];
 
             //check if player1 has won

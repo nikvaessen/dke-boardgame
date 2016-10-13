@@ -10,7 +10,7 @@ import nl.dke.boardgame.game.board.TileState;
  * The table encapsulates a HexGame and it's player. There should be able to
  * accept either human players or AI players.
  */
-//// TODO: 21/09/16 implement this class
+//// TODO: 21/09/16 document this class
 public class Table
 {
     private HexPlayer player1;
