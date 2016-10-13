@@ -38,6 +38,8 @@ public class SelectPanel extends JPanel
 
     private JLabel errorLabel;
 
+    private JCheckBox pieRuleCheckBox;
+
     public SelectPanel(JFrame frame)
     {
         this.selectFrame = frame;
@@ -62,6 +64,8 @@ public class SelectPanel extends JPanel
         player2 = new JComboBox<PossiblePlayers>(PossiblePlayers.values());
         player2Label = new JLabel("Player 2:");
 
+        pieRuleCheckBox = new JCheckBox("Enable pie rule");
+
         errorLabel = new JLabel();
         errorLabel.setText("Dimension should be between " +
                 Integer.toString(HexGame.MINIMUM_BOARD_DIMENSION) +
@@ -83,19 +87,23 @@ public class SelectPanel extends JPanel
         this.add(boardDimensionBox, c);
 
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy++;
         this.add(player1Label, c);
         c.gridx = 1;
         this.add(player1, c);
 
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy++;
         this.add(player2Label, c);
         c.gridx = 1;
         this.add(player2, c);
 
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy++;
+        this.add(pieRuleCheckBox, c);
+
+        c.gridx = 0;
+        c.gridy++;
         c.gridwidth = 2;
         this.add(startButton, c);
 
@@ -148,6 +156,8 @@ public class SelectPanel extends JPanel
                 table.setBoardDimensions(dim, dim);
                 System.out.printf("set board dim as: %d %d\n" ,dim, dim);
 
+                table.setPieRuleEnabled(pieRuleCheckBox.isSelected());
+                System.out.println("Set pie rule enabled as: " + pieRuleCheckBox.isSelected());
 
                 if(processor == null)
                 {

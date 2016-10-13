@@ -2,10 +2,14 @@ package nl.dke.boardgame.display.game;
 
 import javax.swing.*;
 
+import nl.dke.boardgame.exceptions.NotAcceptingInputException;
 import nl.dke.boardgame.game.GameState;
+import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.util.Watcher;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
 public class HexBoardPanel extends JPanel implements Watcher
@@ -15,7 +19,7 @@ public class HexBoardPanel extends JPanel implements Watcher
     private DrawPanel draw;
     private GameState gameState;
 
-    public HexBoardPanel(GameState gameState)
+    public HexBoardPanel(GameState gameState, InputProcessor processor)
     {
         this.gameState = gameState;
         gameState.attachWatcher(this);
@@ -40,6 +44,12 @@ public class HexBoardPanel extends JPanel implements Watcher
         panelHeight += hexagonHeight;
 
         setPreferredSize(new Dimension(panelWidth, panelHeight));
+
+        //if it's not null we have a human player :)
+        if(processor != null)
+        {
+            this.addMouseListener(new MouseClickListener(processor));
+        }
     }
 
 
@@ -53,5 +63,57 @@ public class HexBoardPanel extends JPanel implements Watcher
     public void update()
     {
         repaint();
+    }
+
+    private class MouseClickListener implements MouseListener
+    {
+        private InputProcessor processor;
+
+        private MouseClickListener(InputProcessor processor)
+        {
+            this.processor = processor;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent)
+        {
+            Hexagon hex = draw.getHexagon(mouseEvent.getPoint());
+            System.out.println("Pressed on: " + hex);
+            try
+            {
+                if(processor.accepting())
+                {
+                    processor.in(hex.getRow(), hex.getColumn());
+                }
+            }
+            catch (NotAcceptingInputException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent mouseEvent)
+        {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent mouseEvent)
+        {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent mouseEvent)
+        {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent mouseEvent)
+        {
+
+        }
     }
 }

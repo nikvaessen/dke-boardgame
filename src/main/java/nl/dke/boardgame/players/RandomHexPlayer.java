@@ -2,6 +2,7 @@ package nl.dke.boardgame.players;
 
 import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.Move;
+import nl.dke.boardgame.game.PieMove;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.TileState;
 
@@ -46,6 +47,12 @@ public class RandomHexPlayer extends HexPlayer
                 continue;
             }
         }
+    }
+
+    @Override
+    public void finishPieMove(PieMove move)
+    {
+        finishMove(move);
     }
 
     @Override

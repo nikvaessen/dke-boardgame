@@ -10,7 +10,7 @@ import nl.dke.boardgame.game.board.TileState;
  * The table encapsulates a HexGame and it's player. There should be able to
  * accept either human players or AI players.
  */
-//// TODO: 21/09/16 implement this class
+//// TODO: 21/09/16 document this class
 public class Table
 {
     private HexPlayer player1;
@@ -21,10 +21,15 @@ public class Table
 
     private int currentWidth = HexGame.DEFAULT_BOARD_DIMENSION;
 
+    private boolean pieRule;
+
 
     public HexGame createNewGame()
     {
-        return new HexGame(currentWidth, currentHeight, player1, player2);
+        HexGame game = new HexGame(currentWidth, currentHeight, player1,
+                player2);
+        game.enablePieRule(pieRule);
+        return game;
     }
 
     public void setPlayer1(PossiblePlayers type)
@@ -72,6 +77,24 @@ public class Table
         }
         this.currentHeight = height;
         this.currentWidth = width;
+    }
+
+    /**
+     * set if the pie rule is enabled
+     * @param flag whether the pie rule is enabled
+     */
+    public void setPieRuleEnabled(boolean flag)
+    {
+        this.pieRule = flag;
+    }
+
+    /**
+     * get if the pie rule is enabled
+     * @return wether the pie rule is enabled
+     */
+    public boolean isPieRuleEnabled()
+    {
+        return pieRule;
     }
 
 }

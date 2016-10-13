@@ -49,6 +49,11 @@ public class GameState implements Watchable
     private TileState winner;
 
     /**
+     * if the pie rule is enabled
+     */
+    private boolean pieRule = false;
+
+    /**
      * Holds a list of all board states from the beginning of the game until
      * the end
      */
@@ -236,6 +241,24 @@ public class GameState implements Watchable
                     "exist");
         }
         return boardStateHistory.get(turn);
+    }
+
+    /**
+     * set if the pie rule is enabled
+     * @param flag whether the pie rule is enabled
+     */
+    public synchronized void setPieRuleEnabled(boolean flag)
+    {
+        this.pieRule = flag;
+    }
+
+    /**
+     * get if the pie rule is enabled
+     * @return wether the pie rule is enabled
+     */
+    public synchronized boolean isPieRuleEnabled()
+    {
+        return pieRule;
     }
 
     /**
