@@ -29,7 +29,16 @@ public class PieMove extends Move
     @Override
     public boolean verify()
     {
-        return true;
+        try
+        {
+            getColumn(); getRow();
+            return true;
+        }
+        catch (MoveNotCompletedException e)
+        {
+            return false;
+        }
+
     }
 
     /**

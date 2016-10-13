@@ -362,7 +362,7 @@ public class HexGame
                 e.printStackTrace();
 
                 //grade period before making the move again
-                sleep(10);
+                sleep(1000);
                 allowMove(player, move);
             }
         }
@@ -378,11 +378,18 @@ public class HexGame
             {
                 System.out.printf("Claiming row %d and column %d as %s%n",
                         move.getRow(), move.getColumn(),  player.claimsAs());
-                board.overwrite(move.getRow(), move.getColumn());
+                if(board.getState(move.getRow(), move.getColumn()) == TileState.NEUTRAL)
+                {
+                    board.claim(move.getRow(), move.getColumn(), player.claimsAs());
+                }
+                else
+                {
+                    board.overwrite(move.getRow(), move.getColumn());
+                }
                 //mark the turn as completed
                 gameState.completedTurn(getBoardState(), player.claimsAs());
             }
-            catch (MoveNotCompletedException  e)
+            catch (MoveNotCompletedException | AlreadyClaimedException  e)
             {
                 e.printStackTrace();
 
