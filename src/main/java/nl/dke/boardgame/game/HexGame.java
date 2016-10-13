@@ -357,7 +357,7 @@ public class HexGame
                 //mark the turn as completed
                 gameState.completedTurn(getBoardState(), player.claimsAs());
             }
-            catch (/*MoveNotCompletedException  |*/ AlreadyClaimedException e)
+            catch (MoveNotCompletedException  | AlreadyClaimedException e)
             {
                 e.printStackTrace();
 
