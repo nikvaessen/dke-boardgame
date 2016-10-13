@@ -39,10 +39,10 @@ public class DrawPanel
             for (int y = 0; y < board[x].length; y++)
             {
                 // the x coordinate of a hex if it were a square
-                int xCoor = OFFSET_X + (y * LENGTH) + (x * LENGTH * 2);
+                int xCoor = OFFSET_X + (y * LENGTH * 2) + (x * LENGTH);
 
                 // the y coordinate of a hex if it were a square
-                int yCoor = OFFSET_Y + (y * LENGTH * 2);
+                int yCoor = OFFSET_Y + (x * LENGTH * 2);
 
                 // list of x coordinates for the hex based on the initial x cooridanate
                 int xPoints[] =
@@ -66,7 +66,7 @@ public class DrawPanel
                                 yCoor + LENGTH
                         };
 
-                hexagons.add(new Hexagon(xPoints, yPoints, 6, y, x));
+                hexagons.add(new Hexagon(xPoints, yPoints, 6, x, y));
             }
         }
     }
@@ -96,7 +96,7 @@ public class DrawPanel
         {
                 //// TODO: 06/10/16 The board is drawn rotated by 90 degrees
                 //// which means the row and columns are inverted
-                switch(board[hex.getColumn()][hex.getRow()]) // sets the colour of the hex
+                switch(board[hex.getRow()][hex.getColumn()]) // sets the colour of the hex
                 {
                     case NEUTRAL: g.setColor(Color.WHITE); break;
                     case PLAYER1: g.setColor(Color.RED); break;

@@ -83,7 +83,7 @@ public class HexBoardPanel extends JPanel implements Watcher
             {
                 if(processor.accepting())
                 {
-                    processor.in(hex.getColumn(), hex.getRow());
+                    processor.in(hex.getRow(), hex.getColumn());
                 }
             }
             catch (NotAcceptingInputException e)
