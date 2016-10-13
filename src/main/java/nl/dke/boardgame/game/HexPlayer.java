@@ -4,7 +4,7 @@ import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.players.PossiblePlayers;
 
 /**
- *
+ * A basis class for an AI or human class being able to play the HexGame
  */
 //// TODO: 21/09/16 Document this abstract class
 public abstract class HexPlayer
@@ -44,6 +44,12 @@ public abstract class HexPlayer
      * @param move the move the player needs to make
      */
     public abstract void finishMove(Move move);
+
+    /**
+     * Method to decide what the pie move should be made
+     * @param move the pie move to make
+     */
+    public abstract void finishPieMove(PieMove move);
 
     /**
      * Get the type of player the class implements

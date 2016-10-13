@@ -250,6 +250,39 @@ public class Board
     }
 
     /**
+     * claim the given location for the opponent player.
+     * @param row the row to switch
+     * @param column the column to switch
+     */
+    public void overwrite(int row, int column)
+    {
+        if(!canAccess(row, column))
+        {
+            throw new IllegalArgumentException(String.format("row:%d,column:%d" +
+                            " is out of bounds. Bounds are row:%d,column:%d",
+                    row, column, board.length, board[row].length));
+        }
+        HexTile tile = board[row][column];
+        TileState owner = tile.getState();
+        tile.reset();
+        try
+        {
+            if(owner == TileState.PLAYER1)
+            {
+                tile.claim(TileState.PLAYER2);
+            }
+            else
+            {
+                tile.claim(TileState.PLAYER1);
+            }
+        }
+        catch (AlreadyClaimedException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Checks whether the given row and column are inside the dimensions of the
      * board
      * @param row the row to check

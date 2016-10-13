@@ -278,11 +278,11 @@ public class HexGame
 
             if(pieRule)
             {
-                allowMove(player1);
+                 pieMoveStart();
             }
             else
             {
-                allowMove(player1);
+                turn(player1);
             }
 
             long end = System.currentTimeMillis();
@@ -294,21 +294,10 @@ public class HexGame
          * is over
          * @param player the player to currently make a move
          */
-        //// TODO: 21/09/16 There needs to be a functionality that allows the second
-        // to choose whether to switch positions with the first player after the
-        // first player makes the first move.
-        // this should also include changes in the Move class
-        private void allowMove(HexPlayer player)
+        private void turn(HexPlayer player)
         {
             //grace period
-            try
-            {
-                Thread.sleep(DELAY_BETWEEN_TURNS);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
+            sleep(DELAY_BETWEEN_TURNS);
 
             //check if game is over
             if(checkWin())
@@ -319,30 +308,87 @@ public class HexGame
             }
 
             //make the player make a move
+            allowMove(player, new Move(board, player.claimsAs()));
+
+            //and give the turn to the other player
+            if(player == player1)
+            {
+                turn(player2);
+            }
+            else
+            {
+                turn(player1);
+            }
+        }
+
+        /**
+         * This starts the game with the pie rule
+         */
+        private void pieMoveStart()
+        {
+            //first player 1 moves like normal
+            allowMove(player1, new Move(board, player1.claimsAs()));
+
+            //grace period between moves
+            sleep(DELAY_BETWEEN_TURNS);
+
+            //then player 2 makes a pie move
+            allowPieMove(player2, new PieMove(board, player2.claimsAs()));
+
+            //then play like normal
+            turn(player1);
+        }
+
+        /**
+         * Allows the player to make a move. If the move is invalid, it will
+         * allow the player a move again unit it gave a valid move.
+         * @param player the player to make a move
+         * @param move the move the player will make
+         */
+        private void allowMove(HexPlayer player, Move move)
+        {
             System.out.println("Turn: " + player.claimsAs().toString());
-            Move move = new Move(board, player.claimsAs());
             player.finishMove(move); //this method blocks until input has been given
             try
             {
                 System.out.printf("Claiming row %d and column %d as %s%n",
                         move.getRow(), move.getColumn(),  player.claimsAs());
                 board.claim(move.getRow(), move.getColumn(), player.claimsAs());
+                //mark the turn as completed
+                gameState.completedTurn(getBoardState(), player.claimsAs());
             }
             catch (MoveNotCompletedException | AlreadyClaimedException e)
             {
                 e.printStackTrace();
-                allowMove(player);
-            }
 
-            //mark the turn as completed and give the turn to the other player
-            gameState.completedTurn(getBoardState(), player.claimsAs());
-            if(player == player1)
-            {
-                allowMove(player2);
+                //grade period before making the move again
+                sleep(10);
+                allowMove(player, move);
             }
-            else
+        }
+
+        /**
+         * Allows the player to do a Pie move
+         */
+        private void allowPieMove(HexPlayer player, PieMove move)
+        {
+            System.out.println("Turn: " + player.claimsAs().toString());
+            player.finishMove(move); //this method blocks until input has been given
+            try
             {
-                allowMove(player1);
+                System.out.printf("Claiming row %d and column %d as %s%n",
+                        move.getRow(), move.getColumn(),  player.claimsAs());
+                board.overwrite(move.getRow(), move.getColumn());
+                //mark the turn as completed
+                gameState.completedTurn(getBoardState(), player.claimsAs());
+            }
+            catch (MoveNotCompletedException  e)
+            {
+                e.printStackTrace();
+
+                //grade period before making the move again
+                sleep(10);
+                allowMove(player, move);
             }
         }
 
@@ -430,6 +476,21 @@ public class HexGame
                                 neighbourTile.getColumn(), map, player);
                     }
                 }
+            }
+        }
+
+        /**
+         * Make the thread sleep for x amount of time
+         */
+        private void sleep(int time)
+        {
+            try
+            {
+                Thread.sleep(time);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
             }
         }
 

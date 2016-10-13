@@ -4,6 +4,7 @@ import nl.dke.boardgame.display.game.InputProcessor;
 import nl.dke.boardgame.exceptions.NotAcceptingInputException;
 import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.Move;
+import nl.dke.boardgame.game.PieMove;
 import nl.dke.boardgame.game.board.TileState;
 
 /**
@@ -54,6 +55,12 @@ public class HumanHexPlayer extends HexPlayer
         {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void finishPieMove(PieMove move)
+    {
+        finishMove(move);
     }
 
     @Override
