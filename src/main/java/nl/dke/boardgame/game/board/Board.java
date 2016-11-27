@@ -1,6 +1,7 @@
 package nl.dke.boardgame.game.board;
 
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
+import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.util.Watchable;
 import nl.dke.boardgame.util.Watcher;
 
@@ -21,6 +22,9 @@ import java.util.List;
 public class Board
         implements Watchable
 {
+    int counter = 0;
+    int[][] boardHistory = new int[121][2];
+
     /**
      * The 2D array of Tiles which together make the game board
      */
@@ -60,7 +64,48 @@ public class Board
         this.watchers = new ArrayList<Watcher>();
         initBoard(width, height);
     }
+    public ArrayList<Board> getAllPossibleBoardsAfter1Move(TileState t){
 
+        ArrayList<Board> allPossibleBoards = new ArrayList<Board>();
+
+        for(int i = 0; i < height; i ++){
+            for(int j = 0; j < width; j ++){
+                //if the tile is neutral, clone the board, but with this tile as claimed as player.claimsAs()
+                if(this.getState(i,j) == TileState.NEUTRAL){
+
+                    Board newBoard = this.clone();
+                    try
+                    {
+                        newBoard.claim(i,j,t);
+                        allPossibleBoards.add(newBoard);
+                    }
+                    catch (AlreadyClaimedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return allPossibleBoards;
+    }
+    public void printBoard(){
+        String spaces = " ";
+        for(int i = 0; i < 11; i++){
+            System.out.print(spaces);
+            for(int j = 0; j < 11; j++){
+
+                if(this.getState(i,j) == TileState.NEUTRAL){
+                    System.out.print("- ");
+                }else if(this.getState(i,j) == TileState.PLAYER1){
+                    System.out.print("R ");
+                }else{
+                    System.out.print("B ");
+                }
+            }
+            spaces = spaces + " ";
+            System.out.print("\n");
+        }System.out.print("\n");
+    }
     /**
      * Return the width of the board, or the amount of columns in each row
      * @return the width of the board as an integer
@@ -109,7 +154,7 @@ public class Board
 
                     // first off, the left and right tile on the same row
                     // are always neighbours
-                    if (j - 1 > 0)
+                    if (j - 1 >= 0)
                     {
                         // left neighbour is side 4
                         tile.addNeighbors(4, getTile(i, j - 1));
@@ -124,7 +169,7 @@ public class Board
                     //
                     // for the row ABOVE, the neighbours are always in the same
                     // column and one column TO THE RIGHT
-                    if (i - 1 > 0)
+                    if (i - 1 >= 0)
                     {
                         //up "left"(same column) neighbour is side 5
                         tile.addNeighbors(5, getTile(i - 1, j));
@@ -139,7 +184,7 @@ public class Board
                     if (i + 1 < height)
                     {
                         //down "left"(to the left) neighbour is side 3
-                        if (j - 1 > 0)
+                        if (j - 1 >= 0)
                         {
                             tile.addNeighbors(3, getTile(i + 1, j - 1));
                         }
@@ -246,6 +291,9 @@ public class Board
                     row, column, board.length, board[row].length));
         }
         board[row][column].claim(state);
+        boardHistory[counter][0] = row;
+        boardHistory[counter][1] = column;
+        counter++;
         notifyWatchers();
     }
 
@@ -333,9 +381,10 @@ public class Board
      * Clones the board
      * @return an identical Board class with the same claimed tiles
      */
+    Board clone;
     public Board clone()
     {
-        Board clone = new Board(width, height);
+        clone = new Board(width, height);
         for(int i = 0; i < height; i++)
         {
             for(int j = 0; j < width; j++)
@@ -354,9 +403,22 @@ public class Board
                 }
             }
         }
+        clone.boardHistory = cloneHistory();
+        clone.counter = counter;
         return clone;
     }
-
+    public int[][] getHistory(){
+        return boardHistory;
+    }
+    public int[][] cloneHistory(){
+     int[][] clone = new int[boardHistory.length][boardHistory[0].length];
+        for(int i = 0; i < boardHistory.length; i++){
+            for(int j = 0; j < boardHistory[0].length; j++){
+                clone[i][j] = boardHistory[i][j];
+            }
+        }
+        return clone;
+    }
     /**
      * Add a watcher to the list so that they get notified when a Tile changes
      * its state
