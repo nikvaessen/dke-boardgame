@@ -1,6 +1,7 @@
 package nl.dke.boardgame.game;
 
 import nl.dke.boardgame.display.game.InputProcessor;
+import nl.dke.boardgame.players.AlphaBetaPlayer;
 import nl.dke.boardgame.players.HumanHexPlayer;
 import nl.dke.boardgame.players.PossiblePlayers;
 import nl.dke.boardgame.players.RandomHexPlayer;
@@ -58,6 +59,8 @@ public class Table
         {
             case random:
                 return new RandomHexPlayer(player);
+            case alphabeta:
+                return new AlphaBetaPlayer(player);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
                         "HexPlayer, given argument" + type + " is not " +
