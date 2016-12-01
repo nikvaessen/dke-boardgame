@@ -15,11 +15,20 @@ import java.util.List;
 public abstract class Branch {
 
     public boolean checked;
+    private Move move;
     private Branch parent;
     private List<Branch> branches;
     private int score;
 
     public Branch(Move move){
+        this.move = move;
+        score = evaluate(move.getBoard());
+        checked = false;
+    }
+
+    public Branch(Move move, Branch parent){
+        this.move = move;
+        this.parent = parent;
         score = evaluate(move.getBoard());
         checked = false;
     }
@@ -36,16 +45,12 @@ public abstract class Branch {
         return branches;
     }
 
-    public void setBranches(List<Branch> branches) {
-        this.branches = branches;
-    }
-
     public int getScore() {
         return score;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public Move getMove() {
+        return move;
     }
 
     public abstract int evaluate(Board board);

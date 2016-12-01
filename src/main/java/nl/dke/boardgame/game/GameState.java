@@ -225,6 +225,11 @@ public class GameState implements Watchable
         return boardStateHistory.get(boardStateHistory.size() - 1);
     }
 
+
+    //public synchronized ArrayList<TileState[][]> getBoardStateHistory{
+     //   return boardStateHistory;
+    //}
+
     /**
      * get a previous board state
      * @param turn the turn of the previous board state being requested
