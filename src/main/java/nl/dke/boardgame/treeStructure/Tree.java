@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Tree {
 
-    private List<Branch> branches;
+    protected List<Branch> branches;
 
     public Tree(Branch root){
         branches = new ArrayList<>();

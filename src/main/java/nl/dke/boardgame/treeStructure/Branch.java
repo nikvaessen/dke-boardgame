@@ -15,10 +15,10 @@ import java.util.List;
 public abstract class Branch {
 
     public boolean checked;
-    private Move move;
-    private Branch parent;
-    private List<Branch> branches;
-    private int score;
+    protected Move move;
+    protected Branch parent;
+    protected List<Branch> branches;
+    protected int score;
 
     public Branch(Move move){
         this.move = move;
@@ -57,7 +57,6 @@ public abstract class Branch {
 
     public void expand(){
         branches = new ArrayList<>();
-        // here
     }
 
 }
