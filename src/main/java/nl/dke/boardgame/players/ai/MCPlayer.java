@@ -85,7 +85,7 @@ public class MCPlayer extends AIHexPlayer {
         if(claimsAs() == TileState.PLAYER1)
             currPlayer = TileState.PLAYER2;
 
-        while (hasEmpty(board)){
+        while (ref.size()>0){
             Random r = new Random();
             HexTile tile = ref.remove(r.nextInt(ref.size()));
 
@@ -165,7 +165,8 @@ public class MCPlayer extends AIHexPlayer {
                     }
 
                     Move nMove = new Move(newBoard, claimsAs());
-
+                    nMove.setColumn(x);
+                    nMove.setRow(y);
                     if (depth>1) {
                         buildTree(node, nMove, depth-1);
                     }
