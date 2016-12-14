@@ -11,6 +11,7 @@ import nl.dke.boardgame.players.PossiblePlayers;
 import nl.dke.boardgame.treeStructure.mcTree.MCBranch;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author josevelasquez
@@ -71,8 +72,9 @@ public class MCPlayer extends AIHexPlayer {
             currPlayer = TileState.PLAYER2;
 
         while (hasEmpty(board)){
-            int x=(int)(Math.random()*board.length);
-            int y=(int)(Math.random()*board.length);
+            Random r = new Random();
+            int x= r.nextInt(board.length);
+            int y= r.nextInt(board.length);
 
             while (board[y][x].getState() == TileState.NEUTRAL) {
                 x=(int)(Math.random()*board.length);
