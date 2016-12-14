@@ -21,7 +21,7 @@ public class MCPlayer extends AIHexPlayer {
 
     Move lastMove;
     private double minLen = 121;
-    public int diffLevel = 75;
+    public int diffLevel = 5;
 
     /**
      * Create the HexPlayer
@@ -40,6 +40,10 @@ public class MCPlayer extends AIHexPlayer {
 
     }
 
+    /**
+     * @param lastMove
+     * @return
+     */
     private Move makeMove(Move lastMove){
         long t = System.currentTimeMillis();
 
@@ -49,8 +53,9 @@ public class MCPlayer extends AIHexPlayer {
         double best =-9999;
 
         Move bestMove = tree.get(0).getMove();
-
+        
         for (int i=0; i<tree.size(); i++) {
+        	System.out.println(i);
             double score = calcWinPercent(tree.get(i).getMove().getBoard());
 
             if (score>best) {
@@ -64,27 +69,41 @@ public class MCPlayer extends AIHexPlayer {
     }
 
     private boolean playRandomGame(Board b){
+
         Board bo = b.clone();
         HexTile[][] board = b.getBoard().clone();
+
+        // reference to empty tiles
+        ArrayList<HexTile> ref = new ArrayList<>();
+        for(HexTile[] tiles: board){
+            for(HexTile tile: tiles){
+                if (tile.getState() == TileState.NEUTRAL)
+                    ref.add(tile);
+            }
+        }
 
         TileState currPlayer = TileState.PLAYER1;
         if(claimsAs() == TileState.PLAYER1)
             currPlayer = TileState.PLAYER2;
 
-        while (hasEmpty(board)){
+        while (ref.size()>0){
             Random r = new Random();
-            int x= r.nextInt(board.length);
-            int y= r.nextInt(board.length);
+            int ran = r.nextInt(ref.size());
+            HexTile tile = ref.remove(ran);
 
-            while (board[y][x].getState() == TileState.NEUTRAL) {
+            int x = tile.getColumn();
+            int y = tile.getRow();
+
+            /*
+            while (board[y][x].getState() != TileState.NEUTRAL) {
                 x=(int)(Math.random()*board.length);
                 y=(int)(Math.random()*board.length);
-            }
+            }*/
 
             try{
                 bo.claim(x,y, currPlayer);
             } catch (AlreadyClaimedException e){
-                e.printStackTrace();
+                continue;
             }
 
             if(currPlayer == TileState.PLAYER2){
@@ -144,7 +163,7 @@ public class MCPlayer extends AIHexPlayer {
                     try{
                         newBoard.claim(x,y,claimsAs());
                     }  catch (AlreadyClaimedException e){
-                        e.printStackTrace();
+                        continue;
                     }
 
                     Move nMove = new Move(newBoard, claimsAs());
