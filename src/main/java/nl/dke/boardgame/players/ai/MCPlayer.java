@@ -101,7 +101,7 @@ public class MCPlayer extends AIHexPlayer {
             try{
                 bo.claim(x,y, currPlayer);
             } catch (AlreadyClaimedException e){
-                e.printStackTrace();
+                continue;
             }
 
             if(currPlayer == TileState.PLAYER2){
@@ -161,7 +161,7 @@ public class MCPlayer extends AIHexPlayer {
                     try{
                         newBoard.claim(x,y,claimsAs());
                     }  catch (AlreadyClaimedException e){
-                        e.printStackTrace();
+                        continue;
                     }
 
                     Move nMove = new Move(newBoard, claimsAs());
