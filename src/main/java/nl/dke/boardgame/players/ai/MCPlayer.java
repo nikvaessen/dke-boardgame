@@ -1,7 +1,6 @@
 package nl.dke.boardgame.players.ai;
 
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
-import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.Move;
 import nl.dke.boardgame.game.PieMove;
 import nl.dke.boardgame.game.board.Board;
