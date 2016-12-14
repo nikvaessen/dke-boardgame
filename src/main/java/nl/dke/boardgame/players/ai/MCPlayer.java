@@ -40,6 +40,10 @@ public class MCPlayer extends AIHexPlayer {
 
     }
 
+    /**
+     * @param lastMove
+     * @return
+     */
     private Move makeMove(Move lastMove){
         long t = System.currentTimeMillis();
 
@@ -64,8 +68,18 @@ public class MCPlayer extends AIHexPlayer {
     }
 
     private boolean playRandomGame(Board b){
+
         Board bo = b.clone();
         HexTile[][] board = b.getBoard().clone();
+
+        // reference to empty tiles
+        ArrayList<HexTile> ref = new ArrayList<>();
+        for(HexTile[] tiles: board){
+            for(HexTile tile: tiles){
+                if (tile.getState() == TileState.NEUTRAL)
+                    ref.add(tile);
+            }
+        }
 
         TileState currPlayer = TileState.PLAYER1;
         if(claimsAs() == TileState.PLAYER1)
@@ -73,13 +87,16 @@ public class MCPlayer extends AIHexPlayer {
 
         while (hasEmpty(board)){
             Random r = new Random();
-            int x= r.nextInt(board.length);
-            int y= r.nextInt(board.length);
+            HexTile tile = ref.remove(r.nextInt(ref.size()));
 
-            while (board[y][x].getState() == TileState.NEUTRAL) {
+            int x = tile.getColumn();
+            int y = tile.getRow();
+
+            /*
+            while (board[y][x].getState() != TileState.NEUTRAL) {
                 x=(int)(Math.random()*board.length);
                 y=(int)(Math.random()*board.length);
-            }
+            }*/
 
             try{
                 bo.claim(x,y, currPlayer);
