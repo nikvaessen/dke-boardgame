@@ -332,14 +332,16 @@ class Dijkstra {
 	*/
     //PATH
     static List<Integer> path = new ArrayList<>();
-
+    public static int stackoverflowerrorcounter = 0;
     static int MAX_VERTS = 50000;
 
     static List<Integer> dijkstra(int[][] G, int i, int j) {
         path.clear();
         //Get the number of vertices in G
         int n = G.length;
-
+	
+	stackoverflowerrorcounter = 0;    
+	
         //parent
         int parent[] = new int[G.length];
         parent[0] = -1;
@@ -404,7 +406,11 @@ class Dijkstra {
     }
     static void makePath(int[] parent, int j){
         if(parent[j] == -1) return;
+	stackoverflowerrorcounter++;
 
+        if(stackoverflowerrorcounter > 100){
+            return;
+        }
         makePath(parent, parent[j]);
 
         path.add(j);
