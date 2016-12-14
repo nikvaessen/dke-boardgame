@@ -391,4 +391,13 @@ public class Board
         }
     }
 
+
+    /**
+     * Get the board
+     */
+
+    public HexTile[][] getBoard(){
+        return board;
+    }
+
 }

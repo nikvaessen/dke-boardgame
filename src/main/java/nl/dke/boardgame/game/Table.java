@@ -6,6 +6,7 @@ import nl.dke.boardgame.players.PossiblePlayers;
 import nl.dke.boardgame.players.RandomHexPlayer;
 import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.players.ai.AIHexPlayer;
+import nl.dke.boardgame.players.ai.MCPlayer;
 
 /**
  * The table encapsulates a HexGame and it's player. There should be able to
@@ -61,6 +62,8 @@ public class Table
                 return new RandomHexPlayer(player);
             case ai:
                 return new AIHexPlayer(player);
+            case montecarlo:
+                return new MCPlayer(player);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
                         "HexPlayer, given argument" + type + " is not " +

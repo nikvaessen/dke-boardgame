@@ -1,5 +1,6 @@
 package nl.dke.boardgame.treeStructure;
 
+import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.Move;
 
@@ -18,7 +19,7 @@ public abstract class Branch {
     protected Move move;
     protected Branch parent;
     protected List<Branch> branches;
-    protected int score;
+    protected double score;
 
     public Branch(Move move){
         this.move = move;
@@ -45,7 +46,7 @@ public abstract class Branch {
         return branches;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
@@ -53,9 +54,9 @@ public abstract class Branch {
         return move;
     }
 
-    public abstract int evaluate(Board board);
+    public abstract double evaluate(Board board);
 
-    public void expand(){
+    public void expand() throws AlreadyClaimedException {
         branches = new ArrayList<>();
     }
 
