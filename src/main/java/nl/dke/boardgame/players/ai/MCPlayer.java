@@ -21,7 +21,7 @@ public class MCPlayer extends AIHexPlayer {
 
     Move lastMove;
     private double minLen = 121;
-    public int diffLevel = 5;
+    public int diffLevel = 75;
 
     /**
      * Create the HexPlayer
@@ -53,7 +53,7 @@ public class MCPlayer extends AIHexPlayer {
         double best =-9999;
 
         Move bestMove = tree.get(0).getMove();
-        
+
         for (int i=0; i<tree.size(); i++) {
             double score = calcWinPercent(tree.get(i).getMove().getBoard());
 
@@ -82,6 +82,9 @@ public class MCPlayer extends AIHexPlayer {
         }
 
         TileState currPlayer = TileState.PLAYER1;
+        if(claimsAs() == TileState.PLAYER1)
+            currPlayer = TileState.PLAYER2;
+
         while (hasEmpty(board)){
             Random r = new Random();
             HexTile tile = ref.remove(r.nextInt(ref.size()));
@@ -162,8 +165,7 @@ public class MCPlayer extends AIHexPlayer {
                     }
 
                     Move nMove = new Move(newBoard, claimsAs());
-                    nMove.setColumn(x);
-                    nMove.setRow(y);
+
                     if (depth>1) {
                         buildTree(node, nMove, depth-1);
                     }
