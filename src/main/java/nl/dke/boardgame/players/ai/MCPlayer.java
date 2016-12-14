@@ -43,7 +43,7 @@ public class MCPlayer extends AIHexPlayer {
         long t = System.currentTimeMillis();
 
         this.lastMove = lastMove;
-        ArrayList<MCBranch> tree = buildTree(null, lastMove, 1);
+        ArrayList<MCBranch> tree = buildTree(new MCBranch(lastMove, claimsAs()), lastMove, 1);
 
         double best =-9999;
 
