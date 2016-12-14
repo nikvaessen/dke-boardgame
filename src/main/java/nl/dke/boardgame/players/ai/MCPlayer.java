@@ -167,7 +167,8 @@ public class MCPlayer extends AIHexPlayer {
                     }
 
                     Move nMove = new Move(newBoard, claimsAs());
-
+                    nMove.setColumn(x);
+                    nMove.setRow(y);
                     if (depth>1) {
                         buildTree(node, nMove, depth-1);
                     }
