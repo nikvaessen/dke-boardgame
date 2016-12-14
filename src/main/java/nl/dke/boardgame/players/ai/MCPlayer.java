@@ -55,7 +55,6 @@ public class MCPlayer extends AIHexPlayer {
         Move bestMove = tree.get(0).getMove();
         
         for (int i=0; i<tree.size(); i++) {
-        	System.out.println(i);
             double score = calcWinPercent(tree.get(i).getMove().getBoard());
 
             if (score>best) {
@@ -88,8 +87,7 @@ public class MCPlayer extends AIHexPlayer {
 
         while (ref.size()>0){
             Random r = new Random();
-            int ran = r.nextInt(ref.size());
-            HexTile tile = ref.remove(ran);
+            HexTile tile = ref.remove(r.nextInt(ref.size()));
 
             int x = tile.getColumn();
             int y = tile.getRow();
