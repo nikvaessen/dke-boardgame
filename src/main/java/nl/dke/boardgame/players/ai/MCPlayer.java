@@ -82,10 +82,7 @@ public class MCPlayer extends AIHexPlayer {
         }
 
         TileState currPlayer = TileState.PLAYER1;
-        if(claimsAs() == TileState.PLAYER1)
-            currPlayer = TileState.PLAYER2;
-
-        while (ref.size()>0){
+        while (hasEmpty(board)){
             Random r = new Random();
             HexTile tile = ref.remove(r.nextInt(ref.size()));
 
