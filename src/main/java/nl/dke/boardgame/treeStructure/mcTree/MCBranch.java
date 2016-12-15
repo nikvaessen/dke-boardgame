@@ -24,7 +24,7 @@ public class MCBranch extends Branch{
         this.player = player;
     }
 
-    public MCBranch(Move move,MCBranch parent){
+    public MCBranch(Move move, MCBranch parent){
         super(move, parent);
         player = parent.player;
     }
