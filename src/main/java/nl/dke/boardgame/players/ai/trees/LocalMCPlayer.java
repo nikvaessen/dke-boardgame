@@ -57,9 +57,10 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
 
-            pair = new Pair(getIntersection(oppTiles));
-            if(oppTiles.size() >0)
+            if(oppTiles.size() >0) {
+                pair = new Pair(getIntersection(oppTiles));
                 return pair;
+            }
 
 
 
@@ -91,9 +92,10 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
 
-            pair = new Pair(getIntersection(oppTiles));
-            if(oppTiles.size() > 0)
+            if(oppTiles.size() >0) {
+                pair = new Pair(getIntersection(oppTiles));
                 return pair;
+            }
 
             ArrayList<HexTile> empties = new ArrayList<>();
             Random r = new Random();
