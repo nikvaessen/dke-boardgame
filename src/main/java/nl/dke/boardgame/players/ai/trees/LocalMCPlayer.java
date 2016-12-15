@@ -77,8 +77,7 @@ public class LocalMCPlayer extends AIHexPlayer{
                     ArrayList<HexTile> n = (ArrayList<HexTile>) tile.getNeighbours();
                     for (HexTile t : n) {
                         if (t.getState() == TileState.NEUTRAL) {
-                            pair = new Pair(t);
-                            return pair;
+                            empties.add(t);
                         }
                     }
                 }
@@ -116,8 +115,7 @@ public class LocalMCPlayer extends AIHexPlayer{
                     ArrayList<HexTile> n = (ArrayList<HexTile>) tile.getNeighbours();
                     for (HexTile t : n) {
                         if (t.getState() == TileState.NEUTRAL) {
-                            pair = new Pair(t);
-                            return pair;
+                            empties.add(t);
                         }
                     }
                 }
