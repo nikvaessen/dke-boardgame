@@ -9,5 +9,6 @@ public enum PossiblePlayers {
     random,
     human,
     ai,
-    montecarlo
+    montecarlo,
+    localmc
 }

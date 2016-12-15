@@ -91,11 +91,6 @@ public class MCPlayer extends AIHexPlayer {
             int x = tile.getColumn();
             int y = tile.getRow();
 
-            /*
-            while (board[y][x].getState() != TileState.NEUTRAL) {
-                x=(int)(Math.random()*board.length);
-                y=(int)(Math.random()*board.length);
-            }*/
 
             try{
                 bo.claim(x,y, currPlayer);
