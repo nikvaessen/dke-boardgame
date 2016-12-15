@@ -57,15 +57,9 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
 
-            for (int i = 0; i<oppTiles.size()-1; i++){
-                for (int j = i+1; j<oppTiles.size();j++){
-                    if (intersects(oppTiles.get(i), oppTiles.get(j))){
-                        HexTile intersect = getIntersection(oppTiles.get(i), oppTiles.get(j));
-                        pair = new Pair(intersect);
-                        return pair;
-                    }
-                }
-            }
+            pair = new Pair(getIntersection(oppTiles));
+            if(oppTiles.size() >0)
+                return pair;
 
 
 
@@ -92,20 +86,14 @@ public class LocalMCPlayer extends AIHexPlayer{
 
             for(HexTile[] tiles: board){
                 for (HexTile tile : tiles){
-                    if(tile.getState()==TileState.PLAYER1)
+                    if(tile.getState()==TileState.PLAYER2)
                         oppTiles.add(tile);
                 }
             }
 
-            for (int i = 0; i<oppTiles.size()-1; i++){
-                for (int j = i+1; j<oppTiles.size();j++){
-                    if (intersects(oppTiles.get(i), oppTiles.get(j))){
-                        HexTile intersect = getIntersection(oppTiles.get(i), oppTiles.get(j));
-                        pair = new Pair(intersect);
-                        return pair;
-                    }
-                }
-            }
+            pair = new Pair(getIntersection(oppTiles));
+            if(oppTiles.size() > 0)
+                return pair;
 
             ArrayList<HexTile> empties = new ArrayList<>();
             Random r = new Random();
@@ -153,7 +141,7 @@ public class LocalMCPlayer extends AIHexPlayer{
         return false;
     }
 
-    private HexTile getIntersection(HexTile a, HexTile b){
+    private ArrayList<HexTile> getIntersection(HexTile a, HexTile b){
 
         ArrayList<HexTile> intersections = new ArrayList<>();
 
@@ -165,8 +153,22 @@ public class LocalMCPlayer extends AIHexPlayer{
             }
         }
         int s = intersections.size();
+        return intersections;
+    }
+
+    private HexTile getIntersection(ArrayList<HexTile> opp){
+
+        ArrayList<HexTile> empties = new ArrayList<>();
+
+        for(int i = 0; i< opp.size()-1; i++){
+            for(int j = i + 1; j< opp.size(); j++){
+                empties.addAll(getIntersection(opp.get(i), opp.get(j)));
+            }
+        }
+
+        int s = empties.size();
         Random r = new Random();
-        return intersections.get(r.nextInt(s));
+        return empties.get(r.nextInt(s));
     }
 
     @Override
