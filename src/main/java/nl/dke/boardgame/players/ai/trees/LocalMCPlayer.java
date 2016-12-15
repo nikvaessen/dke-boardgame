@@ -57,7 +57,7 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
 
-            if(oppTiles.size() >0) {
+            if(oppTiles.size() >2) {
                 pair = new Pair(getIntersection(oppTiles));
                 return pair;
             }
@@ -92,7 +92,7 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
 
-            if(oppTiles.size() >0) {
+            if(oppTiles.size() >2) {
                 pair = new Pair(getIntersection(oppTiles));
                 return pair;
             }
@@ -154,7 +154,6 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
         }
-        int s = intersections.size();
         return intersections;
     }
 
