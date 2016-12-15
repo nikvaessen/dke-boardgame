@@ -27,8 +27,8 @@ public class LocalMCPlayer extends AIHexPlayer{
 
         try
         {
-            move.setRow(shot.x);
-            move.setColumn(shot.y);
+            move.setRow(shot.y);
+            move.setColumn(shot.x);
         }
         catch(IllegalArgumentException e)
         {
@@ -67,16 +67,27 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
 
-            for (HexTile tile: oppTiles) {
-                ArrayList<HexTile> n = (ArrayList<HexTile>) tile.getNeighbours();
-                for (HexTile t : n) {
-                    if (t.getState() == TileState.NEUTRAL) {
-                        pair = new Pair(t);
-                        return pair;
+            ArrayList<HexTile> empties = new ArrayList<>();
+            int s = empties.size();
+            Random r = new Random();
+
+            if(oppTiles.size() > 0) {
+
+                for (HexTile tile : oppTiles) {
+                    ArrayList<HexTile> n = (ArrayList<HexTile>) tile.getNeighbours();
+                    for (HexTile t : n) {
+                        if (t.getState() == TileState.NEUTRAL) {
+                            pair = new Pair(t);
+                            return pair;
+                        }
                     }
                 }
+
+                pair = new Pair(empties.get(r.nextInt(s)));
+                return pair;
             }
-        } else{
+
+        } else {
 
             for(HexTile[] tiles: board){
                 for (HexTile tile : tiles){
@@ -95,14 +106,24 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
 
-            for (HexTile tile: oppTiles) {
-                ArrayList<HexTile> n = (ArrayList<HexTile>) tile.getNeighbours();
-                for (HexTile t : n) {
-                    if (t.getState() == TileState.NEUTRAL) {
-                        pair = new Pair(t);
-                        return pair;
+            ArrayList<HexTile> empties = new ArrayList<>();
+            int s = empties.size();
+            Random r = new Random();
+
+            if(oppTiles.size() > 0) {
+
+                for (HexTile tile : oppTiles) {
+                    ArrayList<HexTile> n = (ArrayList<HexTile>) tile.getNeighbours();
+                    for (HexTile t : n) {
+                        if (t.getState() == TileState.NEUTRAL) {
+                            pair = new Pair(t);
+                            return pair;
+                        }
                     }
                 }
+
+                pair = new Pair(empties.get(r.nextInt(s)));
+                return pair;
             }
 
         }
@@ -134,15 +155,18 @@ public class LocalMCPlayer extends AIHexPlayer{
 
     private HexTile getIntersection(HexTile a, HexTile b){
 
-        HexTile intersect = null;
+        ArrayList<HexTile> intersections = new ArrayList<>();
+
         for(HexTile ta: a.getNeighbours()){
             for(HexTile tb: b.getNeighbours()){
                 if(ta.equals(tb) && ta.getState() == TileState.NEUTRAL){
-                    intersect = ta;
+                    intersections.add(ta);
                 }
             }
         }
-        return intersect;
+        int s = intersections.size();
+        Random r = new Random();
+        return intersections.get(r.nextInt(s));
     }
 
     @Override
