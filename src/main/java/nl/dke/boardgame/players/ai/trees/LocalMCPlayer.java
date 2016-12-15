@@ -111,7 +111,7 @@ public class LocalMCPlayer extends AIHexPlayer{
 
         for(HexTile[] tiles: board){
             for (HexTile tile : tiles){
-                if(tile.getState()==TileState.PLAYER2)
+                if(tile.getState()==TileState.NEUTRAL)
                     neut.add(tile);
             }
         }
