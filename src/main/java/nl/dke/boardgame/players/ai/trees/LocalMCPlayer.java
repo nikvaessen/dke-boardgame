@@ -67,11 +67,12 @@ public class LocalMCPlayer extends AIHexPlayer{
                 }
             }
 
-            ArrayList<HexTile> empties = new ArrayList<>();
-            int s = empties.size();
-            Random r = new Random();
+
 
             if(oppTiles.size() > 0) {
+
+                ArrayList<HexTile> empties = new ArrayList<>();
+                Random r = new Random();
 
                 for (HexTile tile : oppTiles) {
                     ArrayList<HexTile> n = (ArrayList<HexTile>) tile.getNeighbours();
@@ -82,6 +83,7 @@ public class LocalMCPlayer extends AIHexPlayer{
                     }
                 }
 
+                int s = empties.size();
                 pair = new Pair(empties.get(r.nextInt(s)));
                 return pair;
             }
@@ -106,7 +108,6 @@ public class LocalMCPlayer extends AIHexPlayer{
             }
 
             ArrayList<HexTile> empties = new ArrayList<>();
-            int s = empties.size();
             Random r = new Random();
 
             if(oppTiles.size() > 0) {
@@ -120,6 +121,7 @@ public class LocalMCPlayer extends AIHexPlayer{
                     }
                 }
 
+                int s = empties.size();
                 pair = new Pair(empties.get(r.nextInt(s)));
                 return pair;
             }
