@@ -1,11 +1,9 @@
 package nl.dke.boardgame.mcts;
 
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
+import nl.dke.boardgame.mcts.policy.TreePolicy;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -14,6 +12,11 @@ import java.util.function.Consumer;
 public class MonteCarloNode<S extends State, A extends Action<S> >
         implements Iterable<MonteCarloNode>
 {
+    /**
+     * Random number generator being shared on all nodes
+     */
+    private static Random rng = new Random(System.currentTimeMillis());
+
     /**
      * sum of all q-values this node retrieves during backpropagation
      */
@@ -30,6 +33,11 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
     private A action;
 
     /**
+     * Boolean flag which becomes true when this node has all possible child nodes
+     */
+    private boolean fullyExpanded = false;
+
+    /**
      * The parent of this node
      */
     private MonteCarloNode<S, A> parent;
@@ -38,9 +46,10 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
      *
      * @param parent
      */
-    public MonteCarloNode(MonteCarloNode<S, A> parent)
+    public MonteCarloNode(MonteCarloNode<S, A> parent, A action)
     {
         this.parent = parent;
+        this.action = action;
     }
 
     /**
@@ -57,6 +66,10 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
         return parent.getState().next(action);
     }
 
+    /**
+     * Get an ArrayList of all the actions from this node back to the root Node
+     * @return an ArrayList of actions to to be applied to the initial state to get to this state
+     */
     public ArrayList<A> getActions()
     {
         ArrayList<A> actions = new ArrayList<>();
@@ -71,7 +84,13 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
         }
     }
 
-    public ArrayList<A> getActions(ArrayList<A> futureActions)
+    /**
+     * Get an ArrayList of all the actions from this node back to the root Node
+     * @param futureActions The ArrayList of actions from child nodes
+     * @return an ArrayList of actions to to be applied to the initial state to get to this state and
+     * the actions already in the ArrayList to get to child nodes
+     */
+    private ArrayList<A> getActions(ArrayList<A> futureActions)
     {
         if(isRoot())
         {
@@ -82,6 +101,27 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
             futureActions.add(action);
             return parent.getActions(futureActions);
         }
+    }
+
+    /**
+     * Makes this node create a child node. It does this by selecting a random action from the
+     * possible actions. If there are no more children to create, nothing will be done
+     * @return The new MonteCarloNode which is a child of this node
+     * */
+    public MonteCarloNode<S, A> expand(TreePolicy<S, A> treePolicy)
+    {
+        MonteCarloNode<S, A> newNode = treePolicy.expand(this);
+        children.add(newNode);
+        return newNode;
+    }
+
+    /**
+     * Returns whether this node has a potential child node to expand(add as a child)
+     * @return
+     */
+    public boolean isFullyExpanded()
+    {
+        return fullyExpanded;
     }
 
     /**

@@ -15,13 +15,13 @@ public interface State
      * @throws IllegalArgumentException when the given action cannot be applied to the current state, either because
      * it does not correspond to the given state or the action cannot legally be applied to that state
      */
-     <S extends State> S next(Action<? extends State> action) throws IllegalArgumentException;
+    <S extends State> S next(Action<? extends State> action) throws IllegalArgumentException;
 
     /**
      * List all the actions possible from the current state
      * @return a list of all possible actions which can be legally applied to this state
      */
-     List<? extends Action> possibleActions();
+    <S extends State, A extends Action<S> > List<A> possibleActions();
 
     /**
      * Build the State given the previous actions

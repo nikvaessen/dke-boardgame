@@ -18,7 +18,7 @@ public class MonteCarloRootNode<S extends State, A extends Action<S> >
      */
     public MonteCarloRootNode(S initialState)
     {
-        super(null);
+        super(null, null);
         this.initialState = initialState;
     }
 
