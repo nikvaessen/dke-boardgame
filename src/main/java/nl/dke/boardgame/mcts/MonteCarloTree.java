@@ -1,6 +1,5 @@
 package nl.dke.boardgame.mcts;
 
-import nl.dke.boardgame.mcts.policy.ActionPolicy;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;
 
@@ -14,14 +13,10 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
 
     private SimulationPolicy<S> simulationPolicy;
 
-    private ActionPolicy<S, A> actionPolicy;
-
-    public MonteCarloTree(TreePolicy<S, A> treePolicy, SimulationPolicy<S> simulationPolicy,
-                          ActionPolicy<S, A> actionPolicy)
+    public MonteCarloTree(TreePolicy<S, A> treePolicy, SimulationPolicy<S> simulationPolicy)
     {
         this.treePolicy = treePolicy;
         this.simulationPolicy = simulationPolicy;
-        this.actionPolicy = actionPolicy;
     }
 
 
@@ -32,17 +27,20 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         {
             throw new IllegalArgumentException(String.format("Cannot search for %d ms, which is <= 0", ms));
         }
-        MonteCarloRootNode<S, A> root = new MonteCarloRootNode<>(initialState);
 
+        MonteCarloRootNode<S, A> root = new MonteCarloRootNode<>(initialState);
         long startTime = System.currentTimeMillis();
+        // keep going until the allotted time has run out
         while(System.currentTimeMillis() - startTime < ms)
         {
+            // select the critical node in the Tree which needs expanding
             MonteCarloNode<S, A> criticalNode = treePolicy.choose(root);
-            //criticalNode.expand()
-            int reward = simulationPolicy.simulate(criticalNode.getState());
-            criticalNode.backPropagate(reward);
+            // expand this node and store the child
+            MonteCarloNode<S, A> child = criticalNode.expand(treePolicy);
+            // simulate on the newly created child and backpropagate the results
+            child.simulate(simulationPolicy);
         }
-        return actionPolicy.select(root);
+        return treePolicy.bestNode(root).getAction();
     }
 
     public A search(S initialState, int ms)

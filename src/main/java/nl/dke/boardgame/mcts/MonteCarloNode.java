@@ -124,12 +124,23 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
         return fullyExpanded;
     }
 
+
+    /**
+     * Simulate on the state of this MonteCarloNode and backpropagate the results of the simulation (e.g win/loss)
+     * back to the root of the tree
+     * @param simulationPolicy the policy which is able to do a simulation on the State of this node
+     */
+    public void simulate(SimulationPolicy<S> simulationPolicy)
+    {
+        backPropagate(simulationPolicy.simulate(getState()));
+    }
+
     /**
      * After simulation of a node, a reward is given based on the winning chances of the state.
      * Alternatively add this reward and the negation of the reward back up the tree until the root is found.
      * @param q the q-value to propagate back to the root of the tree
      */
-    public void backPropagate(int q)
+    private void backPropagate(int q)
     {
         if(isRoot())
         {
@@ -147,6 +158,15 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
     public boolean isRoot()
     {
         return parent == null;
+    }
+
+    /**
+     * Get the action which lead to State of this MonteCarloNode
+     * @return the action of this node
+     */
+    public A getAction()
+    {
+        return action;
     }
 
     /**

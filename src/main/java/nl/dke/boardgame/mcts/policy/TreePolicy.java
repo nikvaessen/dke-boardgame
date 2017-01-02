@@ -6,8 +6,10 @@ import nl.dke.boardgame.mcts.MonteCarloRootNode;
 import nl.dke.boardgame.mcts.State;
 
 /**
- * A tree policy implements a method which help choose nodes in a MonteCarloTree which need expanding
- * and a method which creates the best child to expand for a given MonteCarloNode
+ * A tree policy implements a method which help choose MonteCarloNodes in a MonteCarloTree which need expanding,
+ * a method which creates the best child to expand for a given MonteCarloNode and a method
+ * for choosing the best MonteCarloNode in a the whole Tree when the search terminates
+ *
  * @author nik on 31/12/16.
  */
 public interface TreePolicy<S extends State, A extends Action<S>>
@@ -28,5 +30,11 @@ public interface TreePolicy<S extends State, A extends Action<S>>
      */
     MonteCarloNode<S, A> expand(MonteCarloNode<S, A> node) throws IllegalArgumentException;
 
+    /**
+     * Given a root node of a MonteCarlo Tree, select the best action with the best Node
+     * @param root the root node of the MonteCarlo Tree
+     * @return the Node holding the best action
+     */
+    MonteCarloNode<S, A> bestNode(MonteCarloRootNode<S, A> root);
 
 }
