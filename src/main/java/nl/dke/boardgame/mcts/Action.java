@@ -1,7 +1,10 @@
 package nl.dke.boardgame.mcts;
 
 /**
- * Created by nik on 31/12/16.
+ * This interface defines an Action in a markov decision process. An action can be applied on a State s to change it
+ * into a new State s`
+ *
+ * @author nik on 31/12/16.
  */
 public interface Action<S extends State>
 {

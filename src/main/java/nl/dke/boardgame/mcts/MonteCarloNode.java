@@ -7,7 +7,12 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * Created by nik on 29/12/16.
+ * This class implements a node in a MonteCarlo tree. It stores the amount of times it is visted, the total reward
+ * it has retrieved over the whole tree search, and it represents a State in the MonteCarlo Tree. The State is not
+ * stored due to memory constraints, but t is computed by every node storing the action, and retrieving
+ * all actions and applying them to the initial state of the the root node.
+ *
+ * @author nik in 29/12/16.
  */
 public class MonteCarloNode<S extends State, A extends Action<S> >
         implements Iterable<MonteCarloNode>

@@ -1,7 +1,9 @@
 package nl.dke.boardgame.mcts;
 
 /**
- * Created by nik on 31/12/16.
+ * The root node of the MonteCarlo Tree. It differs from normal nodes by storing the a State (The initial state)
+ *
+ * @author nik on 31/12/16.
  */
 public class MonteCarloRootNode<S extends State, A extends Action<S> >
         extends MonteCarloNode<S, A>
