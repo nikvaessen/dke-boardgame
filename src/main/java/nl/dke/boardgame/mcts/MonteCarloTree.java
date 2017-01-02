@@ -4,7 +4,9 @@ import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;
 
 /**
- * Created by nik on 29/12/16.
+ * A general class which can do MonteCarlo Tree Search
+ *
+ * @author nik  on 29/12/16.
  */
 public class MonteCarloTree<S extends State, A extends Action<S> >
 {

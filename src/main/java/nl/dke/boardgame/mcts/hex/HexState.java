@@ -97,6 +97,11 @@ public class HexState implements State
         return ((HexAction) action).apply(this);
     }
 
+    /**
+     * Give a list of possible actions on this state. It will filter out actions on tiles which
+     * are already claimed
+     * @return a list of legal actions on the given state
+     */
     @Override
     public List<HexAction> possibleActions()
     {
@@ -110,6 +115,16 @@ public class HexState implements State
         }
         actions.removeAll(state);
         return actions;
+    }
+
+    /**
+     * Returns whether the hex state does not have any more mores to make
+     * @return
+     */
+    @Override
+    public boolean isTerminal()
+    {
+        return possibleActions().size() == 0; //FIXME check for a win condition!!!
     }
 
     /**

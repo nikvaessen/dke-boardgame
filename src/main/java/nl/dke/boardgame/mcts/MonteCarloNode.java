@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  * @author nik in 29/12/16.
  */
 public class MonteCarloNode<S extends State, A extends Action<S> >
-        implements Iterable<MonteCarloNode>
+        implements Iterable<MonteCarloNode<S, A>>
 {
     /**
      * Random number generator being shared on all nodes
@@ -48,8 +48,10 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
     private MonteCarloNode<S, A> parent;
 
     /**
-     *
-     * @param parent
+     * Create a MonteCarloNode with a given parent and the action which can be applied on the parent
+     * to get to this nodes' State
+     * @param parent the parentof this node
+     * @param action the action which leads to this node
      */
     public MonteCarloNode(MonteCarloNode<S, A> parent, A action)
     {
@@ -60,11 +62,11 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
     /**
      * List containing all expanded children of this node
      */
-    private LinkedList<MonteCarloNode> children = new LinkedList<>();
+    private LinkedList<MonteCarloNode<S, A>> children = new LinkedList<>();
 
     /**
      * Get the State created by applying all actions from this Node
-     * @return
+     * @return the state which this node is representing
      */
     public S getState()
     {
@@ -112,8 +114,10 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
      * Makes this node create a child node. It does this by selecting a random action from the
      * possible actions. If there are no more children to create, nothing will be done
      * @return The new MonteCarloNode which is a child of this node
-     * */
+     * @throws IllegalArgumentException when this node cannot be expanded
+     */
     public MonteCarloNode<S, A> expand(TreePolicy<S, A> treePolicy)
+        throws IllegalArgumentException
     {
         MonteCarloNode<S, A> newNode = treePolicy.expand(this);
         children.add(newNode);
@@ -129,6 +133,14 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
         return fullyExpanded;
     }
 
+    /**
+     * Set that this MonteCarloNode is fully expanded (has no more new potential children)
+     * @param fullyExpanded whether this node is fully expanded
+     */
+    public void setFullyExpanded(boolean fullyExpanded)
+    {
+        this.fullyExpanded = fullyExpanded;
+    }
 
     /**
      * Simulate on the state of this MonteCarloNode and backpropagate the results of the simulation (e.g win/loss)
@@ -158,11 +170,20 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
 
     /**
      * returns whether this node is a root node
-     * @return
+     * @return whether this is the root node of the tree
      */
     public boolean isRoot()
     {
         return parent == null;
+    }
+
+    /**
+     * Get the parent node of this MonteCarloNode. Will be null if it's the root node
+     * @return the parent node or null if it's the root node
+     */
+    public MonteCarloNode<S, A> getParent()
+    {
+        return parent;
     }
 
     /**
@@ -198,19 +219,19 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
      * a object of this class to be able to loop over all expended children
      */
     @Override
-    public Iterator<MonteCarloNode> iterator()
+    public Iterator<MonteCarloNode<S, A>> iterator()
     {
         return children.iterator();
     }
 
     @Override
-    public void forEach(Consumer<? super MonteCarloNode> consumer)
+    public void forEach(Consumer<? super MonteCarloNode<S, A>> consumer)
     {
         children.forEach(consumer);
     }
 
     @Override
-    public Spliterator<MonteCarloNode> spliterator()
+    public Spliterator<MonteCarloNode<S, A>> spliterator()
     {
         return children.spliterator();
     }

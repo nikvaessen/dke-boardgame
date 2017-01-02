@@ -10,5 +10,11 @@ import nl.dke.boardgame.mcts.State;
  */
 public interface SimulationPolicy<S extends State>
 {
+    /**
+     * apply simulation on a given state do determine the reward
+     * @param state the state to use simulation on
+     * @return the reward of the simulation
+     */
     int simulate(S state);
+
 }

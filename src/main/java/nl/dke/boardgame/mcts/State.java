@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by nik on 31/12/16.
+ * Interface for  a State in a markov decision process
+ *
+ * @author nik on 31/12/16.
  */
 public interface State
 {
+
     /**
      * Get the state resulting from the current state with the given action applied to it
      * @param action The action to apply to this state
@@ -30,5 +33,12 @@ public interface State
      * @param <A> the Action
      * @return the State resulting from applying all previous actions to a initial state
      */
-     //<S extends State, A extends Action<? extends State>> S buildState(ArrayList<A> sequences);
+    //<S extends State, A extends Action<? extends State>> S buildState(ArrayList<A> sequences);
+
+    /**
+     * Return whether this state is a terminal state
+     * @return true if state is terminal, false otherwise
+     */
+    boolean isTerminal();
+
 }

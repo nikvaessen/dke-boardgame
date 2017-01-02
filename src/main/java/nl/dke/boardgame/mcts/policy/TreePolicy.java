@@ -31,10 +31,11 @@ public interface TreePolicy<S extends State, A extends Action<S>>
     MonteCarloNode<S, A> expand(MonteCarloNode<S, A> node) throws IllegalArgumentException;
 
     /**
-     * Given a root node of a MonteCarlo Tree, select the best action with the best Node
-     * @param root the root node of the MonteCarlo Tree
-     * @return the Node holding the best action
+     * Given a node of a MonteCarlo Tree, select the best child
+     * @param node the node of the MonteCarlo Tree to select a child on
+     * @return The best node, which is a child of the given Node
+     * @throws IllegalArgumentException when the given Node does not have children
      */
-    MonteCarloNode<S, A> bestNode(MonteCarloRootNode<S, A> root);
+    MonteCarloNode<S, A> bestNode(MonteCarloNode<S, A> node) throws IllegalArgumentException;
 
 }

@@ -1,7 +1,7 @@
 package nl.dke.boardgame.mcts;
 
 /**
- * The root node of the MonteCarlo Tree. It differs from normal nodes by storing the a State (The initial state)
+ * The root node of the MonteCarlo Tree. It differs from normal nodes by starting with an initial state
  *
  * @author nik on 31/12/16.
  */
@@ -16,7 +16,7 @@ public class MonteCarloRootNode<S extends State, A extends Action<S> >
     /**
      * Creates a root node for MonteCarlo Tree Search, with a initial State. The root node does not have a parent,
      * and will stop recursive method calls of the MonteCarloNode class
-     * @param initialState
+     * @param initialState the initial state to apply MCTS on
      */
     public MonteCarloRootNode(S initialState)
     {
