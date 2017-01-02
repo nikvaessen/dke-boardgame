@@ -170,6 +170,25 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
     }
 
     /**
+     * Get the cumulative rewards this MonteCarloNode has retrieved due to simulations on this MonteCarloNode or a child.
+     * @return the reward value of this Node during the complete tree search
+     */
+    public int getqValues()
+    {
+        return qValues;
+    }
+
+    /**
+     * Get the number of times this MonteCarloNode or a child has been visisted. A MonteCarloNode is visited
+     * when the tree search expands and simulated on this MonteCarloNode or a child.
+     * @return the number of times this MonteCarloNode has been visited
+     */
+    public int getVisits()
+    {
+        return visits;
+    }
+
+    /**
      * The following methods override the Iterator interface such that a for each loop can be used on
      * a object of this class to be able to loop over all expended children
      */
