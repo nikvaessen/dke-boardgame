@@ -5,9 +5,7 @@ import nl.dke.boardgame.mcts.MonteCarloNode;
 import nl.dke.boardgame.mcts.MonteCarloRootNode;
 import nl.dke.boardgame.mcts.State;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Implements a tree policy based on the UCT algorithm
@@ -18,7 +16,14 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
     implements TreePolicy<S, A>
 {
 
+    /**
+     * Exploration value to use for selecting which node to simulate
+     */
     private double explorationParameter;
+
+    /**
+     * Random number generator used in breaking ties of nodes with same UCT value
+     */
     private Random rng = new Random(System.currentTimeMillis());
 
     /**
@@ -39,7 +44,7 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
 
     /**
      * This method chooses the node to expand in a iteration of the MonteCarlo Tree search.
-     * It will start of by selecting selecting every possible child of the root node. After the root
+     * It will start of by selecting every possible child of the root node. After the root
      * node is fully expanded, it will return the best child. After that, every new best child will be fully
      * expanded before its new best child is returned
      * @param root the root node of a MonteCarlo Tree
@@ -53,18 +58,18 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
         {
             if(!node.isFullyExpanded())
             {
-                return node;
+                return expand(node);
             }
             else
             {
-                node = bestNode(node);
+                node = bestChild(node);
             }
         }
         return node;
     }
 
     /**
-     * Give a legal child which can be used to expand a given MonteCarloNode by randommly creating new child
+     * Give a legal child which can be used to expand a given MonteCarloNode by randomly creating new child
      * based on a possible action of the given node's State
      * @param node the MonteCarloNode to expand
      * @return a MonteCarloNode which is a legal child of the given Node
@@ -97,9 +102,34 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
      * @throws IllegalArgumentException when the given node does not have any children
      */
     @Override
-    public MonteCarloNode<S, A> bestNode(MonteCarloNode<S, A> node)
+    public MonteCarloNode<S, A> bestChild(MonteCarloNode<S, A> node)
             throws IllegalArgumentException
     {
+        return bestChild(node, explorationParameter);
+    }
+
+    /**
+     * Select the best child of the root node by going over all children and selecting the node
+     * with the highest Q value
+     * @param root the root of the monte carlo tree
+     * @return the node with the highest q value
+     */
+    @Override
+    public MonteCarloNode<S, A> bestRootChild(MonteCarloRootNode<S, A> root)
+    {
+        return bestChild(root, 0);
+    }
+
+    /**
+     * select the best child of the given node by the UCT algorithm
+     * @param node the node to select the best child on
+     * @param c the exploration value to use in the UCT value
+     * @return the child with the highest UCT value. A child can be randomly selected if more than one node
+     * have the same maximum UCT value
+     */
+    private MonteCarloNode<S, A> bestChild(MonteCarloNode<S, A> node, double c)
+    {
+        // search for the node with the maximum UCT value ( or more than 1 if some have same value)
         ArrayList<MonteCarloNode<S, A>> maxNodes = new ArrayList<>();
         double maxUCT = 0, childUCT;
         for(MonteCarloNode<S, A> child : node)
@@ -107,11 +137,11 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
             if(maxNodes.isEmpty())
             {
                 maxNodes.add(child);
-                maxUCT = getUCTValue(child);
+                maxUCT = getUCTValue(child, c);
             }
             else
             {
-                childUCT = getUCTValue(child);
+                childUCT = getUCTValue(child, c);
                 if(Math.abs(childUCT - maxUCT) < 0.00001d) // they are equal
                 {
                     maxNodes.add(child);
@@ -125,6 +155,7 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
             }
         }
 
+        //return the best node (select randomly if more than one node have same maximum value)
         if(maxNodes.size() == 0)
         {
             throw new IllegalArgumentException("The given node does not have any children");
@@ -154,9 +185,10 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
      * if a node is visited 0 times, the value is set to infinity
      *
      * @param node the node to compute UCT on
+     * @param c the exploration value
      * @return the computed ICT value which is >= 0
      */
-    private double getUCTValue(MonteCarloNode node)
+    private double getUCTValue(MonteCarloNode node, double c)
     {
         double n = node.getVisits();
         double q = node.getqValues();
@@ -166,7 +198,7 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
         }
         else
         {
-            return (q/n) + explorationParameter * Math.sqrt( 2 * Math.log(n) / n );
+            return (q/n) + c * Math.sqrt( 2 * Math.log(n) / n );
         }
     }
 

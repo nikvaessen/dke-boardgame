@@ -36,13 +36,13 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         while(System.currentTimeMillis() - startTime < ms)
         {
             // select the critical node in the Tree which needs expanding
-            MonteCarloNode<S, A> criticalNode = treePolicy.choose(root);
             // expand this node and store the child
-            MonteCarloNode<S, A> child = criticalNode.expand(treePolicy);
+            // if critical node cannot be expanded, critical node is returned instead
+            MonteCarloNode<S, A> expandedChild = treePolicy.choose(root);
             // simulate on the newly created child and backpropagate the results
-            child.simulate(simulationPolicy);
+            expandedChild.simulate(simulationPolicy);
         }
-        return treePolicy.bestNode(root).getAction();
+        return treePolicy.bestRootChild(root).getAction();
     }
 
     public A search(S initialState, int ms)

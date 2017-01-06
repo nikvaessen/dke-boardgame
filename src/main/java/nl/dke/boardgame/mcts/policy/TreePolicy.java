@@ -1,12 +1,9 @@
 package nl.dke.boardgame.mcts.policy;
 
-import nl.dke.boardgame.mcts.Action;
-import nl.dke.boardgame.mcts.MonteCarloNode;
-import nl.dke.boardgame.mcts.MonteCarloRootNode;
-import nl.dke.boardgame.mcts.State;
+import nl.dke.boardgame.mcts.*;
 
 /**
- * A tree policy implements a method which help choose MonteCarloNodes in a MonteCarloTree which need expanding,
+ * A tree policy implements a method which help choose MonteCarloNodes in a MonteCarloTree which need simulating,
  * a method which creates the best child to expand for a given MonteCarloNode and a method
  * for choosing the best MonteCarloNode in a the whole Tree when the search terminates
  *
@@ -16,9 +13,9 @@ public interface TreePolicy<S extends State, A extends Action<S>>
 {
     /**
      * Given a root node for a MonteCarlo Tree, choose the node which needs to be
-     * expanded in the current iteration
+     * simulated in the given iteration
      * @param root the root node of a MonteCarlo Tree
-     * @return the MonteCarloNode which needs to be expanded
+     * @return the MonteCarloNode which needs to be simulated
      */
     MonteCarloNode<S, A> choose(MonteCarloRootNode<S, A> root);
 
@@ -36,6 +33,13 @@ public interface TreePolicy<S extends State, A extends Action<S>>
      * @return The best node, which is a child of the given Node
      * @throws IllegalArgumentException when the given Node does not have children
      */
-    MonteCarloNode<S, A> bestNode(MonteCarloNode<S, A> node) throws IllegalArgumentException;
+    MonteCarloNode<S, A> bestChild(MonteCarloNode<S, A> node) throws IllegalArgumentException;
+
+    /**
+     * This method selects the best node of the root after the tree search has terminated
+     * @param root the root of the monte carlo tree
+     * @return the best child of the root after MCTS is done
+     */
+    MonteCarloNode<S, A> bestRootChild(MonteCarloRootNode<S, A> root);
 
 }

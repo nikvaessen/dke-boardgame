@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Interface for  a State in a markov decision process
+ * Interface for a State in a markov decision process
  *
  * @author nik on 31/12/16.
  */
