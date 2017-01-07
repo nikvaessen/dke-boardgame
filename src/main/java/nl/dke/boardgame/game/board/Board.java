@@ -185,13 +185,30 @@ public class Board
     public String toString()
     {
         String st = "";
-
+        int pad = 0;
         for (HexTile[] tiles : board)
         {
+            for(int i = 0; i < pad; i++)
+            {
+                st += " ";
+            }
             for (HexTile t : tiles)
             {
-                st += t.toString() + ": " + t.printNeighbors() + " \n";
+                if(t.getState() == TileState.PLAYER1)
+                {
+                    st += "1 ";
+                }
+                else if(t.getState() == TileState.PLAYER2)
+                {
+                    st += "2 ";
+                }
+                else
+                {
+                    st += "n ";
+                }
             }
+            pad++;
+            st += "\n";
         }
         return st;
     }

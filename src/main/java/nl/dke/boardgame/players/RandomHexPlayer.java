@@ -42,15 +42,15 @@ public class RandomHexPlayer extends HexPlayer
             {
                 move.setRow(rng.nextInt(board.getHeight()));
                 move.setColumn(rng.nextInt(board.getWidth()));
-                //System.out.printf(" made random move: %d, %d\n", move.getRow(), move.getColumn());
+                System.out.printf(" made random move: %d, %d\n", move.getRow(), move.getColumn());
             }
-            catch(IllegalArgumentException /*| MoveNotCompletedException*/ e)
+            catch(IllegalArgumentException | MoveNotCompletedException e)
             {
                 e.printStackTrace();
                 continue;
             }
         }
-        //System.out.println("move was verified");
+        System.out.println("move was verified");
     }
 
     @Override

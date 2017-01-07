@@ -1,11 +1,13 @@
 package nl.dke.boardgame.mcts.hex;
 
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
+import nl.dke.boardgame.game.HexGameOverChecker;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,96 +48,19 @@ public class HexBoardSimulation
         }
 
         //see who is the winner and return the reward
-        checkWin();
-        TileState winner;
-        if (player1won)
-        {
-            winner = TileState.PLAYER1;
-        }
-        else
-        {
-            winner = TileState.PLAYER2;
-        }
+
+        int wonPlayer = HexGameOverChecker.isGameOver(board);
+        //System.out.println("Board: \n" + board);
+        TileState winner = wonPlayer == 1 ? TileState.PLAYER1 : TileState.PLAYER2;
         if (winner == currentPlayer)
         {
+            System.out.println("reward: " + 1);
             return 1;
         }
         else
         {
+            System.out.println("reward: " + -1);
             return -1;
-        }
-    }
-
-    /**
-     * Checks if one of the players has won the game.
-     * @return true if someone has won, false otherwise
-     */
-    private boolean checkWin()
-    {
-        boolean[][] map = new boolean[board.getHeight()][board.getWidth()];
-
-        //check if player1 has won
-        boolean won = false;
-        for(int i = 0; i < board.getHeight() && !won ; i++)
-        {
-            board.getNeighbours(i, 0);
-            won = isPathToOtherSide(i, 0, map, TileState.PLAYER1);
-        }
-
-        //check if player2 has won
-        if(!won)
-        {
-            for(int i = 0; i < board.getWidth() && !won; i++)
-            {
-                won = isPathToOtherSide(0, i, map, TileState.PLAYER2);
-            }
-        }
-
-        return won;
-    }
-
-    /**
-     * looks for a path from one side of the board to other by visiting a
-     * tile on a specific tile and row and going to each neighbour until
-     * it has reached the other side.
-     * @param row the row where the algorithm currently is
-     * @param column the column where the algorithm currently is
-     * @param map the map of the whole board, which stores which
-     *            tiles have already been visited
-     * @param player for which player the algorithm is currently checking
-     *               for a path
-     * @return if a path is found
-     */
-    private boolean isPathToOtherSide(int row, int column, boolean[][] map,
-                                      TileState player)
-    {
-        if(map[row][column] || board.getState(row, column ) != player)
-        {
-            return false;
-        }
-        else if(column == board.getWidth() - 1 && player == TileState.PLAYER1)
-        {
-            return true;
-        }
-        else if(row == board.getHeight() - 1 && player == TileState.PLAYER2)
-        {
-            return true;
-        }
-        else
-        {
-            //set that board location has been visited
-            map[row][column] = true;
-
-            //go to each neighbour which the same owner
-            boolean won = false;
-            for(HexTile neighbourTile : board.getNeighbours(row, column))
-            {
-                if(neighbourTile.getState() == player && !won)
-                {
-                    won = isPathToOtherSide(neighbourTile.getRow(), neighbourTile.getColumn(), map, player);
-                }
-            }
-            return won;
         }
     }
 
