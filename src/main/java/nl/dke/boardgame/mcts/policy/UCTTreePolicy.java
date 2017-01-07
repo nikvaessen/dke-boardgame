@@ -58,7 +58,7 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
         {
             if(!node.isFullyExpanded())
             {
-                return expand(node);
+                return node.expand(this);
             }
             else
             {
