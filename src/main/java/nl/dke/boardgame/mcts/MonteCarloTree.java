@@ -31,16 +31,20 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         }
 
         MonteCarloRootNode<S, A> root = new MonteCarloRootNode<>(initialState);
-        long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis() , start, end, count = 0;
         // keep going until the allotted time has run out
         while(System.currentTimeMillis() - startTime < ms)
         {
+            count++;
+            start = System.nanoTime();
             // select the critical node in the Tree which needs expanding
             // expand this node and store the child
             // if critical node cannot be expanded, critical node is returned instead
             MonteCarloNode<S, A> expandedChild = treePolicy.choose(root);
             // simulate on the newly created child and backpropagate the results
             expandedChild.simulate(simulationPolicy);
+            end = System.nanoTime();
+            System.out.printf("Iteration %d of MCTS took %d nano seconds\n", count, end - start);
         }
         return treePolicy.bestRootChild(root).getAction();
     }

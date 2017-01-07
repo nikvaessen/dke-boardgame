@@ -300,8 +300,19 @@ public class HexGame
             sleep(DELAY_BETWEEN_TURNS);
 
             //check if game is over
-            if(checkWin())
+            int won = HexGameOverChecker.isGameOver(board);
+            if(won != 0)
             {
+                ended = true;
+                if(won == 1)
+                {
+                    player1Won = true;
+                }
+                if(won == 2)
+                {
+                    player2Won = true;
+                }
+                playerWon = player1Won ? TileState.PLAYER1 : TileState.PLAYER2;
                 gameState.playerWon(playerWon);
                 System.out.println(playerWon + " won!");
                 return;
@@ -500,4 +511,6 @@ public class HexGame
         }
 
     }
+
+
 }

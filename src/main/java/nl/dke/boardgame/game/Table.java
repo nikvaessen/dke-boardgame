@@ -2,6 +2,7 @@ package nl.dke.boardgame.game;
 
 import nl.dke.boardgame.display.game.InputProcessor;
 import nl.dke.boardgame.players.HumanHexPlayer;
+import nl.dke.boardgame.players.MCTSPlayer;
 import nl.dke.boardgame.players.PossiblePlayers;
 import nl.dke.boardgame.players.RandomHexPlayer;
 import nl.dke.boardgame.game.board.TileState;
@@ -58,6 +59,8 @@ public class Table
         {
             case random:
                 return new RandomHexPlayer(player);
+            case MCTS:
+                return new MCTSPlayer(player, 0.1, 5000);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
                         "HexPlayer, given argument" + type + " is not " +

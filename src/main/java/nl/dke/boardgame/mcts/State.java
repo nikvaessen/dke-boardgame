@@ -41,4 +41,10 @@ public interface State
      */
     boolean isTerminal();
 
+
+    /**
+     * Give an integer number representing who can currently act on the given state
+     * @return the next actor to be allowed to move
+     */
+    int nextActor();
 }

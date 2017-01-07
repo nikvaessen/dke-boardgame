@@ -1,5 +1,6 @@
 package nl.dke.boardgame.players;
 
+import nl.dke.boardgame.exceptions.MoveNotCompletedException;
 import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.Move;
 import nl.dke.boardgame.game.PieMove;
@@ -41,12 +42,15 @@ public class RandomHexPlayer extends HexPlayer
             {
                 move.setRow(rng.nextInt(board.getHeight()));
                 move.setColumn(rng.nextInt(board.getWidth()));
+                //System.out.printf(" made random move: %d, %d\n", move.getRow(), move.getColumn());
             }
-            catch(IllegalArgumentException e)
+            catch(IllegalArgumentException /*| MoveNotCompletedException*/ e)
             {
+                e.printStackTrace();
                 continue;
             }
         }
+        //System.out.println("move was verified");
     }
 
     @Override

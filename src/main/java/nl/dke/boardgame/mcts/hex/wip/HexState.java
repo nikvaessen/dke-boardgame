@@ -1,4 +1,4 @@
-package nl.dke.boardgame.mcts.hex;
+package nl.dke.boardgame.mcts.hex.wip;
 
 import nl.dke.boardgame.mcts.Action;
 import nl.dke.boardgame.mcts.State;
@@ -12,6 +12,12 @@ import java.util.List;
  */
 public class HexState implements State
 {
+    private enum player
+    {
+        one,
+        two,
+    }
+
     /**
      * The state is defined as a sequence of actions
      */
@@ -24,6 +30,7 @@ public class HexState implements State
 
     /**
      * The number of the player who is currently allowed to make an action
+     * Can only be 1 or 2
      */
     private int player;
 
@@ -32,9 +39,15 @@ public class HexState implements State
      * @param width the width of the board of the HexState
      * @param height the height of the board of the HexState
      * @param player the number of the player who is currently allowed to make an action
+     * @throws IllegalArgumentException when the given player number is not 1 or 2
      */
     public HexState(int width, int height, int player)
+        throws IllegalArgumentException
     {
+        if(!(player == 1 | player == 2))
+        {
+            throw new IllegalArgumentException("player number of a hextstate cannot be " + player);
+        }
         this.width = width;
         this.height = height;
         this.player = player;
@@ -49,6 +62,7 @@ public class HexState implements State
      * @param actions the actions to get to the current state
      */
     public HexState(int width, int height, int player, ArrayList<HexAction> actions)
+        throws IllegalArgumentException
     {
         this(width, height, player);
         state.addAll(actions);
@@ -86,6 +100,8 @@ public class HexState implements State
      * Gives the HexState s' which appears after the given action is applied to this state s
      * @param action The action to apply to this state
      * @return the next State
+     * @throws IllegalArgumentException when the given action is not a HexAction or when it cannot be applied to
+     * the given state
      */
     @Override
     public HexState next(Action action) throws IllegalArgumentException
@@ -106,9 +122,9 @@ public class HexState implements State
     public List<HexAction> possibleActions()
     {
         List<HexAction> actions = new ArrayList<>();
-        for(int i = 1; i <= width; i++)
+        for(int i = 0; i < width; i++)
         {
-            for(int j = 1; j <= height; j++)
+            for(int j = 0; j < height; j++)
             {
                 actions.add(new HexAction(i, j, player));
             }
@@ -125,6 +141,17 @@ public class HexState implements State
     public boolean isTerminal()
     {
         return possibleActions().size() == 0; //FIXME check for a win condition!!!
+    }
+
+    /**
+     * Give an integer number representing who can currently act on the given state
+     *
+     * @return the next actor to be allowed to move
+     */
+    @Override
+    public int nextActor()
+    {
+        return 0;
     }
 
     /**
@@ -153,4 +180,8 @@ public class HexState implements State
     {
         return player;
     }
+
+
+
+
 }

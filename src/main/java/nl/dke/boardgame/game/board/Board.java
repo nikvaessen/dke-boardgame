@@ -15,6 +15,8 @@ import java.util.List;
  * <p>
  * Currently it's only tested for 11 x 11, which should? be correctly initialised
  *
+ * It implements State for MonteCarlo Tree Search
+ *
  * @author josevelasquez on 9/12/16.
  * @author Nik
  */

@@ -1,4 +1,4 @@
-package nl.dke.boardgame.mcts.hex;
+package nl.dke.boardgame.mcts.hex.wip;
 
 import nl.dke.boardgame.mcts.Action;
 
@@ -48,14 +48,21 @@ public class HexAction implements Action<HexState>
             throw new IllegalArgumentException(String.format("Action cannot be applied to given state. " +
                             "Action: x: %d y: %d. State has these x and y", x, y));
         }
+        if(x > before.getWidth() - 1 || y > before.getHeight() - 1)
+        {
+            throw new IllegalArgumentException("cannot apply given action on board because x and y of HexAction" +
+                    "are larger than the dimension of the board");
+        }
         ArrayList<HexAction> after = new ArrayList<>(before.amountOfActions() + 1);
         Iterator<HexAction> iterator = before.getActions();
         while(iterator.hasNext())
         {
+            //don't check for sameness as this action as that should not happen due to only
+            //possible actions being selected
             after.add(iterator.next());
         }
         after.add(this);
-        return new HexState(before.getWidth(), before.getHeight(), before.getPlayer(), after);
+        return new HexState(before.getWidth(), before.getHeight(), before.getPlayer() == 1 ? 2 : 1, after);
     }
 
     public int getX()
