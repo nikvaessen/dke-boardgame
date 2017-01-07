@@ -17,17 +17,12 @@ import java.util.List;
 public class HexBoardSimulation
         implements SimulationPolicy<HexBoardState>
 {
-    private Board board;
-    private boolean player1won;
-    private boolean player2won;
 
     @Override
     public int simulate(HexBoardState state)
     {
         // reset variables
-        this.board = state.getBoard().clone();
-        this.player1won = false;
-        this.player2won = false;
+        Board board = state.getBoard().clone();
         TileState currentPlayer = state.getPlayer();
 
         //get list of possible actions and apply them on the board in a random order
