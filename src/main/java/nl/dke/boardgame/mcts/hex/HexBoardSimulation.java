@@ -49,12 +49,12 @@ public class HexBoardSimulation
         TileState winner = wonPlayer == 1 ? TileState.PLAYER1 : TileState.PLAYER2;
         if (winner == currentPlayer)
         {
-            System.out.println("reward: " + 1);
+            //System.out.println("reward: " + 1);
             return 1;
         }
         else
         {
-            System.out.println("reward: " + -1);
+            //System.out.println("reward: " + -1);
             return -1;
         }
     }

@@ -194,4 +194,10 @@ public class HexBoardState
         return player == TileState.PLAYER1 ? 1 : 2;
     }
 
+    public String toString()
+    {
+        String s = "State: \n";
+        s += board.toString();
+        return s;
+    }
 }

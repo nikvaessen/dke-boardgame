@@ -90,4 +90,9 @@ public class HexBoardAction
         }
     }
 
+    public String toString()
+    {
+        return String.format("x: %d y: %d player: %s", x, y, player);
+    }
+
 }

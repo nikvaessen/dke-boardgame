@@ -235,4 +235,13 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
     {
         return children.spliterator();
     }
+
+    public String toString()
+    {
+        return String.format("visits: %d\nq: %d\nstate: %s\naction: %s",
+                visits,
+                qValues,
+                ""/*getState().toString()*/,
+                action.toString());
+    }
 }

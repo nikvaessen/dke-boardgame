@@ -78,7 +78,14 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
     @Override
     public MonteCarloNode<S, A> expand(MonteCarloNode<S, A> node) throws IllegalArgumentException
     {
+
         List<A> actions = node.getState().possibleActions();
+
+        //System.out.println("before action pruning: " + actions.size());
+        //remove all actions which have already have been expanded
+        removeUsedActions(node, actions);
+        //System.out.println("after action pruning: " + actions.size());
+
         if(actions.isEmpty())
         {
             throw new IllegalArgumentException("This node cannot be expanded anymore");
@@ -117,7 +124,45 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
     @Override
     public MonteCarloNode<S, A> bestRootChild(MonteCarloRootNode<S, A> root)
     {
-        return bestChild(root, 0);
+
+        ArrayList<MonteCarloNode<S, A>> maxNodes = new ArrayList<>();
+        int maxVisits = 0, currentChildVisits;
+        for(MonteCarloNode<S, A> child : root)
+        {
+            if(maxNodes.isEmpty())
+            {
+                maxNodes.add(child);
+                maxVisits = child.getVisits();
+            }
+            else
+            {
+                currentChildVisits = child.getVisits();
+                if(maxVisits == currentChildVisits) // they are equal
+                {
+                    maxNodes.add(child);
+                }
+                else if(currentChildVisits > maxVisits)
+                {
+                    maxNodes.clear();
+                    maxNodes.add(child);
+                    maxVisits = currentChildVisits;
+                }
+            }
+        }
+
+        //return the best node (select randomly if more than one node have same maximum value)
+        if(maxNodes.size() == 0)
+        {
+            throw new IllegalArgumentException("The given node does not have any children");
+        }
+        else if(maxNodes.size() == 1)
+        {
+            return maxNodes.get(0);
+        }
+        else
+        {
+            return maxNodes.get(rng.nextInt(maxNodes.size()));
+        }
     }
 
     /**
@@ -199,6 +244,32 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
         else
         {
             return (q/n) + c * Math.sqrt( 2 * Math.log(n) / n );
+        }
+    }
+
+    /**
+     * Removes all the actions which are already expanded on the given node from the given list
+     * @param node the node
+     * @param possibleActions the list of actions
+     */
+    private void removeUsedActions(MonteCarloNode<S, A> node, List<A> possibleActions)
+    {
+        //make a list of all used actions
+        List<A> toRemove = new ArrayList<A>();
+        for(MonteCarloNode<S, A> child : node)
+        {
+            toRemove.add(child.getAction());
+        }
+
+        //go over the possible action list and remove the element if it is in the list of used actions
+        Iterator<A> iterator = possibleActions.listIterator();
+        while(iterator.hasNext())
+        {
+            Action action = iterator.next();
+            if(toRemove.contains(action))
+            {
+                iterator.remove();;
+            }
         }
     }
 
