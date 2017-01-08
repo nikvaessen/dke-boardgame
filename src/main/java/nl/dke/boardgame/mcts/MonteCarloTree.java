@@ -37,15 +37,15 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         //while (count < 400)
         {
             count++;
-            start = System.nanoTime();
+            //start = System.nanoTime();
             // select the critical node in the Tree which needs expanding
             // expand this node and store the child
             // if critical node cannot be expanded, critical node is returned instead
             MonteCarloNode<S, A> expandedChild = treePolicy.choose(root);
             // simulate on the newly created child and backpropagate the results
             expandedChild.simulate(simulationPolicy);
-            end = System.nanoTime();
-            System.out.printf("Iteration %d of MCTS took %d nano seconds\n", count, end - start);
+            //end = System.nanoTime();
+            //System.out.printf("Iteration %d of MCTS took %d nano seconds\n", count, end - start);
         }
         debugTree(root);
         return treePolicy.bestRootChild(root).getAction();
@@ -57,7 +57,7 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         return search(initialState, Integer.toUnsignedLong(ms));
     }
 
-    private void debugTree(MonteCarloNode<S, A> node)
+    private void debugTree(MonteCarloRootNode<S, A> node)
     {
         int count = 0;
         for(MonteCarloNode<S, A> child : node)
@@ -66,5 +66,7 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
             System.out.println(child);
         }
         System.out.println(count);
+        MonteCarloNode<S, A> bestNode = treePolicy.bestRootChild(node);
+        System.out.println("Best node: \n" + bestNode);
     }
 }

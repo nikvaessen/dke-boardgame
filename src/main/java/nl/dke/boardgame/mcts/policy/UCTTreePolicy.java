@@ -124,45 +124,45 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
     @Override
     public MonteCarloNode<S, A> bestRootChild(MonteCarloRootNode<S, A> root)
     {
-
-        ArrayList<MonteCarloNode<S, A>> maxNodes = new ArrayList<>();
-        int maxVisits = 0, currentChildVisits;
-        for(MonteCarloNode<S, A> child : root)
-        {
-            if(maxNodes.isEmpty())
-            {
-                maxNodes.add(child);
-                maxVisits = child.getVisits();
-            }
-            else
-            {
-                currentChildVisits = child.getVisits();
-                if(maxVisits == currentChildVisits) // they are equal
-                {
-                    maxNodes.add(child);
-                }
-                else if(currentChildVisits > maxVisits)
-                {
-                    maxNodes.clear();
-                    maxNodes.add(child);
-                    maxVisits = currentChildVisits;
-                }
-            }
-        }
-
-        //return the best node (select randomly if more than one node have same maximum value)
-        if(maxNodes.size() == 0)
-        {
-            throw new IllegalArgumentException("The given node does not have any children");
-        }
-        else if(maxNodes.size() == 1)
-        {
-            return maxNodes.get(0);
-        }
-        else
-        {
-            return maxNodes.get(rng.nextInt(maxNodes.size()));
-        }
+        return bestChild(root, 0);
+//        ArrayList<MonteCarloNode<S, A>> maxNodes = new ArrayList<>();
+//        int maxVisits = 0, currentChildVisits;
+//        for(MonteCarloNode<S, A> child : root)
+//        {
+//            if(maxNodes.isEmpty())
+//            {
+//                maxNodes.add(child);
+//                maxVisits = child.getVisits();
+//            }
+//            else
+//            {
+//                currentChildVisits = child.getVisits();
+//                if(maxVisits == currentChildVisits) // they are equal
+//                {
+//                    maxNodes.add(child);
+//                }
+//                else if(currentChildVisits > maxVisits)
+//                {
+//                    maxNodes.clear();
+//                    maxNodes.add(child);
+//                    maxVisits = currentChildVisits;
+//                }
+//            }
+//        }
+//
+//        //return the best node (select randomly if more than one node have same maximum value)
+//        if(maxNodes.size() == 0)
+//        {
+//            throw new IllegalArgumentException("The given node does not have any children");
+//        }
+//        else if(maxNodes.size() == 1)
+//        {
+//            return maxNodes.get(0);
+//        }
+//        else
+//        {
+//            return maxNodes.get(rng.nextInt(maxNodes.size()));
+//        }
     }
 
     /**
