@@ -10,4 +10,5 @@ public enum PossiblePlayers
     random,
     human,
     MCTS
+    alphabeta
 }

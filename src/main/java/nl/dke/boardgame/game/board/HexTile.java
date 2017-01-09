@@ -82,7 +82,7 @@ public class HexTile
         if (claimer == TileState.NEUTRAL)
         {
             throw new IllegalArgumentException(
-                    "Tile cannot be claimed by neutral");
+                   "Tile cannot be claimed by neutral");
         }
         state = claimer;
     }
@@ -158,6 +158,10 @@ public class HexTile
     public List<HexTile> getNeighbours()
     {
         return neighbourHexTiles;
+    }
+    public void setNeighboursToZero(){
+        neighbors = null;
+        neighbourHexTiles = null;
     }
 
     /**
