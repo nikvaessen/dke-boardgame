@@ -1,6 +1,5 @@
 package nl.dke.boardgame.players;
 
-import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.Move;
 import nl.dke.boardgame.game.PieMove;
@@ -8,15 +7,9 @@ import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
 
-import java.lang.reflect.Array;
+
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
-import javafx.util.Pair;
-import sun.reflect.generics.tree.Tree;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.*;
 
 /**

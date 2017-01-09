@@ -9,6 +9,6 @@ public enum PossiblePlayers
     //      the creation of this HexPlayer (createPlayer() method)
     random,
     human,
-    MCTS
+    MCTS,
     alphabeta
 }

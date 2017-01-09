@@ -1,9 +1,7 @@
 package nl.dke.boardgame.game;
 
 import nl.dke.boardgame.display.game.InputProcessor;
-import nl.dke.boardgame.players.HumanHexPlayer;
-import nl.dke.boardgame.players.PossiblePlayers;
-import nl.dke.boardgame.players.RandomHexPlayer;
+import nl.dke.boardgame.players.*;
 import nl.dke.boardgame.game.board.TileState;
 
 /**
