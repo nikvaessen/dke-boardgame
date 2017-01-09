@@ -154,7 +154,7 @@ public class HexState implements State
         return 0;
     }
 
-    /**
+    /**to
      * Get the width of the Hex Board
      * @return the width of the Hex Board
      */

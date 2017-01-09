@@ -17,7 +17,7 @@ public class HexGame
      * The width and height of the board when the constructor is not given any
      * arguments
      */
-    public final static int DEFAULT_BOARD_DIMENSION = 11;
+    public final static int DEFAULT_BOARD_DIMENSION = 2;
 
     /**
      * The minimum width and height of the board which are allowed to be given

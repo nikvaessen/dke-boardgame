@@ -27,10 +27,12 @@ public class HexBoardSimulation
 
         //get list of possible actions and apply them on the board in a random order
         List<HexBoardAction> actions = state.possibleActions();
+
         Collections.shuffle(actions);
         TileState player = currentPlayer;
         for(HexBoardAction action : actions)
         {
+
             try
             {
                 board.claim(action.getX(), action.getY(), player);
@@ -40,21 +42,28 @@ public class HexBoardSimulation
             {
                 e.printStackTrace();
             }
+//            System.out.println("FORLOOP BOARD \n" + board);
+//            System.out.println("ACTIONS FORLOOP = "+ actions);
+//            System.out.println("Action picked FORLOOP = "+ action);
         }
 
+        System.out.println(board);
         //see who is the winner and return the reward
 
         int wonPlayer = HexGameOverChecker.isGameOver(board);
-        //System.out.println("Board: \n" + board);
+        System.out.println("Board: \n" + board);
         TileState winner = wonPlayer == 1 ? TileState.PLAYER1 : TileState.PLAYER2;
+        System.out.println("Current Player = " + currentPlayer.toString());
+        System.out.println("Winner Player = " + winner.toString());
         if (winner == currentPlayer)
         {
-            //System.out.println("reward: " + 1);
+
+            System.out.println("reward: " + 1);
             return 1;
         }
         else
         {
-            //System.out.println("reward: " + -1);
+            System.out.println("reward: " + -1);
             return -1;
         }
     }

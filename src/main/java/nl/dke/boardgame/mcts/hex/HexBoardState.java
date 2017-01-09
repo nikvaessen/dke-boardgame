@@ -198,6 +198,8 @@ public class HexBoardState
     {
         String s = "State: \n";
         s += board.toString();
+        s+= "Player = "+getPlayer() + "\n";
+        s+= "OtherPlayer = "+getOtherPlayer();
         return s;
     }
 }

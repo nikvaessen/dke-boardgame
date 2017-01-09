@@ -149,7 +149,27 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
      */
     public void simulate(SimulationPolicy<S> simulationPolicy)
     {
-        backPropagate(simulationPolicy.simulate(getState()));
+        int reward = simulationPolicy.simulate(getState());
+        if(getRoot().getState().nextActor() == getState().nextActor())
+        {
+            backPropagate(reward);
+        }
+        else
+        {
+            backPropagate(-reward);
+        }
+    }
+
+    public MonteCarloNode getRoot()
+    {
+        if(isRoot())
+        {
+            return this;
+        }
+        else
+        {
+            return parent.getRoot();
+        }
     }
 
     /**
@@ -159,12 +179,12 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
      */
     private void backPropagate(int q)
     {
+        visits++;
+        qValues += q;
         if(isRoot())
         {
             return;
         }
-        visits++;
-        qValues += q;
         parent.backPropagate(-q);
     }
 
@@ -241,7 +261,7 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
         return String.format("visits: %d\nq: %d\nstate: %s\naction: %s",
                 visits,
                 qValues,
-                ""/*getState().toString()*/,
+                getState().toString(),
                 action.toString());
     }
 }
