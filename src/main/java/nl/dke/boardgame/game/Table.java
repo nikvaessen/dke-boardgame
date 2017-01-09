@@ -60,7 +60,7 @@ public class Table
             case random:
                 return new RandomHexPlayer(player);
             case MCTS:
-                return new MCTSPlayer(player, 0.1, 100000);
+                return new MCTSPlayer(player, 0.5, 30000);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
                         "HexPlayer, given argument" + type + " is not " +

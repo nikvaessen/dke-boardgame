@@ -23,7 +23,7 @@ public class HexGame
      * The minimum width and height of the board which are allowed to be given
      * as an argument to the constructor
      */
-    public final static int MINIMUM_BOARD_DIMENSION = 9;
+    public final static int MINIMUM_BOARD_DIMENSION = 2;
 
     /**
      * The maximum width and height of the board which are allowed to be given
