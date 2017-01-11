@@ -212,7 +212,7 @@ public class AlphaBetaPlayer extends HexPlayer {
         int[][] graphPlayerOne = getGraph(board, TileState.PLAYER1);
         int[][] graphPlayerTwo = getGraph(board, TileState.PLAYER2);
         int row;int column;
-        int path1Counter = 0;int path2Counter = 0;
+        int path1Counter = 0; int path2Counter = 0;
 
         List<Integer> path1 = dijkstraObject.dijkstra(graphPlayerOne,0,122);
         for(Integer x: path1){

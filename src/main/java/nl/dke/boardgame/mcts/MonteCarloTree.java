@@ -40,7 +40,6 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         // keep going until the allotted time has run out
         log("root node:\n" + root + "\n");
         while(System.currentTimeMillis() - startTime < ms)
-        //while (count < 30)
         {
             log(String.format("\n####### iteration %d ######%n", count));
             count++;
@@ -52,7 +51,6 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
             log("Expanded child:\n" + expandedChild + "\n");
             // simulate on the newly created child and backpropagate the results
             log("\nsimulation:\n");
-
             for(int i = 0; i < 4; i++) {
                 expandedChild.simulate(simulationPolicy);
             }
@@ -63,10 +61,13 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
             log(String.format("\nIteration %d of MCTS took %d nano seconds\n", count, end - start));
         }
 
-        log("\nFinal Tree:\n");
-        debugTree(root);
-        MonteCarloNode<S, A> bestNode = treePolicy.bestRootChild((MonteCarloRootNode) root);
-        log("\nBest node: \n" + bestNode + "\n");
+        if(DEBUG)
+        {
+            log("\nFinal Tree:\n");
+            debugTree(root);
+            MonteCarloNode<S, A> bestNode = treePolicy.bestRootChild((MonteCarloRootNode) root);
+            log("\nBest node: \n" + bestNode + "\n");
+        }
         return treePolicy.bestRootChild(root).getAction();
     }
 
