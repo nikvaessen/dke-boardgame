@@ -46,15 +46,14 @@ public class HexBoardSimulation
 //            System.out.println("ACTIONS FORLOOP = "+ actions);
 //            System.out.println("Action picked FORLOOP = "+ action);
         }
-
-        System.out.println(board);
         //see who is the winner and return the reward
-
         int wonPlayer = HexGameOverChecker.isGameOver(board);
-        System.out.println("Board: \n" + board);
         TileState winner = wonPlayer == 1 ? TileState.PLAYER1 : TileState.PLAYER2;
+
+        System.out.println("Simulated board:\n" + board);
         System.out.println("Current Player = " + currentPlayer.toString());
         System.out.println("Winner Player = " + winner.toString());
+
         if (winner == currentPlayer)
         {
 

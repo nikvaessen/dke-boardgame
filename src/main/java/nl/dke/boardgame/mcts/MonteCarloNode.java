@@ -2,6 +2,7 @@ package nl.dke.boardgame.mcts;
 
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;
+import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -185,7 +186,7 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
         {
             return;
         }
-        parent.backPropagate(-q);
+        parent.backPropagate(q);
     }
 
     /**
@@ -258,9 +259,12 @@ public class MonteCarloNode<S extends State, A extends Action<S> >
 
     public String toString()
     {
-        return String.format("visits: %d\nq: %d\nstate: %s\naction: %s",
+        return String.format("visits: %d\nq: %d\nUCT 0.0: %f\nUTC 0.5: %f\nUTC 3.0: %f\nstate:\n%s\naction: %s",
                 visits,
                 qValues,
+                UCTTreePolicy.getUCTValue(this, 0),
+                UCTTreePolicy.getUCTValue(this, 0.5),
+                UCTTreePolicy.getUCTValue(this, 3),
                 getState().toString(),
                 action.toString());
     }

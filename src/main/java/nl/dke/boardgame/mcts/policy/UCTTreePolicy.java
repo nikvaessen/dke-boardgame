@@ -218,7 +218,7 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
     /**
      * Computes the UCT value of a node. The upper confidence bound is defined as:
      *
-     *          Q(node)             ( 2 * ln(N(node))  )
+     *          Q(node)             ( 2 * ln(N(parent))  )
      *          -------  + C * sqrt ( ---------------  )
      *          N(node)             (     N(Node)      )
      *
@@ -232,18 +232,27 @@ public class UCTTreePolicy <S extends State, A extends Action<S> >
      * @param node the node to compute UCT on
      * @param c the exploration value
      * @return the computed ICT value which is >= 0
+     * @throws IllegalArgumentException when the given node does not have a parent
      */
-    private double getUCTValue(MonteCarloNode node, double c)
+    public static double getUCTValue(MonteCarloNode node, double c)
+        throws IllegalArgumentException
     {
         double n = node.getVisits();
         double q = node.getqValues();
+        MonteCarloNode parent = node.getParent();
+        if(parent == null)
+        {
+            throw new IllegalArgumentException("cannot compute UCT value, given node does not have a parent");
+        }
+        double nP = parent.getVisits();
         if(Math.abs(n - 0) < 0.00001d) // equal to 0
         {
             return Double.MAX_VALUE; //infinity
         }
         else
         {
-            return (q/n) + c * Math.sqrt( 2 * Math.log(n) / n );
+
+            return (q/n) + c * Math.sqrt( 2 * Math.log(nP) / n );
         }
     }
 

@@ -37,8 +37,8 @@ public class MonteCarloRootNode<S extends State, A extends Action<S> >
 
     public String toString()
     {
-        return String.format("visits: %d\nq: %d\nstate: %s\n",
-               super.getVisits(),
+        return String.format("visits: %d\nq: %d\nstate:\n%s",
+                super.getVisits(),
                 super.getqValues(),
                 getState().toString());
     }

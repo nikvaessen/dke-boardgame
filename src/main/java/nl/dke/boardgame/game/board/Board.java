@@ -255,7 +255,7 @@ public class Board
             pad++;
             st += "\n";
         }
-        return st;
+        return st.substring(0, st.length() - 1);
     }
 
     /**
