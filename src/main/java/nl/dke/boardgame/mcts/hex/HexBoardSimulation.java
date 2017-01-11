@@ -66,7 +66,6 @@ public class HexBoardSimulation
             System.out.println("Current Player = " + currentPlayer.toString());
             System.out.println("Winner Player = " + winner.toString());
             System.out.println("reward: " + reward);
-
         }
         return reward;
     }

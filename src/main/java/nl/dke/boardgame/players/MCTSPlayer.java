@@ -20,20 +20,22 @@ public class MCTSPlayer extends HexPlayer
     private TreePolicy<HexBoardState, HexBoardAction> treePolicy;
     private SimulationPolicy<HexBoardState> simulationPolicy;
     private int ms;
+    private int simulationsPerIteration;
 
-    public MCTSPlayer(TileState claimer, double exploration, int ms) throws IllegalArgumentException
+    public MCTSPlayer(TileState claimer, double exploration, int simulationsPerIteration, int ms) throws IllegalArgumentException
     {
         super(claimer);
         treePolicy = new UCTTreePolicy<>(exploration);
         simulationPolicy = new HexBoardSimulation();
         this.ms = ms;
+        this.simulationsPerIteration = simulationsPerIteration;
     }
 
     @Override
     public void finishMove(Move move)
     {
         MonteCarloTree<HexBoardState, HexBoardAction> monteCarloTree =
-                new MonteCarloTree<>(treePolicy, simulationPolicy);
+                new MonteCarloTree<>(treePolicy, simulationPolicy, simulationsPerIteration);
 
 
         HexBoardState state = new HexBoardState(move.getBoard().clone(), move.getPlayer());

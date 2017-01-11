@@ -17,10 +17,13 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
 
     private SimulationPolicy<S> simulationPolicy;
 
-    public MonteCarloTree(TreePolicy<S, A> treePolicy, SimulationPolicy<S> simulationPolicy)
+    private int simulationsPerIteration;
+
+    public MonteCarloTree(TreePolicy<S, A> treePolicy, SimulationPolicy<S> simulationPolicy, int simsPerIt)
     {
         this.treePolicy = treePolicy;
         this.simulationPolicy = simulationPolicy;
+        this.simulationsPerIteration = simsPerIt;
     }
 
 
@@ -35,9 +38,9 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         MonteCarloRootNode<S, A> root = new MonteCarloRootNode<>(initialState);
         long startTime = System.currentTimeMillis() , start, end, count = 0;
         // keep going until the allotted time has run out
-//        while(System.currentTimeMillis() - startTime < ms)
         log("root node:\n" + root + "\n");
-        while (count < 30)
+        while(System.currentTimeMillis() - startTime < ms)
+        //while (count < 30)
         {
             log(String.format("\n####### iteration %d ######%n", count));
             count++;
@@ -49,7 +52,11 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
             log("Expanded child:\n" + expandedChild + "\n");
             // simulate on the newly created child and backpropagate the results
             log("\nsimulation:\n");
-            expandedChild.simulate(simulationPolicy);
+
+            for(int i = 0; i < 4; i++) {
+                expandedChild.simulate(simulationPolicy);
+            }
+
             end = System.nanoTime();
             log("\nCurrent Tree:\n");
             debugTree(root);
