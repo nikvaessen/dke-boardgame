@@ -5,6 +5,7 @@ import nl.dke.boardgame.game.HexGameOverChecker;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
+import nl.dke.boardgame.mcts.MonteCarloTree;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 
 import java.util.Arrays;
@@ -50,21 +51,24 @@ public class HexBoardSimulation
         int wonPlayer = HexGameOverChecker.isGameOver(board);
         TileState winner = wonPlayer == 1 ? TileState.PLAYER1 : TileState.PLAYER2;
 
-        System.out.println("Simulated board:\n" + board);
-        System.out.println("Current Player = " + currentPlayer.toString());
-        System.out.println("Winner Player = " + winner.toString());
-
+        int reward;
         if (winner == currentPlayer)
         {
-
-            System.out.println("reward: " + 1);
-            return 1;
+            reward = 1;
         }
         else
         {
-            System.out.println("reward: " + -1);
-            return -1;
+            reward = -1;
         }
+        if(MonteCarloTree.DEBUG)
+        {
+            System.out.println("Simulated board:\n" + board);
+            System.out.println("Current Player = " + currentPlayer.toString());
+            System.out.println("Winner Player = " + winner.toString());
+            System.out.println("reward: " + reward);
+
+        }
+        return reward;
     }
 
 }

@@ -11,6 +11,8 @@ import nl.dke.boardgame.mcts.policy.TreePolicy;
 public class MonteCarloTree<S extends State, A extends Action<S> >
 {
 
+    public static final boolean DEBUG = false;
+
     private TreePolicy<S, A> treePolicy;
 
     private SimulationPolicy<S> simulationPolicy;
@@ -29,36 +31,35 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         {
             throw new IllegalArgumentException(String.format("Cannot search for %d ms, which is <= 0", ms));
         }
-        System.out.println("\n### Starting MCTS search ###");
+        log("\n### Starting MCTS search ###\n");
         MonteCarloRootNode<S, A> root = new MonteCarloRootNode<>(initialState);
         long startTime = System.currentTimeMillis() , start, end, count = 0;
         // keep going until the allotted time has run out
 //        while(System.currentTimeMillis() - startTime < ms)
-        System.out.println("root node:\n" + root);
+        log("root node:\n" + root + "\n");
         while (count < 30)
         {
-            System.out.printf("\n####### iteration %d ######%n", count);
+            log(String.format("\n####### iteration %d ######%n", count));
             count++;
             start = System.nanoTime();
             // select the critical node in the Tree which needs expanding
             // expand this node and store the child
             // if critical node cannot be expanded, critical node is returned instead
             MonteCarloNode<S, A> expandedChild = treePolicy.choose(root);
-            System.out.println("Expanded child:\n" + expandedChild);
+            log("Expanded child:\n" + expandedChild + "\n");
             // simulate on the newly created child and backpropagate the results
-            System.out.println("\nsimulation:");
+            log("\nsimulation:\n");
             expandedChild.simulate(simulationPolicy);
             end = System.nanoTime();
-            System.out.println("\nCurrent Tree:");
+            log("\nCurrent Tree:\n");
             debugTree(root);
-            System.out.printf("\nIteration %d of MCTS took %d nano seconds\n", count, end - start);
+            log(String.format("\nIteration %d of MCTS took %d nano seconds\n", count, end - start));
         }
 
-        System.out.println("\nFinal Tree:");
+        log("\nFinal Tree:\n");
         debugTree(root);
         MonteCarloNode<S, A> bestNode = treePolicy.bestRootChild((MonteCarloRootNode) root);
-        System.out.println("\nBest node: \n" + bestNode);
-
+        log("\nBest node: \n" + bestNode + "\n");
         return treePolicy.bestRootChild(root).getAction();
     }
 
@@ -70,17 +71,16 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
 
     private void debugTree(MonteCarloRootNode<S, A> node)
     {
-        System.out.println("Root node: \n" + node);
+        log("Root node: \n" + node + "\n");
         int count = 0;
-        System.out.println("\nchildren of root:\n");
+        log("\nchildren of root:\n\n");
         for(MonteCarloNode<S, A> child : node)
         {
             count++;
-            System.out.println(child + "\n");
+            log(child + "\n\n");
             debugChildren(child, 2);
         }
-
-        System.out.printf("\nRoot has %d children\n", count);
+        log(String.format("\nRoot has %d children\n", count));
     }
 
     private void debugChildren(MonteCarloNode<S, A> node, int layer)
@@ -90,17 +90,23 @@ public class MonteCarloTree<S extends State, A extends Action<S> >
         {
             if(!loop)
             {
-                System.out.printf("\nchildren of above node in layer %d\n\n", layer);
+                log(String.format("\nchildren of above node in layer %d\n\n", layer));
                 loop = true;
             }
-            System.out.println(child);
+            log(child + "\n");
             debugChildren(child, layer+1);
         }
         if(loop)
         {
-            System.out.printf("______end of children in layer %d______\n\n",
-                    layer);
+            log(String.format("______end of children in layer %d______\n\n", layer));
         }
     }
 
+    private static void log(String message)
+    {
+        if(DEBUG)
+        {
+            System.out.print(message);
+        }
+    }
 }
