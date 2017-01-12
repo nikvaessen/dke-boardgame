@@ -6,7 +6,7 @@ import nl.dke.boardgame.game.PieMove;
 import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.mcts.MonteCarloTree;
 import nl.dke.boardgame.mcts.hex.HexBoardAction;
-import nl.dke.boardgame.mcts.hex.HexBoardSimulation;
+import nl.dke.boardgame.mcts.hex.RandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.HexBoardState;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;
@@ -26,7 +26,7 @@ public class MCTSPlayer extends HexPlayer
     {
         super(claimer);
         treePolicy = new UCTTreePolicy<>(exploration);
-        simulationPolicy = new HexBoardSimulation();
+        simulationPolicy = new RandomHexBoardSimulation();
         this.ms = ms;
         this.simulationsPerIteration = simulationsPerIteration;
     }

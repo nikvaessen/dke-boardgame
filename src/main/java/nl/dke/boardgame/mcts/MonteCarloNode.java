@@ -1,6 +1,5 @@
 package nl.dke.boardgame.mcts;
 
-import nl.dke.boardgame.mcts.hex.HexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.HexBoardState;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;

@@ -3,14 +3,14 @@ package nl.dke.boardgame;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.TileState;
-import nl.dke.boardgame.mcts.hex.HexBoardSimulation;
+import nl.dke.boardgame.mcts.hex.RandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.HexBoardState;
 import org.junit.Test;
 
 /**
  * Created by nik on 08/01/17.
  */
-public class HexBoardSimulationTest
+public class RandomHexBoardSimulationTest
 {
     @Test
     public void testSimulation() throws AlreadyClaimedException
@@ -28,7 +28,7 @@ public class HexBoardSimulationTest
 
         HexBoardState ib = new HexBoardState(b, TileState.PLAYER1);
 
-        HexBoardSimulation sim = new HexBoardSimulation();
+        RandomHexBoardSimulation sim = new RandomHexBoardSimulation();
         System.out.println("STATE BEFORE SIM \n" + ib);
         int r = sim.simulate(ib);
         System.out.println("REWARD OF SIM = " + r);

@@ -1,6 +1,6 @@
 package nl.dke.boardgame.mcts;
 
-import nl.dke.boardgame.mcts.hex.HexBoardSimulation;
+import nl.dke.boardgame.mcts.hex.RandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.HexBoardState;
 
 /**
@@ -17,7 +17,7 @@ public class HexSimulationThread extends Thread {
 
     @Override
     public void run() {
-        reward = HexBoardSimulation.staticSimulate(state);
+        reward = RandomHexBoardSimulation.simulate(state);
     }
 
     public int getReward() {

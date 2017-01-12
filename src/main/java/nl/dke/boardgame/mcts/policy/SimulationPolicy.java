@@ -13,8 +13,9 @@ public interface SimulationPolicy<S extends State>
     /**
      * apply simulation on a given state do determine the reward
      * @param state the state to use simulation on
-     * @return the reward of the simulation
+     * @param times the amount of simulations being done
+     * @return the sum of the rewards of the simulation
      */
-    int simulate(S state);
+    int simulate(S state, int times);
 
 }
