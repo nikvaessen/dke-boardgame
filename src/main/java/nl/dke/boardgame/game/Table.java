@@ -57,7 +57,7 @@ public class Table
             case random:
                 return new RandomHexPlayer(player);
             case MCTS:
-                return new MCTSPlayer(player, 10, 1000, 60000);
+                return new MCTSPlayer(player, 10, 32, 90000);
             case alphabeta:
                 return new AlphaBetaPlayer(player);
             default:
