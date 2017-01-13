@@ -16,6 +16,7 @@ public class MainFrame extends JFrame
         selectPanel = new SelectPanel(this);
 
         //set main gui settings
+        setTitle("Can you Hex it?");
         setLayout(new BorderLayout());
         getContentPane().add(selectPanel, BorderLayout.CENTER);
         pack();

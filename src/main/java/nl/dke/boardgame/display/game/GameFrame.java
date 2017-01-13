@@ -31,6 +31,7 @@ public class GameFrame extends JFrame
         //set main gui settings
         setLayout(new GridBagLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Hex it!");
         GridBagConstraints c = new GridBagConstraints();
 
         //create panel which draws the board
