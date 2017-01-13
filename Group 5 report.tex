@@ -1,0 +1,63 @@
+\documentclass{ba-kecs}
+\usepackage{graphicx}
+
+
+
+\title{AI implementations for Hex}
+\runningtitle{AI for Hex}
+\author{A. Steckelberg, N. Vaessen, J.L. Velasquez, J. Vermazeren, T. Wall, X. Weber}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+ Hex is a classic board game invented in 1942 by Piet Hein and independently by John Nash in 1948. In this paper there is research into alpha-beta  and Monte Carlo Tree Search Hex players. We compare different evaluation functions which includes Dijkstra, Electric Circuit besides this we compare Monte Carlo Tree Search specific heuristics.   
+\end{abstract}
+
+\section{Introduction}
+
+ The board game Hex comprises of a board of hexagons, typically 11x11 in size, with the aim of creating a bridge from either top to bottom or left to right. The game was first created in 1942, and improved into the version we know today in 1947. As the game is fully determined, as connecting one player's path will block the other, it is an ideal candidate to create an AI for.\\ 
+ \subsection{What is Hex?}
+ In this report, several methods of implementing an algorithm to play the game will be explored and explained. These methods will also be tested by limit factors within them and by their performance against other algorithms and human players.
+
+
+\subsection{History}
+
+
+
+\section{Rules and Algorithms of Hex}
+\subsection{Rules}
+Rules for Hex
+\subsection{Alpha-beta Hex Players}
+Explanation of alpha-beta 
+\subsection{Electric circuit}
+Explanation of the electric circuit of Anshelivic
+\subsection{Monte Carlo Tree Search}
+Article used for MCTS \cite{arneson2010monte}
+Article used to understand MCTS \cite{browne2012survey}
+\subsubsection{Select}
+\subsubsection{Expand}
+\subsubsection{Simulate}
+\subsubsection{Backpropagate}
+Explanation of general MCTS
+\subsection{Improvements on general MCTS}
+\subsubsection{UCT}
+Explanation of Upper Confindence Treshold. Multi armed bandit problem
+\subsubsection{AMAF/RAVE}
+
+Explanation of either AMAF or RAVE \cite{gelly2011monte}
+\subsubsection{Parallelisation}
+Explanation of different parallelisation methods
+
+\section{Experiments}
+Explanation of experiments and results, comparing different parameters
+\section{Results}
+Explanation of results of the experiments
+\section{Conclusion}
+Conclusion on the explanation of the result of the experiments
+\bibliography{biblio}
+
+
+
+\end{document}
