@@ -18,12 +18,14 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
     private SimulationPolicy<S> simulationPolicy;
 
     private int simulationsPerIteration;
+    public static int numberNodes = 0;
 
     public MonteCarloTree(TreePolicy<S, A> treePolicy, SimulationPolicy<S> simulationPolicy, int simsPerIt)
     {
         this.treePolicy = treePolicy;
         this.simulationPolicy = simulationPolicy;
         this.simulationsPerIteration = simsPerIt;
+        numberNodes = 0;
     }
 
 

@@ -59,6 +59,7 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
     {
         this.parent = parent;
         this.action = action;
+        MonteCarloTree.numberNodes++;
     }
 
     /**
