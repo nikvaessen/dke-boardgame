@@ -21,6 +21,7 @@ public class RandomHexPlayer extends HexPlayer
 
     /**
      * Creates a players which randomly claims tiles
+     *
      * @param state as which player is will play
      */
     public RandomHexPlayer(TileState state)
@@ -30,6 +31,7 @@ public class RandomHexPlayer extends HexPlayer
 
     /**
      * randomly claims a tile
+     *
      * @param move the move the player needs to make
      */
     @Override
@@ -43,8 +45,7 @@ public class RandomHexPlayer extends HexPlayer
                 move.setRow(rng.nextInt(board.getHeight()));
                 move.setColumn(rng.nextInt(board.getWidth()));
                 System.out.printf(" made random move: %d, %d\n", move.getRow(), move.getColumn());
-            }
-            catch(IllegalArgumentException | MoveNotCompletedException e)
+            } catch(IllegalArgumentException | MoveNotCompletedException e)
             {
                 e.printStackTrace();
                 continue;

@@ -5,7 +5,6 @@ import nl.dke.boardgame.game.HexGameOverChecker;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.mcts.MonteCarloTree;
-import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +14,8 @@ import java.util.List;
  */
 public class RandomHexBoardSimulation
 {
-    public static int simulate(HexBoardState state) {
+    public static int simulate(HexBoardState state)
+    {
         // reset variables
         Board board = state.getBoard().clone();
         TileState currentPlayer = state.getPlayer();
@@ -25,14 +25,13 @@ public class RandomHexBoardSimulation
 
         Collections.shuffle(actions);
         TileState player = currentPlayer;
-        for (HexBoardAction action : actions)
+        for(HexBoardAction action : actions)
         {
             try
             {
                 board.claim(action.getX(), action.getY(), player);
                 player = HexBoardState.getOtherPlayer(player);
-            }
-            catch (AlreadyClaimedException e)
+            } catch(AlreadyClaimedException e)
             {
                 e.printStackTrace();
             }
@@ -45,7 +44,7 @@ public class RandomHexBoardSimulation
         TileState winner = wonPlayer == 1 ? TileState.PLAYER1 : TileState.PLAYER2;
 
         int reward;
-        if (winner == currentPlayer)
+        if(winner == currentPlayer)
         {
             reward = 1;
         }
@@ -53,7 +52,8 @@ public class RandomHexBoardSimulation
         {
             reward = -1;
         }
-        if (MonteCarloTree.DEBUG) {
+        if(MonteCarloTree.DEBUG)
+        {
             System.out.println("Simulated board:\n" + board);
             System.out.println("Current Player = " + currentPlayer.toString());
             System.out.println("Winner Player = " + winner.toString());

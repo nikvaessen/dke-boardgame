@@ -25,7 +25,7 @@ public class InfoPanel extends JPanel implements Watcher
     private final static String PLAYER_1_INFO = "Player 1:";
     private final static String PLAYER_1 = "player 1";
     private final static String PLAYER_1_COLOR_STRING = "RED";
-    private final static Color  PLAYER_1_COLOR = Color.RED;
+    private final static Color PLAYER_1_COLOR = Color.RED;
 
     /**
      * Constant Strings for player 2 display
@@ -33,7 +33,7 @@ public class InfoPanel extends JPanel implements Watcher
     private final static String PLAYER_2_INFO = "Player 2:";
     private final static String PLAYER_2 = "player 2";
     private final static String PLAYER_2_COLOR_STRING = "BLUE";
-    private final static Color  PLAYER_2_COLOR = Color.BLUE;
+    private final static Color PLAYER_2_COLOR = Color.BLUE;
 
     /**
      * Constant Strings for total turns display
@@ -76,6 +76,7 @@ public class InfoPanel extends JPanel implements Watcher
 
     /**
      * Create a InfoPanel displaying information about a HexGame
+     *
      * @param gameState the GameState belonging to the HexGame
      */
     public InfoPanel(GameState gameState)

@@ -14,29 +14,29 @@ public class RewardTracker
         count = 0;
     }
 
-    public void negative()
+    public synchronized void negative()
     {
         reward--;
         count++;
     }
 
-    public void positive()
+    public synchronized void positive()
     {
         reward++;
         count++;
     }
 
-    public void neutral()
+    public synchronized void neutral()
     {
         count++;
     }
 
-    public int getReward()
+    public synchronized int getReward()
     {
         return reward;
     }
 
-    public int getCount()
+    public synchronized int getCount()
     {
         return count;
     }

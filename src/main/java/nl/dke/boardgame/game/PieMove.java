@@ -24,6 +24,7 @@ public class PieMove extends Move
 
     /**
      * Checks whether the given row and column are a valid move
+     *
      * @return true if it is a valid move, false otherwise
      */
     @Override
@@ -31,10 +32,10 @@ public class PieMove extends Move
     {
         try
         {
-            getColumn(); getRow();
+            getColumn();
+            getRow();
             return true;
-        }
-        catch (MoveNotCompletedException e)
+        } catch(MoveNotCompletedException e)
         {
             return false;
         }
@@ -43,6 +44,7 @@ public class PieMove extends Move
 
     /**
      * Checks if the Board state is legal such that it is a Pie move
+     *
      * @param board the board to check
      * @return whether the pie rule applies to this board
      */
@@ -54,7 +56,7 @@ public class PieMove extends Move
         {
             for(int j = 0; j < board.getWidth(); j++)
             {
-                switch (board.getState(i, j))
+                switch(board.getState(i, j))
                 {
                     case PLAYER1:
                         player1Tiles++;

@@ -1,12 +1,10 @@
 package nl.dke.boardgame.display.game;
 
-import javax.swing.*;
-
 import nl.dke.boardgame.exceptions.NotAcceptingInputException;
 import nl.dke.boardgame.game.GameState;
-import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.util.Watcher;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -85,8 +83,7 @@ public class HexBoardPanel extends JPanel implements Watcher
                 {
                     processor.in(hex.getRow(), hex.getColumn());
                 }
-            }
-            catch (NotAcceptingInputException e)
+            } catch(NotAcceptingInputException e)
             {
                 e.printStackTrace();
             }

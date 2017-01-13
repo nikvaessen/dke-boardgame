@@ -1,6 +1,5 @@
 package nl.dke.boardgame.mcts.hex;
 
-import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
@@ -14,7 +13,7 @@ import java.util.List;
  * Created by nik on 07/01/17.
  */
 public class HexBoardState
-    implements State
+        implements State
 {
     /**
      * The board of the state
@@ -22,17 +21,18 @@ public class HexBoardState
     private Board board;
 
     /**
-     *  The player currently allowed to make a move on this board
+     * The player currently allowed to make a move on this board
      */
     private TileState player;
 
     /**
      * Create the initial State
-     * @param width the width of the board
+     *
+     * @param width  the width of the board
      * @param height the height of the board
      */
     public HexBoardState(int width, int height)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         board = new Board(width, height);
         player = TileState.PLAYER1;
@@ -46,6 +46,7 @@ public class HexBoardState
 
     /**
      * Get the board of this state
+     *
      * @return the board of this state
      */
     public Board getBoard()
@@ -58,12 +59,12 @@ public class HexBoardState
         return player;
     }
 
-    protected TileState getOtherPlayer()
+    public TileState getOtherPlayer()
     {
         return player == TileState.PLAYER1 ? TileState.PLAYER2 : TileState.PLAYER1;
     }
 
-    static TileState getOtherPlayer(TileState player)
+    public static TileState getOtherPlayer(TileState player)
     {
         return player == TileState.PLAYER1 ? TileState.PLAYER2 : TileState.PLAYER1;
     }
@@ -76,7 +77,7 @@ public class HexBoardState
         {
             for(int j = 0; j < board.getHeight(); j++)
             {
-                if (board.getState(i, j) == TileState.NEUTRAL)
+                if(board.getState(i, j) == TileState.NEUTRAL)
                 {
                     actions.add(new HexBoardAction(i, j, player));
                 }
@@ -93,6 +94,7 @@ public class HexBoardState
 
     /**
      * Checks if one of the players has won the game.
+     *
      * @return true if someone has won, false otherwise
      */
     private boolean checkWin()
@@ -101,7 +103,7 @@ public class HexBoardState
 
         //check if player1 has won
         boolean won = false;
-        for(int i = 0; i < board.getHeight() && !won ; i++)
+        for(int i = 0; i < board.getHeight() && !won; i++)
         {
             board.getNeighbours(i, 0);
             won = isPathToOtherSide(i, 0, map, TileState.PLAYER1);
@@ -123,10 +125,11 @@ public class HexBoardState
      * looks for a path from one side of the board to other by visiting a
      * tile on a specific tile and row and going to each neighbour until
      * it has reached the other side.
-     * @param row the row where the algorithm currently is
+     *
+     * @param row    the row where the algorithm currently is
      * @param column the column where the algorithm currently is
-     * @param map the map of the whole board, which stores which
-     *            tiles have already been visited
+     * @param map    the map of the whole board, which stores which
+     *               tiles have already been visited
      * @param player for which player the algorithm is currently checking
      *               for a path
      * @return if a path is found
@@ -134,7 +137,7 @@ public class HexBoardState
     private boolean isPathToOtherSide(int row, int column, boolean[][] map,
                                       TileState player)
     {
-        if(map[row][column] || board.getState(row, column ) != player)
+        if(map[row][column] || board.getState(row, column) != player)
         {
             return false;
         }
@@ -176,7 +179,7 @@ public class HexBoardState
     @Override
     public HexBoardState next(Action action) throws IllegalArgumentException
     {
-        if (!(action instanceof HexBoardAction))
+        if(!(action instanceof HexBoardAction))
         {
             throw new IllegalArgumentException("Action to be applied to a Board is not a HexBoardAction");
         }

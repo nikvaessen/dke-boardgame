@@ -22,7 +22,7 @@ public class InputProcessor
     }
 
     public synchronized void in(int row, int column)
-        throws IllegalArgumentException, NotAcceptingInputException
+            throws IllegalArgumentException, NotAcceptingInputException
     {
         if(!accepting())
         {
@@ -33,7 +33,7 @@ public class InputProcessor
     }
 
     public synchronized void in(String textInput)
-        throws IllegalArgumentException, NotAcceptingInputException
+            throws IllegalArgumentException, NotAcceptingInputException
     {
         if(!accepting())
         {
@@ -45,7 +45,7 @@ public class InputProcessor
             String[] splittedText = new String[2];
             splittedText[0] = textInput.substring(0, 1);
             splittedText[1] = textInput.substring(1);
-            if (splittedText.length != 2 || splittedText[0].length() != 1)
+            if(splittedText.length != 2 || splittedText[0].length() != 1)
             {
                 throw new IllegalArgumentException("Input has wrong syntax.  ");
             }
@@ -57,8 +57,7 @@ public class InputProcessor
                 System.out.printf("Human entered: column: %d row %d%n", column, row);
                 process(row, column);
             }
-        }
-        catch (NumberFormatException e)
+        } catch(NumberFormatException e)
         {
             throw new IllegalArgumentException("Could not format the given" +
                     " row number");
@@ -71,7 +70,7 @@ public class InputProcessor
     }
 
     private void process(int row, int column)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         System.out.println(String.format("received %d and %d", row, column));
         Board board = currentMove.getBoard();

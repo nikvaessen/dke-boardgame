@@ -21,6 +21,7 @@ public class HumanHexPlayer extends HexPlayer
 
     /**
      * Creates the HumanHexPlayer class
+     *
      * @param state the kind of player
      * @param input the object retrieving the inputProcessor from the user
      */
@@ -42,14 +43,12 @@ public class HumanHexPlayer extends HexPlayer
                 try
                 {
                     Thread.sleep(100);
-                }
-                catch (Exception e)
+                } catch(Exception e)
                 {
                     e.printStackTrace();
                 }
             }
-        }
-        catch (NotAcceptingInputException e)
+        } catch(NotAcceptingInputException e)
         {
             e.printStackTrace();
         }

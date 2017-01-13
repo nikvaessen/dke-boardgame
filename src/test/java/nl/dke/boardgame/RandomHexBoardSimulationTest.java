@@ -3,8 +3,8 @@ package nl.dke.boardgame;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.TileState;
-import nl.dke.boardgame.mcts.hex.RandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.HexBoardState;
+import nl.dke.boardgame.mcts.hex.RandomHexBoardSimulation;
 import org.junit.Test;
 
 /**
@@ -15,13 +15,13 @@ public class RandomHexBoardSimulationTest
     @Test
     public void testSimulation() throws AlreadyClaimedException
     {
-        Board b = new Board(2,2);
+        Board b = new Board(2, 2);
 /*        b.claim(0,0, TileState.PLAYER1);
         b.claim(1,0, TileState.PLAYER1);
         b.claim(0,1, TileState.PLAYER2);
         b.claim(1,1, TileState.PLAYER2);*/
 
-        b.claim(0,0, TileState.PLAYER2);
+        b.claim(0, 0, TileState.PLAYER2);
 /*        b.claim(1,0, TileState.PLAYER2);
         b.claim(0,1, TileState.PLAYER2);
         b.claim(1,1, TileState.PLAYER1);*/

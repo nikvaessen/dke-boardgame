@@ -33,11 +33,12 @@ public class Move
 
     /**
      * Create a move on a board for a player to make
-     * @param board the board to decide on which move to make
+     *
+     * @param board  the board to decide on which move to make
      * @param player which player needs to make a move
      */
     public Move(Board board, TileState player)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         if(player == TileState.NEUTRAL)
         {
@@ -49,6 +50,7 @@ public class Move
 
     /**
      * Gets which player is making the move
+     *
      * @return player1 or player2
      */
     public TileState getPlayer()
@@ -59,6 +61,7 @@ public class Move
     /**
      * Gets the board-state to make the move on. The move should not be
      * made on this board, but passed along in this instance of the class
+     *
      * @return the board to decide the move on
      */
     public Board getBoard()
@@ -68,6 +71,7 @@ public class Move
 
     /**
      * Sets on which row a tile needs to be claimed
+     *
      * @param row the row on which the tile to claim is on
      * @throws IllegalArgumentException if the specified row does not exist
      */
@@ -88,6 +92,7 @@ public class Move
 
     /**
      * Gets on which row a tile needs to be claimed
+     *
      * @return the row on which the tile to claim is on
      * @throws MoveNotCompletedException when the row has not been set
      */
@@ -103,10 +108,11 @@ public class Move
 
     /**
      * Sets on which column a tile needs to be claimed
+     *
      * @param column the column on which the tile to claim is on
      */
     public void setColumn(int column)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         if(board.canAccessColumn(column))
         {
@@ -122,6 +128,7 @@ public class Move
 
     /**
      * Checks whether the given row and column are a valid move
+     *
      * @return true if it is a valid move, false otherwise
      */
     public boolean verify()
@@ -139,6 +146,7 @@ public class Move
 
     /**
      * Gets on which column a tile needs to be claimed
+     *
      * @return the column on which the tile to claim is on
      * @throws MoveNotCompletedException when the column has not been set
      */
@@ -154,6 +162,7 @@ public class Move
 
     /**
      * Checks whether the row and column have been set
+     *
      * @return true if both have been set, false otherwise
      */
     public boolean isSet()

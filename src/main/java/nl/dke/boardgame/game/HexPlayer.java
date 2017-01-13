@@ -16,11 +16,12 @@ public abstract class HexPlayer
 
     /**
      * Create the HexPlayer
+     *
      * @param claimer if the player is player1 or player2
      * @throws IllegalArgumentException when neutral is given as argument
      */
     public HexPlayer(TileState claimer)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         if(claimer == TileState.NEUTRAL)
         {
@@ -31,6 +32,7 @@ public abstract class HexPlayer
 
     /**
      * gets whether the player is player1 or player2
+     *
      * @return player1 or player2
      */
     public TileState claimsAs()
@@ -40,18 +42,21 @@ public abstract class HexPlayer
 
     /**
      * Method to decide which move the player makes
+     *
      * @param move the move the player needs to make
      */
     public abstract void finishMove(Move move);
 
     /**
      * Method to decide what the pie move should be made
+     *
      * @param move the pie move to make
      */
     public abstract void finishPieMove(PieMove move);
 
     /**
      * Get the type of player the class implements
+     *
      * @return the type of player
      */
     public abstract PossiblePlayers getTypeOfPlayer();

@@ -5,7 +5,7 @@ package nl.dke.boardgame.mcts;
  *
  * @author nik on 31/12/16.
  */
-public class MonteCarloRootNode<S extends State, A extends Action<S> >
+public class MonteCarloRootNode<S extends State, A extends Action<S>>
         extends MonteCarloNode<S, A>
 {
     /**
@@ -16,6 +16,7 @@ public class MonteCarloRootNode<S extends State, A extends Action<S> >
     /**
      * Creates a root node for MonteCarlo Tree Search, with a initial State. The root node does not have a parent,
      * and will stop recursive method calls of the MonteCarloNode class
+     *
      * @param initialState the initial state to apply MCTS on
      */
     public MonteCarloRootNode(S initialState)
@@ -26,6 +27,7 @@ public class MonteCarloRootNode<S extends State, A extends Action<S> >
 
     /**
      * Returns the initial state of the monte carlo tree search
+     *
      * @return the initial state
      */
     @Override

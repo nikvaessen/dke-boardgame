@@ -8,7 +8,7 @@ import nl.dke.boardgame.mcts.mutliThread.RewardTracker;
  * Created by nik on 12/01/17.
  */
 public class MultiThreadRandomHexBoardSimulation
-    extends AbstractMultiThreadSimulation<HexBoardState, RunnableRandomHexBoardSimulation>
+        extends AbstractMultiThreadSimulation<HexBoardState, RunnableRandomHexBoardSimulation>
 {
     /**
      * Constructs the thread for a simulation

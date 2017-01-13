@@ -1,7 +1,5 @@
 package nl.dke.boardgame.util;
 
-import java.util.List;
-
 /**
  * A watchable class will store every Watcher which "subscribes" itself to
  * it and when the watchable class changes, it will update every watcher

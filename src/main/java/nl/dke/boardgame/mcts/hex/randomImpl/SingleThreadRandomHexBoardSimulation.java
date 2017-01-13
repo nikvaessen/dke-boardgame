@@ -8,7 +8,7 @@ import nl.dke.boardgame.mcts.policy.SimulationPolicy;
  * Created by nik on 12/01/17.
  */
 public class SingleThreadRandomHexBoardSimulation
-    implements SimulationPolicy<HexBoardState>
+        implements SimulationPolicy<HexBoardState>
 {
 
     /**

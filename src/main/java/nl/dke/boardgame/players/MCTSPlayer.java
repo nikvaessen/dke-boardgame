@@ -6,11 +6,9 @@ import nl.dke.boardgame.game.PieMove;
 import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.mcts.MonteCarloTree;
 import nl.dke.boardgame.mcts.hex.HexBoardAction;
-import nl.dke.boardgame.mcts.hex.RandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.HexBoardState;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;
-import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 
 /**
  * Created by nik on 24/12/16.
@@ -22,11 +20,15 @@ public class MCTSPlayer extends HexPlayer
     private int ms;
     private int simulationsPerIteration;
 
-    public MCTSPlayer(TileState claimer, double exploration, int simulationsPerIteration, int ms) throws IllegalArgumentException
+    public MCTSPlayer(TileState claimer,
+                      TreePolicy<HexBoardState, HexBoardAction> treePolicy,
+                      SimulationPolicy<HexBoardState> simulationPolicy,
+                      int simulationsPerIteration,
+                      int ms)
     {
         super(claimer);
-        treePolicy = new UCTTreePolicy<>(exploration);
-        simulationPolicy = new RandomHexBoardSimulation();
+        this.treePolicy = treePolicy;
+        this.simulationPolicy = simulationPolicy;
         this.ms = ms;
         this.simulationsPerIteration = simulationsPerIteration;
     }

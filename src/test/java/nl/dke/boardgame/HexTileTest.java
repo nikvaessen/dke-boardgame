@@ -13,8 +13,9 @@ import org.junit.Test;
 public class HexTileTest extends TestCase
 {
     @Test
-    public void testCreation(){
-        HexTile tile = new HexTile(1,2);
+    public void testCreation()
+    {
+        HexTile tile = new HexTile(1, 2);
         System.out.println(tile);
         Assert.assertEquals(tile.toString(), "{( 1, 2);NEUTRAL}");
 
@@ -27,13 +28,15 @@ public class HexTileTest extends TestCase
     }
 
     @Test
-    public void testNeighbours(){
-        HexTile tile = new HexTile(1,2);
+    public void testNeighbours()
+    {
+        HexTile tile = new HexTile(1, 2);
 
     }
 
     @Test
-    public void testClaiming(){
+    public void testClaiming()
+    {
 
     }
 }

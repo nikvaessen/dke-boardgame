@@ -9,7 +9,7 @@ import nl.dke.boardgame.mcts.Action;
  * Created by nik on 07/01/17.
  */
 public class HexBoardAction
-    implements Action<HexBoardState>
+        implements Action<HexBoardState>
 {
     /**
      * The x and y locations of where a tile will be placed
@@ -23,8 +23,9 @@ public class HexBoardAction
 
     /**
      * Construct an Action which can be applied on a HexState
-     * @param x the row of the tile which will be selected
-     * @param y the column of the tile which will be selected
+     *
+     * @param x      the row of the tile which will be selected
+     * @param y      the column of the tile which will be selected
      * @param player the player who will claim a tile on the HexBoard
      */
     public HexBoardAction(int x, int y, TileState player)
@@ -53,8 +54,7 @@ public class HexBoardAction
         {
             board.claim(x, y, player);
             return new HexBoardState(board, before.getOtherPlayer());
-        }
-        catch (AlreadyClaimedException e)
+        } catch(AlreadyClaimedException e)
         {
             e.printStackTrace();
             throw new IllegalArgumentException("Action cannot be applied on given board");

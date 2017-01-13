@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  Holds all information about a HexGame
+ * Holds all information about a HexGame
  */
 public class GameState implements Watchable
 {
@@ -61,6 +61,7 @@ public class GameState implements Watchable
 
     /**
      * Create a GameState for a perticuliar game
+     *
      * @param player1 the type of player for player 1
      * @param player2 the type of player for player 2
      */
@@ -77,15 +78,16 @@ public class GameState implements Watchable
 
     /**
      * Complete a turn
-     * @param newBoard the new board due to the completion of a turn
+     *
+     * @param newBoard          the new board due to the completion of a turn
      * @param completedByPlayer the player who completed the turn
-     * @throws IllegalStateException when the game is already over
+     * @throws IllegalStateException    when the game is already over
      * @throws IllegalArgumentException when the player who completed the turn
-     * is not player1 or player2
+     *                                  is not player1 or player2
      */
     public synchronized void completedTurn(TileState[][] newBoard,
                                            TileState completedByPlayer)
-        throws IllegalStateException, IllegalArgumentException
+            throws IllegalStateException, IllegalArgumentException
     {
         if(hasWinner())
         {
@@ -115,13 +117,14 @@ public class GameState implements Watchable
 
     /**
      * Set that a player has won the game
+     *
      * @param player the player who won the game
-     * @throws IllegalStateException when the game is already won
+     * @throws IllegalStateException    when the game is already won
      * @throws IllegalArgumentException when the player who won the game is not
-     * player1 or player2
+     *                                  player1 or player2
      */
     public synchronized void playerWon(TileState player)
-        throws IllegalStateException, IllegalArgumentException
+            throws IllegalStateException, IllegalArgumentException
     {
         if(hasWinner())
         {
@@ -138,6 +141,7 @@ public class GameState implements Watchable
 
     /**
      * get the kind of player player1 is
+     *
      * @return the type of player1
      */
     public synchronized PossiblePlayers player1is()
@@ -147,6 +151,7 @@ public class GameState implements Watchable
 
     /**
      * get the kind of player player2 is
+     *
      * @return the type of player2
      */
     public synchronized PossiblePlayers player2is()
@@ -156,6 +161,7 @@ public class GameState implements Watchable
 
     /**
      * get who currently is allowed to make a move
+     *
      * @return the player who's turn it currently is
      */
     public synchronized TileState currentTurn()
@@ -165,6 +171,7 @@ public class GameState implements Watchable
 
     /**
      * get the amount of turns player 1 has made
+     *
      * @return the amount of turns player 1 made
      */
     public synchronized int getPlayer1Turns()
@@ -174,6 +181,7 @@ public class GameState implements Watchable
 
     /**
      * get the amount of turns player 2 has made
+     *
      * @return the amount of turns player 2 made
      */
     public synchronized int getPlayer2Turns()
@@ -183,6 +191,7 @@ public class GameState implements Watchable
 
     /**
      * get the total amount of turns completed
+     *
      * @return the total amount of turns completed
      */
     public synchronized int getTotalTurns()
@@ -192,11 +201,12 @@ public class GameState implements Watchable
 
     /**
      * Get who won the game
+     *
      * @return who won the game
      * @throws IllegalStateException when there is not yet a winner
      */
     public synchronized TileState getWinner()
-        throws IllegalStateException
+            throws IllegalStateException
     {
         if(!hasWinner())
         {
@@ -207,6 +217,7 @@ public class GameState implements Watchable
 
     /**
      * get if there is a winner
+     *
      * @return true if there is a winner, false if the game is still being
      * played
      */
@@ -218,6 +229,7 @@ public class GameState implements Watchable
     /**
      * Get the most recent board state. The current board is the board where
      * the player who's turn it is is playing on
+     *
      * @return the most recent board state
      */
     public synchronized TileState[][] getCurrentBoard()
@@ -227,13 +239,14 @@ public class GameState implements Watchable
 
     /**
      * get a previous board state
+     *
      * @param turn the turn of the previous board state being requested
      * @return the board state in the specified turn
      * @throws IllegalArgumentException when the turn specified turn value is
-     * invalid. (e.g negative or too big)
+     *                                  invalid. (e.g negative or too big)
      */
     public synchronized TileState[][] getBoardInTurn(int turn)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         if(turn < 0 || turn >= boardStateHistory.size())
         {
@@ -245,6 +258,7 @@ public class GameState implements Watchable
 
     /**
      * set if the pie rule is enabled
+     *
      * @param flag whether the pie rule is enabled
      */
     public synchronized void setPieRuleEnabled(boolean flag)
@@ -254,6 +268,7 @@ public class GameState implements Watchable
 
     /**
      * get if the pie rule is enabled
+     *
      * @return wether the pie rule is enabled
      */
     public synchronized boolean isPieRuleEnabled()
@@ -263,6 +278,7 @@ public class GameState implements Watchable
 
     /**
      * Add a watcher to the list of watchers
+     *
      * @param watcher the watcher to add
      */
     @Override
@@ -273,6 +289,7 @@ public class GameState implements Watchable
 
     /**
      * Delete a watcher from the list of watchers
+     *
      * @param watcher the watcher to delete
      */
     @Override
@@ -287,7 +304,7 @@ public class GameState implements Watchable
     @Override
     public void notifyWatchers()
     {
-        for(Watcher w: watchers)
+        for(Watcher w : watchers)
         {
             w.update();
         }

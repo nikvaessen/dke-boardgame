@@ -13,9 +13,9 @@ import java.util.List;
  * A HexTile has 6 neighbours. The sides are represented as integer values
  * between 0 and 5. The integers correspond with the following sides:
  * <p>
- *  5   0
+ * 5   0
  * 4  #  1     # = this tile
- *  3   2
+ * 3   2
  *
  * @author josevelasquez on 9/12/16.
  * @author Nik
@@ -52,7 +52,7 @@ public class HexTile
      * Construct a HexTile. The co-ordinates are purely for representation
      * reasons
      *
-     * @param row the x or height co-ordinate of this tile in a 2d array
+     * @param row    the x or height co-ordinate of this tile in a 2d array
      * @param column the y or width co-ordinate of this tile in a 2d array
      */
     public HexTile(int row, int column)
@@ -75,14 +75,14 @@ public class HexTile
     public void claim(TileState claimer)
             throws AlreadyClaimedException, IllegalArgumentException
     {
-        if (state != TileState.NEUTRAL)
+        if(state != TileState.NEUTRAL)
         {
             throw new AlreadyClaimedException("Tile has already been claimed!");
         }
-        if (claimer == TileState.NEUTRAL)
+        if(claimer == TileState.NEUTRAL)
         {
             throw new IllegalArgumentException(
-                   "Tile cannot be claimed by neutral");
+                    "Tile cannot be claimed by neutral");
         }
         state = claimer;
     }
@@ -116,11 +116,11 @@ public class HexTile
     public void addNeighbors(int side, HexTile newNeighbor)
             throws IllegalArgumentException
     {
-        if (side < 0 || side > 5)
+        if(side < 0 || side > 5)
         {
             throw new IllegalArgumentException("HexTile only has 6 sides");
         }
-        if (neighbors.get(side).isComplete())
+        if(neighbors.get(side).isComplete())
         {
             throw new IllegalArgumentException("Trying to add a neighbour to" +
                     "side " + side + " but this side already has one");
@@ -139,11 +139,11 @@ public class HexTile
     public HexTile getNeighbour(int side)
             throws IllegalArgumentException, NoNeighbourException
     {
-        if (side < 0 || side > 5)
+        if(side < 0 || side > 5)
         {
             throw new IllegalArgumentException("HexTile only has 6 tiles");
         }
-        if (!neighbors.get(side).isComplete())
+        if(!neighbors.get(side).isComplete())
         {
             throw new NoNeighbourException("Tile does not have a neighbour at" +
                     "side " + side);
@@ -153,19 +153,23 @@ public class HexTile
 
     /**
      * Get a list of all the neighbouring hextiles
+     *
      * @return a list of all neighbouring HexTiles
      */
     public List<HexTile> getNeighbours()
     {
         return neighbourHexTiles;
     }
-    public void setNeighboursToZero(){
+
+    public void setNeighboursToZero()
+    {
         neighbors = null;
         neighbourHexTiles = null;
     }
 
     /**
      * check if this tile has a neighbour at a specific side
+     *
      * @param side the side where the neighbour can be
      * @return if there is a neighbour at the specified side
      */
@@ -176,6 +180,7 @@ public class HexTile
 
     /**
      * Get the row of this tile
+     *
      * @return the row of this tile
      */
     public int getRow()
@@ -185,6 +190,7 @@ public class HexTile
 
     /**
      * Get the column of this tile
+     *
      * @return the column of this tile
      */
     public int getColumn()
@@ -217,11 +223,11 @@ public class HexTile
         // the state can take up 7 chars
         // so total is 8 + 7 = 15
 
-        for (int i = 0; i < neighbors.size(); i++)
+        for(int i = 0; i < neighbors.size(); i++)
         {
             st += i + ":";
             b = neighbors.get(i);
-            if (!b.isComplete())
+            if(!b.isComplete())
             {
                 st += String.format(" %-16s ", "NO NEIGHBOUR");
             }
@@ -239,7 +245,7 @@ public class HexTile
      */
     private void initBridges()
     {
-        for (int i = 0; i < 6; i++)
+        for(int i = 0; i < 6; i++)
         {
             neighbors.add(new Bridge(this));
         }

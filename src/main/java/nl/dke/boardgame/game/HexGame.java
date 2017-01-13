@@ -1,6 +1,5 @@
 package nl.dke.boardgame.game;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.exceptions.MoveNotCompletedException;
 import nl.dke.boardgame.game.board.Board;
@@ -74,7 +73,7 @@ public class HexGame
     /**
      * Flag for is this game used the pie rule. The pie rules means that the
      * second player can claim the tile of the first Player in the first move.
-     *
+     * <p>
      * Defaults to false
      */
     private boolean pieRule = false;
@@ -83,15 +82,15 @@ public class HexGame
      * Construct a board for a game of Hex with the given board dimension
      * and the players
      *
-     * @param width the width of the board
-     * @param height the height of the board
+     * @param width   the width of the board
+     * @param height  the height of the board
      * @param player1 the player who moves first
      * @param player2 the player who moves second
      * @throws IllegalArgumentException when the given width and height are not
-     * in between the bounds
+     *                                  in between the bounds
      */
     public HexGame(int width, int height, HexPlayer player1, HexPlayer player2)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         //throws an IllegalArgumentException when not valid
         validateWidthAndHeight(width, height);
@@ -110,13 +109,14 @@ public class HexGame
     /**
      * Verifies that the given width and height are equal and between the
      * allowed range of board creation
-     * @param width the width to validate
+     *
+     * @param width  the width to validate
      * @param height the height to validate
      * @throws IllegalArgumentException when the dimensions are now equal or
-     * not in the allowed range
+     *                                  not in the allowed range
      */
     private void validateWidthAndHeight(int width, int height)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
         if(width != height)
         {
@@ -128,7 +128,7 @@ public class HexGame
         {
             throw new IllegalArgumentException(String.format(
                     "given width %d and height %d are not in between allowed " +
-                    "minimum value %d and maximum value %d",
+                            "minimum value %d and maximum value %d",
                     width, height,
                     MINIMUM_BOARD_DIMENSION, MAXIMUM_BOARD_DIMENSION));
         }
@@ -136,6 +136,7 @@ public class HexGame
 
     /**
      * get is the pie rule is enabled
+     *
      * @return true is it is, false if it is not
      */
     public boolean isPieRule()
@@ -145,16 +146,17 @@ public class HexGame
 
     /**
      * set whether the pie rule is used to play the game
+     *
      * @param flag if the pie rule is enabled
      * @throws IllegalStateException when the game is already started or over
      */
     public void enablePieRule(boolean flag)
-        throws IllegalStateException
+            throws IllegalStateException
     {
         if(started)
         {
-           throw new IllegalStateException("Cannot enable the pie rule" +
-                   "because the game has already started");
+            throw new IllegalStateException("Cannot enable the pie rule" +
+                    "because the game has already started");
         }
         pieRule = flag;
         gameState.setPieRuleEnabled(flag);
@@ -162,10 +164,11 @@ public class HexGame
 
     /**
      * Ask to starts the game by allowing player 1 to make a move
+     *
      * @throws IllegalStateException when the game has already been started
      */
     public void start()
-        throws IllegalStateException
+            throws IllegalStateException
     {
         if(!started)
         {
@@ -181,6 +184,7 @@ public class HexGame
 
     /**
      * check if the game has been completed or not
+     *
      * @return true of game is over, false if not
      */
     public boolean isGameOver()
@@ -191,20 +195,21 @@ public class HexGame
     /**
      * Ask to reset the game. This can only be done when the game has been
      * completed
+     *
      * @throws IllegalStateException when the game has not been completed
      */
     public void reset()
-        throws IllegalStateException
+            throws IllegalStateException
     {
-       if(isGameOver())
-       {
-           resetGame();
-       }
-       else
-       {
-           throw new IllegalStateException("The HexGame cannot be reset" +
-                   " because it has not yet been completed");
-       }
+        if(isGameOver())
+        {
+            resetGame();
+        }
+        else
+        {
+            throw new IllegalStateException("The HexGame cannot be reset" +
+                    " because it has not yet been completed");
+        }
     }
 
     /**
@@ -233,6 +238,7 @@ public class HexGame
     /**
      * Creates a matrix of TileStates with the same claimed tiles as
      * the board
+     *
      * @return A 2d array of TileStates with the same states as the board
      */
     private TileState[][] getBoardState()
@@ -253,6 +259,7 @@ public class HexGame
     /**
      * Get the GameState object, which will be updated everytime
      * a turn gets completed
+     *
      * @return the GameState object belonging to this game
      */
     public GameState getGameState()
@@ -278,7 +285,7 @@ public class HexGame
 
             if(pieRule)
             {
-                 pieMoveStart();
+                pieMoveStart();
             }
             else
             {
@@ -292,6 +299,7 @@ public class HexGame
         /**
          * Recursive method which will let players make moves until the game
          * is over
+         *
          * @param player the player to currently make a move
          */
         private void turn(HexPlayer player)
@@ -353,8 +361,9 @@ public class HexGame
         /**
          * Allows the player to make a move. If the move is invalid, it will
          * allow the player a move again unit it gave a valid move.
+         *
          * @param player the player to make a move
-         * @param move the move the player will make
+         * @param move   the move the player will make
          */
         private void allowMove(HexPlayer player, Move move)
         {
@@ -363,12 +372,11 @@ public class HexGame
             try
             {
                 System.out.printf("Claiming row %d and column %d as %s%n",
-                        move.getRow(), move.getColumn(),  player.claimsAs());
+                        move.getRow(), move.getColumn(), player.claimsAs());
                 board.claim(move.getRow(), move.getColumn(), player.claimsAs());
                 //mark the turn as completed
                 gameState.completedTurn(getBoardState(), player.claimsAs());
-            }
-            catch (MoveNotCompletedException  | AlreadyClaimedException e)
+            } catch(MoveNotCompletedException | AlreadyClaimedException e)
             {
                 e.printStackTrace();
 
@@ -388,7 +396,7 @@ public class HexGame
             try
             {
                 System.out.printf("Claiming row %d and column %d as %s%n",
-                        move.getRow(), move.getColumn(),  player.claimsAs());
+                        move.getRow(), move.getColumn(), player.claimsAs());
                 if(board.getState(move.getRow(), move.getColumn()) == TileState.NEUTRAL)
                 {
                     board.claim(move.getRow(), move.getColumn(), player.claimsAs());
@@ -399,8 +407,7 @@ public class HexGame
                 }
                 //mark the turn as completed
                 gameState.completedTurn(getBoardState(), player.claimsAs());
-            }
-            catch (MoveNotCompletedException | AlreadyClaimedException  e)
+            } catch(MoveNotCompletedException | AlreadyClaimedException e)
             {
                 e.printStackTrace();
 
@@ -414,6 +421,7 @@ public class HexGame
          * Checks if one of the players has won the game.
          * If someone has, it will set the boolean flag ended to true, so that
          * the isGameOver() method will return true as well
+         *
          * @return true if someone has won, false otherwise
          */
         private boolean checkWin()
@@ -456,19 +464,20 @@ public class HexGame
          * looks for a path from one side of the board to other by visiting a
          * tile on a specific tile and row and going to each neighbour until
          * it has reached the other side.
-         * @param row the row where the algorithm currently is
+         *
+         * @param row    the row where the algorithm currently is
          * @param column the column where the algorithm currently is
-         * @param map the map of the whole board, which stores which
-         *            tiles have already been visited
+         * @param map    the map of the whole board, which stores which
+         *               tiles have already been visited
          * @param player for which player the algorithm is currently checking
          *               for a path
          */
         private void isPathToOtherSide(int row, int column, boolean[][] map,
-                                          TileState player)
+                                       TileState player)
         {
-            if(map[row][column] || board.getState(row, column ) != player)
+            if(map[row][column] || board.getState(row, column) != player)
             {
-               return;
+                return;
             }
             else if(column == board.getWidth() - 1 && player == TileState.PLAYER1)
             {
@@ -503,8 +512,7 @@ public class HexGame
             try
             {
                 Thread.sleep(time);
-            }
-            catch (InterruptedException e)
+            } catch(InterruptedException e)
             {
                 e.printStackTrace();
             }

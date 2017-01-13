@@ -3,13 +3,11 @@ package nl.dke.boardgame.mcts.mutliThread;
 import nl.dke.boardgame.mcts.State;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 
-import java.util.concurrent.Callable;
-
 /**
  * Created by nik on 12/01/17.
  */
 public abstract class RunnableSimulation<S extends State>
-    implements SimulationPolicy<S>, Runnable
+        implements SimulationPolicy<S>, Runnable
 {
     private RewardTracker tracker;
     private S state;

@@ -12,6 +12,7 @@ public interface SimulationPolicy<S extends State>
 {
     /**
      * apply simulation on a given state do determine the reward
+     *
      * @param state the state to use simulation on
      * @param times the amount of simulations being done
      * @return the sum of the rewards of the simulation

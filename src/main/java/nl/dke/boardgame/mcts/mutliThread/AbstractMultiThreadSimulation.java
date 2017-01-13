@@ -3,19 +3,29 @@ package nl.dke.boardgame.mcts.mutliThread;
 import nl.dke.boardgame.mcts.State;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by nik on 12/01/17.
  */
 public abstract class AbstractMultiThreadSimulation<S extends State, T extends RunnableSimulation>
-    implements SimulationPolicy<S>
+        implements SimulationPolicy<S>
 {
-    private static int processors = Runtime.getRuntime().availableProcessors();
+    private ExecutorService threadPool;
+
+    public AbstractMultiThreadSimulation()
+    {
+        System.out.printf("MultiThreaded MCTS is using %d processors%n", Runtime.getRuntime().availableProcessors());
+        threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    }
 
     /**
      * Multithreaded simulation
+     *
      * @param state the state to use simulation on
      * @param times the amount of simulations being done
      * @return the sum of the rewards of the simulations which have taken place
@@ -24,24 +34,39 @@ public abstract class AbstractMultiThreadSimulation<S extends State, T extends R
     public synchronized int simulate(S state, int times)
     {
         final RewardTracker rewards = new RewardTracker();
-        ExecutorService threadPool = Executors.newFixedThreadPool(processors);
 
+        ArrayList<Future> futures = new ArrayList<>();
         for(int i = 0; i < times; i++)
         {
-            threadPool.submit(getRunnableSimulation(state, rewards));
+            futures.add(threadPool.submit(getRunnableSimulation(state, rewards)));
         }
-        threadPool.shutdown();
+
+        Future temp;
+        while(!futures.isEmpty())
+        {
+            Iterator<Future> it = futures.iterator();
+            while(it.hasNext())
+            {
+                temp = it.next();
+                if(temp.isDone())
+                {
+                    it.remove();
+                }
+            }
+        }
 
         if(rewards.getCount() < times)
         {
-            throw new IllegalStateException("Did not simulate enough times");
+            throw new IllegalStateException(String.format("Did not simulate enough times. Expected: %d Actual: %d",
+                    times, rewards.getCount()));
         }
         return rewards.getReward();
     }
 
     /**
-     * Constructs the thread for a simulation
-     * @return a thread which can be started to do a simulation
+     * Constructs the Runnable for a simulation
+     *
+     * @return a runnable which can be ran in a thread to do a simulation
      */
     public abstract T getRunnableSimulation(S state, RewardTracker tracker);
 

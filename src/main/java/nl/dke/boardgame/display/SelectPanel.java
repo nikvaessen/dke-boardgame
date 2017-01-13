@@ -10,8 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 /**
  *
@@ -70,7 +68,7 @@ public class SelectPanel extends JPanel
         errorLabel.setText("Dimension should be between " +
                 Integer.toString(HexGame.MINIMUM_BOARD_DIMENSION) +
                 " and " +
-                Integer.toString(HexGame.MAXIMUM_BOARD_DIMENSION) );
+                Integer.toString(HexGame.MAXIMUM_BOARD_DIMENSION));
         errorLabel.setVisible(false);
         errorLabel.setForeground(Color.RED);
 
@@ -125,7 +123,7 @@ public class SelectPanel extends JPanel
             else
             {
                 InputProcessor processor = null;
-                PossiblePlayers pType =(PossiblePlayers) player1.getSelectedItem();
+                PossiblePlayers pType = (PossiblePlayers) player1.getSelectedItem();
                 if(pType == PossiblePlayers.human)
                 {
                     processor = new InputProcessor();
@@ -154,7 +152,7 @@ public class SelectPanel extends JPanel
                     System.out.println("set Player 2 as " + pType);
                 }
                 table.setBoardDimensions(dim, dim);
-                System.out.printf("set board dim as: %d %d\n" ,dim, dim);
+                System.out.printf("set board dim as: %d %d\n", dim, dim);
 
                 table.setPieRuleEnabled(pieRuleCheckBox.isSelected());
                 System.out.println("Set pie rule enabled as: " + pieRuleCheckBox.isSelected());
@@ -185,8 +183,7 @@ public class SelectPanel extends JPanel
                 {
                     return -1;
                 }
-            }
-            catch (NumberFormatException e)
+            } catch(NumberFormatException e)
             {
                 return -1;
             }

@@ -43,9 +43,12 @@ public class InputPanel extends JPanel implements Watcher
         switchButton = new JButton("Switch");
         switchButton.addActionListener(new SwitchButtonListener());
 
-        c.gridy = 0; this.add(textFieldLabel, c);
-        c.gridy = 1; this.add(input, c);
-        c.gridy = 2; this.add(button, c);
+        c.gridy = 0;
+        this.add(textFieldLabel, c);
+        c.gridy = 1;
+        this.add(input, c);
+        c.gridy = 2;
+        this.add(button, c);
     }
 
     public void update()
@@ -67,20 +70,19 @@ public class InputPanel extends JPanel implements Watcher
 
     private class UserInputCompleteListener implements ActionListener
     {
-		public void actionPerformed(ActionEvent arg0) {
-			//would start the move function based on user input
+        public void actionPerformed(ActionEvent arg0)
+        {
+            //would start the move function based on user input
             try
             {
-                if (inputProcessor.accepting())
+                if(inputProcessor.accepting())
                 {
                     inputProcessor.in(input.getText());
                 }
-            }
-            catch (NotAcceptingInputException e)
+            } catch(NotAcceptingInputException e)
             {
                 e.printStackTrace();
-            }
-            catch (IllegalArgumentException e)
+            } catch(IllegalArgumentException e)
             {
                 System.out.println("Invalid input: Try <column>:<row>. A " +
                         "syntactically correct input would be A:5. " +
@@ -88,8 +90,7 @@ public class InputPanel extends JPanel implements Watcher
                         "the rows are integers! Tile could also already have " +
                         "been claimed");
                 e.printStackTrace();
-             }
-            finally
+            } finally
             {
                 clearTextField();
             }

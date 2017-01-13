@@ -14,9 +14,9 @@ public class AppTest extends TestCase
      *
      * @param testName name of the test case
      */
-    public AppTest( String testName )
+    public AppTest(String testName)
     {
-        super( testName );
+        super(testName);
     }
 
     /**
@@ -24,7 +24,7 @@ public class AppTest extends TestCase
      */
     public static Test suite()
     {
-        return new TestSuite( AppTest.class );
+        return new TestSuite(AppTest.class);
     }
 
     /**
@@ -32,6 +32,6 @@ public class AppTest extends TestCase
      */
     public void testApp()
     {
-        assertTrue( true );
+        assertTrue(true);
     }
 }
