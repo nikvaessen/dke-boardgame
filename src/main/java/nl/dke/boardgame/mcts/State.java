@@ -1,5 +1,6 @@
 package nl.dke.boardgame.mcts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public interface State
      * @throws IllegalArgumentException when the given action cannot be applied to the current state, either because
      *                                  it does not correspond to the given state or the action cannot legally be applied to that state
      */
-    <S extends State> S next(Action<? extends State> action) throws IllegalArgumentException;
+    <S extends State> S next(Action<S> action) throws IllegalArgumentException;
 
     /**
      * List all the actions possible from the current state
@@ -31,10 +32,9 @@ public interface State
      * Build the State given the previous actions
      * @param sequences the array of previous actions
      * @param <S> the State
-     * @param <A> the Action
      * @return the State resulting from applying all previous actions to a initial state
      */
-    //<S extends State, A extends Action<? extends State>> S buildState(ArrayList<A> sequences);
+    <S extends State, A extends Action<S>> S buildState(ArrayList<A> sequences);
 
     /**
      * Return whether this state is a terminal state

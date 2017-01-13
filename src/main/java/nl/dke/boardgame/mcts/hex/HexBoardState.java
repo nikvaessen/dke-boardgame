@@ -1,5 +1,6 @@
 package nl.dke.boardgame.mcts.hex;
 
+import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
@@ -7,6 +8,7 @@ import nl.dke.boardgame.mcts.Action;
 import nl.dke.boardgame.mcts.State;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -195,6 +197,40 @@ public class HexBoardState
     public int nextActor()
     {
         return player == TileState.PLAYER1 ? 1 : 2;
+    }
+
+    @Override
+    public <S extends State, A extends Action<S>> S buildState(ArrayList<A> sequences)
+    {
+        if(sequences.isEmpty())
+        {
+           return (S) new HexBoardState(new Board(board.getWidth(), board.getHeight()), TileState.PLAYER1);
+        }
+        else if(sequences.get(0) instanceof HexBoardAction)
+        {
+            Iterator<A> iter = sequences.iterator();
+            HexBoardAction temp;
+            Board board = new Board(this.getBoard().getWidth(), this.getBoard().getHeight());
+            int count = 0;
+            while(iter.hasNext())
+            {
+                count++;
+                temp = (HexBoardAction) iter.next();
+                try
+                {
+                    board.claim(temp.getX(), temp.getY(), temp.getPlayer());
+                }
+                catch(AlreadyClaimedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            return (S) new HexBoardState(board, count % 2 == 0? TileState.PLAYER1 : TileState.PLAYER2);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Given actions to HexBoardState are not HexBoardAction");
+        }
     }
 
     public String toString()

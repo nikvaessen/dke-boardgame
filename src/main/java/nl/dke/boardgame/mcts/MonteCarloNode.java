@@ -74,7 +74,8 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
      */
     public S getState()
     {
-        return parent.getState().next(action);
+        State rootState = getRoot().getState();
+        return rootState.buildState(getActions());
     }
 
     /**
