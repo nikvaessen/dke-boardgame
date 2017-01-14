@@ -1,5 +1,7 @@
 package nl.dke.boardgame.mcts;
 
+import java.util.LinkedList;
+
 /**
  * The root node of the MonteCarlo Tree. It differs from normal nodes by starting with an initial state
  *
@@ -13,6 +15,17 @@ public class MonteCarloRootNode<S extends State, A extends Action<S>>
      */
     private S initialState;
 
+    /**
+     * List containing all expanded children of this node
+     */
+    private LinkedList<MonteCarloNode<S, A>> children = new LinkedList<>();
+
+    public MonteCarloRootNode(S initialState, LinkedList<MonteCarloNode<S, A>> children){
+        super(null,null);
+        this.initialState = initialState;
+        this.children = children;
+
+    }
     /**
      * Creates a root node for MonteCarlo Tree Search, with a initial State. The root node does not have a parent,
      * and will stop recursive method calls of the MonteCarloNode class
