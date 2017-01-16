@@ -64,15 +64,15 @@ public class Table
                         player,
                         new UCTTreePolicy<>(0.7),
                         new SingleThreadRandomHexBoardSimulation(),
-                        100,
-                        30000);
+                        500,
+                        25000);
             case MCTSLeafPar:
                 return new MCTSPlayer(
                         player,
                         new UCTTreePolicy<>(0.7),
                         new MultiThreadRandomHexBoardSimulation(),
-                        1000,
-                        10000);
+                        5000,
+                        25000);
             case alphabeta:
                 return new AlphaBetaPlayer(player);
             default:
