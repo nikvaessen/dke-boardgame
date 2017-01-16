@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 
 /**
  * Implements a tree policy based on the UCT algorithm
@@ -119,7 +121,7 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
     public MonteCarloNode<S, A> bestChild(MonteCarloNode<S, A> node)
             throws IllegalArgumentException
     {
-        return bestChild(node, explorationParameter);
+        return bestChild(node, getNodeValueFunction());
     }
 
     /**
@@ -132,44 +134,22 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
     @Override
     public MonteCarloNode<S, A> bestRootChild(MonteCarloRootNode<S, A> root)
     {
-        return bestChild(root, 0);
+        return bestChild(root, getRootNodeValueFunction());
     }
 
     /**
-     * select the best child of the given node by the UCT algorithm
+     * select the best child of the given node by using the given value function to determine the value
+     * of a node
      *
      * @param node the node to select the best child on
-     * @param c    the exploration value to use in the UCT value
+     * @param f    the function used to give a value to a child
      * @return the child with the highest UCT value. A child can be randomly selected if more than one node
      * have the same maximum UCT value
      */
-    private MonteCarloNode<S, A> bestChild(MonteCarloNode<S, A> node, double c)
+    private MonteCarloNode<S, A> bestChild(MonteCarloNode<S, A> node, Function<MonteCarloNode<S, A>, Double> f)
     {
         // search for the node with the maximum UCT value ( or more than 1 if some have same value)
-        ArrayList<MonteCarloNode<S, A>> maxNodes = new ArrayList<>();
-        double maxUCT = 0, childUCT;
-        for(MonteCarloNode<S, A> child : node)
-        {
-            if(maxNodes.isEmpty())
-            {
-                maxNodes.add(child);
-                maxUCT = getUCTValue(child, c);
-            }
-            else
-            {
-                childUCT = getUCTValue(child, c);
-                if(Math.abs(childUCT - maxUCT) < 0.00001d) // they are equal
-                {
-                    maxNodes.add(child);
-                }
-                else if(childUCT > maxUCT)
-                {
-                    maxNodes.clear();
-                    maxNodes.add(child);
-                    maxUCT = childUCT;
-                }
-            }
-        }
+        List<MonteCarloNode<S, A>> maxNodes = findMaxChild(node, f);
 
         //return the best node (select randomly if more than one node have same maximum value)
         if(maxNodes.size() == 0)
@@ -184,6 +164,64 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
         {
             return maxNodes.get(rng.nextInt(maxNodes.size()));
         }
+    }
+
+    /**
+     * given a MonteCarloNode, return a list with 1 or more children of the given node
+     * which have the highest UCT value for all the children of the given node
+     * @param node the node to find children for
+     * @return a list of children of the node. List is empty if given node does not have any children,
+     * size of 1 if one node has the maximum value, or larger if more nodes share the same maximum UCT value
+     */
+    private List<MonteCarloNode<S, A>> findMaxChild(MonteCarloNode<S, A> node,
+                                                    Function<MonteCarloNode<S, A>, Double> f)
+    {
+        List<MonteCarloNode<S, A>> maxNodes = new ArrayList<>();
+        double maxValue = 0, childValue;
+        for(MonteCarloNode<S, A> child : node)
+        {
+            if(maxNodes.isEmpty())
+            {
+                maxNodes.add(child);
+                maxValue = f.apply(child);
+            }
+            else
+            {
+                childValue = f.apply(child);
+                if(Math.abs(childValue - maxValue) < 0.00001d) // they are equal
+                {
+                    maxNodes.add(child);
+                }
+                else if(childValue > maxValue)
+                {
+                    maxNodes.clear();
+                    maxNodes.add(child);
+                    maxValue = childValue;
+                }
+            }
+        }
+        return maxNodes;
+    }
+
+    /**
+     * Gives the function to calculate the value of a node which is used to decide which nodes needs
+     * to be selected in the tree search part of MCTS
+     * @return the value of a node using the UCT value
+     */
+    protected Function<MonteCarloNode<S, A>, Double> getNodeValueFunction()
+    {
+        return (MonteCarloNode<S, A> node) -> getUCTValue(node, explorationParameter);
+    }
+
+    /**
+     * Gives the function to calculate the value of a child of the root node when deciding which
+     * action is best action after MCTS has terminated
+     *
+     * @return the value of a node using the UCT value with c = 0
+     */
+    protected Function<MonteCarloNode<S, A>, Double> getRootNodeValueFunction()
+    {
+        return (MonteCarloNode<S, A> node) -> getUCTValue(node, 0);
     }
 
     /**
@@ -250,9 +288,16 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
             if(toRemove.contains(action))
             {
                 iterator.remove();
-                ;
             }
         }
     }
 
+    /**
+     * get exploration value
+     * @return the exploration value
+     */
+    public double getExplorationParameter()
+    {
+        return explorationParameter;
+    }
 }
