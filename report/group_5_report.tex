@@ -94,10 +94,10 @@ In the equation above $n$ represents the amount of time the current node has bei
 
 
 \begin{algorithm}
-	\caption{UTC}
-    \label{UTC}
+	\caption{UCT}
+    \label{UCT}
     \begin{algorithmic}
-    	\Function{UTCSearch}{$s_0$}
+    	\Function{UCTSearch}{$s_0$}
         	\State $v_0 \leftarrow$ create root node from $s_0$
             \While{within computational budget}
             	\State $v_l \leftarrow$ TreePolicy($v_0$)
