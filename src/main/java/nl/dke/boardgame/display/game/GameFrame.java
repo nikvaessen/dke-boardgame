@@ -1,12 +1,14 @@
 package nl.dke.boardgame.display.game;
 
+import nl.dke.boardgame.Tester;
 import nl.dke.boardgame.game.HexGame;
+import nl.dke.boardgame.util.Watcher;
 
 import javax.swing.*;
 import java.awt.*;
 
 //// TODO: 21/09/16 The whole display package needs to be documented
-public class GameFrame extends JFrame
+public class GameFrame extends JFrame implements Watcher
 {
 
     private static final long serialVersionUID = 1L;
@@ -19,15 +21,16 @@ public class GameFrame extends JFrame
 
     private InfoPanel infoPanel;
 
-    public GameFrame(HexGame game)
+    public GameFrame(HexGame game, Tester tester)
     {
-        this(game, null);
+        this(game, tester, null);
     }
+    
 
-    public GameFrame(HexGame game, InputProcessor inputProcessor)
-    {
+    public GameFrame(HexGame game, Tester tester, InputProcessor inputProcessor)
+    {;
         this.game = game;
-
+        if (tester == null) System.out.println("No tester");
         //set main gui settings
         setLayout(new GridBagLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,7 +65,17 @@ public class GameFrame extends JFrame
         setVisible(true);
 
         //and start game
-        game.start();
+        game.start(tester, this);
     }
+    
+    public void closeFrame() {
+    	this.dispose();
+    }
+
+	@Override
+	public void update() {
+		closeFrame();
+		
+	}
 
 }

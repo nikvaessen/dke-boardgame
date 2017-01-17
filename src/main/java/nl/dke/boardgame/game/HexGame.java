@@ -1,10 +1,17 @@
 package nl.dke.boardgame.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import nl.dke.boardgame.Tester;
+import nl.dke.boardgame.display.game.GameFrame;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.exceptions.MoveNotCompletedException;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
+import nl.dke.boardgame.util.Watchable;
+import nl.dke.boardgame.util.Watcher;
 
 /**
  * This class has all the functionality to play a game of Hex, either with 2
@@ -167,12 +174,14 @@ public class HexGame
      *
      * @throws IllegalStateException when the game has already been started
      */
-    public void start()
+    public void start(Tester tester, GameFrame frame)
             throws IllegalStateException
     {
         if(!started)
         {
-            startGame();
+        	if (tester == null) System.out.println("No tester in start");
+        	else if (frame == null) System.out.println("No frame in start");
+            startGame(tester, frame);
         }
         else
         {
@@ -215,10 +224,12 @@ public class HexGame
     /**
      * Starts the game by allowing player 1 to make a move
      */
-    private void startGame()
+    private void startGame(Tester tester, GameFrame frame)
     {
         started = true;
-        new Thread(new GameLoop()).start();
+        if (tester == null) System.out.println("No tester in startGame");
+    	else if (frame == null) System.out.println("No frame in startGame");
+        new Thread(new GameLoop(tester, frame)).start();
     }
 
     /**
@@ -271,14 +282,25 @@ public class HexGame
      * This class runs in a separate Thread and controls player turn and
      * game over logic
      */
-    private class GameLoop implements Runnable
+    private class GameLoop implements Runnable,Watchable
     {
 
         private boolean player1Won = false;
 
         private boolean player2Won = false;
+        
+        private List<Watcher> watchers;
 
         //@Override
+        
+        public GameLoop(Tester tester, GameFrame frame) {
+        	watchers = new ArrayList<>();
+        	if (tester == null) System.out.println("No tester in gameLoop");
+        	else if (frame == null) System.out.println("No frame in gameLoop");
+        	attachWatcher(frame);
+        	attachWatcher(tester);
+        }
+        
         public void run()
         {
             long start = System.currentTimeMillis();
@@ -294,6 +316,7 @@ public class HexGame
 
             long end = System.currentTimeMillis();
             System.out.println("Total game time: " + (end - start) + " ms");
+            notifyWatchers();
         }
 
         /**
@@ -517,6 +540,28 @@ public class HexGame
                 e.printStackTrace();
             }
         }
+
+		@Override
+		public void attachWatcher(Watcher watcher) {
+			// TODO Auto-generated method stub
+			if (watcher == null) System.out.println("no watcher");
+			watchers.add(watcher);
+		}
+
+		@Override
+		public void detachWatcher(Watcher watcher) {
+			// TODO Auto-generated method stub
+			watchers.remove(watcher);
+		}
+
+		@Override
+		public void notifyWatchers() {
+			// TODO Auto-generated method stub
+			for(Watcher w : watchers)
+	        {
+	            w.update();
+	        }
+		}
 
     }
 
