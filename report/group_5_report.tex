@@ -1,5 +1,10 @@
 \documentclass{ba-kecs}
 \usepackage{graphicx}
+\usepackage[]{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{amsmath}
+
 
 
 
@@ -25,20 +30,124 @@ The history of creating algorithms to play Hex is rich with successful attempts,
 \subsection{Rules}
 Rules for Hex
 \subsection{Alpha-beta Hex Players}
-Explanation of alpha-beta 
+The alpha-beta player consists of a player which uses a minimax game tree and applies $\alpha - \beta$ pruning as it builds the tree.
+% cite Artificial Intelligence: A Modern approach
+\subsubsection{Minimax algorithm}
+The minimax algorithm tries to find the best next possible action by fully expanding each node and seeing all possible moves in a certain depth. After the tree is fully expanded the leaf nodes are evaluated and given a value. 
+
 \subsection{Electric circuit}
 Explanation of the electric circuit of Anshelivic
+
 \subsection{Monte Carlo Tree Search}
-Article used for MCTS \cite{arneson2010monte}
-Article used to understand MCTS \cite{browne2012survey}
-\subsubsection{Select}
-\subsubsection{Expand}
-\subsubsection{Simulate}
-\subsubsection{Backpropagate}
-Explanation of general MCTS
+A very powerful A.I. technique for board games is the Monte Carlo Tree Search(MCTS). MCTS applies optimization techniques of random simulations to the game tree. 
+
+The game tree closely follows a \textit{Markov Decision Process} (MDP) in which every node of the tree is represented by a State $s \in S$ and the connection between the nodes is represented by an action $a \in A$.
+\begin{itemize}
+\item $S$: a set of all possible states of the board
+\item $A$: a set of all possible actions that can transition from one state to the other
+\item $P_a(s, s')$: the probability of reaching state $s'$ by using action $a$ on state $s$
+\item $R_a(s, s')$: the expected reward for reaching state $s'$ by using action $a$ on state $s$
+\end{itemize}
+
+The MCTS algorithm can be divided into four main parts: 
+\begin{enumerate}
+\item Selection: In this part the algorithm looks for the most urgent node with a state $s$ that hasn't being visited before.
+\item Expansion: one or more nodes are expanded by adding leaf nodes according the values left in $A$
+\item Simulation: a simulation takes place in order to assign a reward value to the newly added node/s
+\item Backpropagation: the statistics of the tree are updated through backpropagation.
+\end{enumerate}
+
+These four simple parts of the algorithm can be divided into two policies that simplify the process.
+\begin{itemize}
+\item \textit{Tree Policy}: in this policy the stages of selection and expansion take place. The random nodes are selected and expanded, ready to receive their reward value.
+\item \textit{Default Policy}: in this policy the simulation takes place and a reward value is given to the node 
+\end{itemize}
+The backporpagation stage of the MCST doesn't occur within any policy as it just represents the update of the tree after the reward, which is used in later cycles for the tree policy to select and expand new nodes.
+
+\begin{algorithm}
+    \caption{MCTS}
+    \label{MCTS}
+    \begin{algorithmic}
+        \Procedure{MCTS}{$s_0$} 
+            \State create root node $v_0$ with state $s_0$
+            \While{within computational budget} 
+                \State $v_l \gets$ TreePolicy($v_0$)
+                \State $ \Delta \gets$ DefaultPolicy($s(v_l)$)
+                \State Backup($v_l, \Delta$)
+            \EndWhile\label{}
+            \State \textbf{return} $a$(BestChild($v_0$))
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+In Algorithm 1 we see the general structure of the MCTS. The root of the tree will be the board state at the beginning current turn. After the tree has fully expanded according to computational budget using the repeated MCTS process explained before, the best child is selected. We return the action $a$ which connects the current state $s$ to the best child.
 \subsection{Improvements on general MCTS}
-\subsubsection{UCT}
-Explanation of Upper Confindence Treshold. Multi armed bandit problem
+Different heuristics can be used on top the MCTS algorithm to enhance its performance.
+\subsubsection{Upper Confidence Bounds for Trees (UCT)}
+%%reference Peter Auer
+The UCT is an algorithm which adapts the Upper Confidence Bounds (UCB) exploitation and exploration of trade-offs as a tree policy. The UCT tree policy works by choosing the node $v$ that maximizes the independent multi-armed bandit problem:
+\begin{center}
+$UCT = \bar{X_v} + 2C_p \sqrt{\frac{2\ln n}{n_v}}$
+\end{center}
+In the equation above $n$ represents the amount of time the current node has being visited,$n_v$ the amount of time the visited child node has being visited, and the constant $C_p >0$.
+
+
+
+\begin{algorithm}
+	\caption{UTC}
+    \label{UTC}
+    \begin{algorithmic}
+    	\Function{UTCSearch}{$s_0$}
+        	\State $v_0 \leftarrow$ create root node from $s_0$
+            \While{within computational budget}
+            	\State $v_l \leftarrow$ TreePolicy($v_0$)
+                \State $\Delta \leftarrow$ DefaultPolicy($s(v_l)$)
+                \State Backup($v_0, \Delta$)
+            \EndWhile
+            \State \textbf{return} $a$(BestChild($v_0,0$))
+        \EndFunction
+        \State
+        \Function{TreePolicy}{$v$}
+        	\While{$v$ is non-terminal}
+            	\If{$v$ not fully expanded}
+                	\State \textbf{return} Expand($v$)
+                \Else
+                	\State $v \leftarrow$ BestChild($v_0,Cp$)
+                \EndIf
+            \EndWhile
+           	\State \textbf{return} $v$
+        \EndFunction
+        \State
+        \Function{Expand}{$v$}
+        	\State $a\leftarrow$ any random unused action in $A(s(v))$
+            \State add new child $v'$ to $v$ where:
+            \State $s(v') =$ Result($s(v),a$)
+            \State $a = a(v')$
+            \State \textbf{return} $v'$
+        \EndFunction
+        \State
+        \Function{BestChild}{$v,c$}
+        	\State \textbf{return} $\operatornamewithlimits{arg max}\limits_{v' \in children(v)}\frac{Q(v'))}{N(v')} + c\sqrt{\frac{2\ln N(v)}{N(v')}}
+$
+        \EndFunction
+        \State
+        \Function{DefaultPolicy}{$s$}
+        	\While{$s$ is non-terminal}
+            	\State choose $a \in A(s)$ uniformly at random
+                \State $s \leftarrow$ Result($s, a$)
+                \State \textbf{return} reward for state $a$
+            \EndWhile
+        \EndFunction
+        \State
+        \Function{Backup}{$v, \Delta$}
+        	\While{$v$ is not null}
+            	\State $N(v) \leftarrow N(v)+1$
+                \State $Q(v) \leftarrow Q(v)+\Delta(v,p)$
+                \State $v \leftarrow$ parent of $v$
+            \EndWhile
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 \subsubsection{AMAF/RAVE}
 
 Explanation of either AMAF or RAVE \cite{gelly2011monte}
