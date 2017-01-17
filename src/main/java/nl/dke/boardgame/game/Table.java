@@ -33,14 +33,14 @@ public class Table
         return game;
     }
 
-    public void setPlayer1(PossiblePlayers type)
+    public void setPlayer1(PossiblePlayers type, int limit)
     {
-        player1 = createPlayer(type, TileState.PLAYER1);
+        player1 = createPlayer(type, TileState.PLAYER1, limit);
     }
 
-    public void setPlayer2(PossiblePlayers type)
+    public void setPlayer2(PossiblePlayers type, int limit)
     {
-        player2 = createPlayer(type, TileState.PLAYER2);
+        player2 = createPlayer(type, TileState.PLAYER2, limit);
     }
 
     public void setPlayer1(InputProcessor processor)
@@ -53,7 +53,7 @@ public class Table
         player2 = new HumanHexPlayer(TileState.PLAYER2, processor);
     }
 
-    private HexPlayer createPlayer(PossiblePlayers type, TileState player)
+    private HexPlayer createPlayer(PossiblePlayers type, TileState player, int limit)
     {
         switch(type)
         {
@@ -74,7 +74,7 @@ public class Table
                         10,
                         20000);
             case alphabeta:
-                return new AlphaBetaPlayer(player);
+                return new AlphaBetaPlayer(player, limit);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
                         "HexPlayer, given argument" + type + " is not " +

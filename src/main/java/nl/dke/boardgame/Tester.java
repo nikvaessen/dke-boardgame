@@ -11,6 +11,8 @@ public class Tester implements Watcher{
 	private final int NO_OF_TESTS = 2;
 	private PossiblePlayers player1 = PossiblePlayers.alphabeta;
 	private PossiblePlayers player2 = PossiblePlayers.alphabeta;
+	private int depthLimit = 2;
+	private int timeLimit= 10;
 	private int dim = 11;
 	
 	
@@ -30,8 +32,8 @@ public class Tester implements Watcher{
 		if (currentTests < NO_OF_TESTS) {
 			currentTests++;
 			Table table = new Table();
-			table.setPlayer1(player1);
-			table.setPlayer2(player2);
+			table.setPlayer1(player1, depthLimit);
+			table.setPlayer2(player2, depthLimit);
 			table.setBoardDimensions(dim,dim);
 			table.setPieRuleEnabled(false);
 			new GameFrame(table.createNewGame(), this);
