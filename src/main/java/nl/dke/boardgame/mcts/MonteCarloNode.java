@@ -48,6 +48,7 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
      */
     private MonteCarloNode<S, A> parent;
 
+
     /**
      * Create a MonteCarloNode with a given parent and the action which can be applied on the parent
      * to get to this nodes' State
@@ -67,6 +68,9 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
      */
     private LinkedList<MonteCarloNode<S, A>> children = new LinkedList<>();
 
+    public LinkedList<MonteCarloNode<S,A>> getChildren(){
+        return children;
+    }
     /**
      * Get the State created by applying all actions from this Node
      *
@@ -283,5 +287,9 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
                 UCTTreePolicy.getUCTValue(this, 3),
                 getState().toString(),
                 action.toString());
+    }
+
+    public void setParent(MonteCarloNode parent) {
+        this.parent = parent;
     }
 }

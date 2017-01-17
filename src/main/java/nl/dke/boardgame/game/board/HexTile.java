@@ -205,7 +205,7 @@ public class HexTile
      */
     public String toString()
     {
-        return String.format("{(%s);%s}", row, column, state);
+        return String.format("{(%d,%d);%s}", row, column, state);
     }
 
     /**
@@ -249,6 +249,16 @@ public class HexTile
         {
             neighbors.add(new Bridge(this));
         }
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj instanceof HexTile)
+        {
+            return this.getState().equals(((HexTile) obj).getState());
+        }
+        return false;
     }
 
     /**

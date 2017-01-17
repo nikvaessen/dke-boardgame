@@ -197,6 +197,17 @@ public class HexBoardState
         return player == TileState.PLAYER1 ? 1 : 2;
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+
+        if(o instanceof HexBoardState)
+        {
+            return board.equals(((HexBoardState) o).getBoard());
+        }
+        return false;
+    }
+
     public String toString()
     {
         return String.format("%s%nPlayer: %s%nOther Player: %s",
