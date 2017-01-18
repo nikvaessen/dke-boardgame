@@ -105,7 +105,6 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
             log("\nCurrent Tree:\n");
             debugTree(root);
             log(String.format("\nIteration %d of MCTS took %d nano seconds\n", count, end - start));
-
         }
 
         //check if any child is a terminal child and wins the game. No search needed if there is
@@ -121,7 +120,6 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
         // keep going until the allotted time has run out
         while (System.currentTimeMillis() - startTime < ms)
-        //while(count < 10)
         {
             log(String.format("\n####### iteration %d ######%n", count));
             count++;
@@ -199,6 +197,10 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
     private void debugTree(MonteCarloRootNode<S, A> node)
     {
+        if(!DEEP_DEBUG)
+        {
+            return;
+        }
         log("Root node: \n" + node + "\n");
         int count = 0;
         log("\nchildren of root:\n\n");
