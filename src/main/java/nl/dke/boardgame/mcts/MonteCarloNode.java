@@ -155,7 +155,7 @@ public class MonteCarloNode<S
      *
      * @param simulationPolicy the policy which is able to do a simulation on the State of this node
      */
-    public void simulate(SimulationPolicy<S> simulationPolicy, int simPerNode)
+    public int simulate(SimulationPolicy<S> simulationPolicy, int simPerNode)
     {
         int reward = simulationPolicy.simulate(getState(), simPerNode);
         if(getRoot().getState().nextActor() == getState().nextActor())
@@ -182,23 +182,6 @@ public class MonteCarloNode<S
         {
             return parent.getRoot();
         }
-    }
-
-    /**
-     * After simulation of a node, a reward is given based on the winning chances of the state.
-     * Alternatively add this reward and the negation of the reward back up the tree until the root is found.
-     *
-     * @param q the q-value to propagate back to the root of the tree
-     */
-    private void backPropagate(int q, int simPerNode)
-    {
-        visits += simPerNode;
-        qValues += q;
-        if(isRoot())
-        {
-            return;
-        }
-        parent.backPropagate(q, simPerNode);
     }
 
     /**

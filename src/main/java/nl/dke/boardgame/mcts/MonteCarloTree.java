@@ -2,8 +2,7 @@ package nl.dke.boardgame.mcts;
 
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;
-
-import java.util.ArrayList;
+import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 
 /**
  * A general class which can do MonteCarlo Tree Search
@@ -32,44 +31,50 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         numberNodes = 0;
     }
 
-    public void pruneRoot(S initialState)
+    /**
+     * This method makes sure the root exists and the most optimal root is chosen
+     * It will try to use the tree from previous searches
+     * @param initialState the initial state to use if no root exists
+     */
+    public void checkRoot(S initialState)
     {
         //MonteCarloRootNode<S,A> root = new MonteCarloRootNode<S, A>(initialState);
         if (pastNode == null)
         {
-
-            root = new MonteCarloRootNode<S, A>(initialState);
+            root = treePolicy.getNewRootNode(initialState);
             return;
         }
         MonteCarloRootNode<S, A> potentialNewRoot = null;
-
-        for (MonteCarloNode<S, A> child : pastNode)
+        for(MonteCarloNode<S, A> child : pastNode)
         {
-
-            if (child.getState().equals(initialState))
+            if(child.getState().equals(initialState))
             {
                 potentialNewRoot = new MonteCarloRootNode<S, A>(initialState);
-
                 break;
             }
 
         }
         if (potentialNewRoot == null)
         {
-            root = new MonteCarloRootNode<S, A>(initialState);
+           root = treePolicy.getNewRootNode(initialState);
         }
         else
         {
             for (MonteCarloNode<S, A> child : root)
             {
                 child.setParent(potentialNewRoot);
-
             }
             root = potentialNewRoot;
         }
     }
 
-
+    /**
+     * Do MCTS to find the best move to make
+     * @param initialState the state to search the best for for
+     * @param ms the time allowed to search for a move
+     * @return the move to make
+     * @throws IllegalArgumentException when the given time is negative
+     */
     public A search(S initialState, long ms)
             throws IllegalArgumentException
     {
@@ -80,17 +85,10 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         long startTime = System.currentTimeMillis(), start, end, count = 0;
 
         log("\n### Starting MCTS search ###\n");
-        MonteCarloRootNode<S, A> root = treePolicy.getNewRootNode(initialState);
-        pruneRoot(initialState);
 
+        //make sure the correct root is selected
+        checkRoot(initialState);
 
-     /*   for(MonteCarloNode<S,A> child : root){
-            if(child.getState() == initialState) {
-                root = (MonteCarloRootNode<S, A>) child;
-                root.setParent(null);
-                root.setAction(null);
-            }
-        }*/
         log("root node:\n" + root + "\n");
 
         //first, expand the root node until all childs are explored
@@ -138,8 +136,6 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         //print debug messages
-        System.out.println("total visits to root: " + root.getVisits());
-        if (DEBUG)
         System.out.println("total visits to root: " + root.getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue());
         if(DEBUG)
         {
@@ -152,11 +148,20 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         //return the best child
         MonteCarloNode<S, A> bestChild = treePolicy.bestRootChild(root);
 
+        //store the node resulting from the action taken to potentially reuse the tree
+        //the next time a search is requested, which is probably a child of the node which
+        //is getting stored
         pastNode = bestChild;
 
         return bestChild.getAction();
     }
 
+    /**
+     * Do an iteration of MCTS, which consists of selection, expansion, simulation
+     * and backpropagation. Choosing a node with the tree policy should do selection and expansion at the same
+     * time
+     * @param root the root of the tree to do an MCTS iteration on
+     */
     private void iteration(MonteCarloRootNode<S, A> root)
     {
         // select the critical node in the Tree which needs expanding
@@ -173,6 +178,13 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         treePolicy.backpropagate(expandedChild, reward, simulationsPerIteration);
     }
 
+    /**
+     * Do MCTS to find the best move to make
+     * @param initialState the state to search the best for for
+     * @param ms the time allowed to search for a move
+     * @return the move to make
+     * @throws IllegalArgumentException when the given time is negative
+     */
     public A search(S initialState, int ms)
             throws IllegalArgumentException
     {
