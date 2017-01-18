@@ -12,7 +12,8 @@ import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 public class MonteCarloTree<S extends State, A extends Action<S>>
 {
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEEP_DEBUG = false;
+    public static final boolean SEARCH_DEBUG = true;
 
     private TreePolicy<S, A> treePolicy;
 
@@ -83,7 +84,6 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
             throw new IllegalArgumentException(String.format("Cannot search for %d ms, which is <= 0", ms));
         }
         long startTime = System.currentTimeMillis(), start, end, count = 0;
-
         log("\n### Starting MCTS search ###\n");
 
         //make sure the correct root is selected
@@ -137,8 +137,13 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         //print debug messages
-        System.out.println("total visits to root: " + root.getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue());
-        if(DEBUG)
+
+        if(SEARCH_DEBUG)
+        {
+            System.out.println("total visits to root: " + root.getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue());
+            System.out.printf("amount of iterations in %d ms: %d\n", ms, count);
+        }
+        if(DEEP_DEBUG)
         {
             log("\nFinal Tree:\n");
             debugTree(root);
@@ -227,7 +232,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
     private static void log(String message)
     {
-        if(DEBUG)
+        if(DEEP_DEBUG)
         {
             System.out.print(message);
         }

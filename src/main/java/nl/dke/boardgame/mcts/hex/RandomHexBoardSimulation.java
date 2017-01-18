@@ -52,7 +52,7 @@ public class RandomHexBoardSimulation
         {
             reward = -1;
         }
-        if(MonteCarloTree.DEBUG)
+        if(MonteCarloTree.DEEP_DEBUG)
         {
             System.out.println("Simulated board:\n" + board);
             System.out.println("Current Player = " + currentPlayer.toString());

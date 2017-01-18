@@ -190,6 +190,7 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
         node.getAttachable(TOTAL_VISITS).increment(times);
         //qValues += q;
         node.getAttachable(TOTAL_REWARDS).increment(reward);
+
         if(!node.isRoot())
         {
             backpropagate(node.getParent(), reward, times);
@@ -322,7 +323,7 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
         else
         {
             double explorationTerm = getExplorationTerm(node, c);
-            if(explorationTerm - Double.MAX_VALUE < 0.00001d)
+            if(Math.abs(explorationTerm - Double.MAX_VALUE) < 0.00001d)
             {
                 return Double.MAX_VALUE;
             }

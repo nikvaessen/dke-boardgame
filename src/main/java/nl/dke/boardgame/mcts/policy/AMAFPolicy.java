@@ -94,7 +94,7 @@ public class AMAFPolicy <S extends State, A extends Action<S>>
             public Double apply(MonteCarloNode<S, A> node)
             {
                 double uct = getExplorationTerm(node, getExplorationParameter());
-                if(uct - Double.MAX_VALUE < 0.001d)
+                if(Math.abs(uct - Double.MAX_VALUE) < 0.001d)
                 {
                     return Double.MAX_VALUE;
                 }
