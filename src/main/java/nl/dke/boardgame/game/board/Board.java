@@ -23,7 +23,7 @@ public class Board
         implements Watchable
 {
     int counter = 0;
-    int[][] boardHistory = new int[121][2];
+    int[][] boardHistory = new int[19*19][2];
 
     /**
      * The 2D array of Tiles which together make the game board
@@ -90,9 +90,9 @@ public class Board
     }
     public void printBoard(){
         String spaces = " ";
-        for(int i = 0; i < 11; i++){
+        for(int i = 0; i < width; i++){
             System.out.print(spaces);
-            for(int j = 0; j < 11; j++){
+            for(int j = 0; j < height; j++){
 
                 if(this.getState(i,j) == TileState.NEUTRAL){
                     System.out.print("- ");
