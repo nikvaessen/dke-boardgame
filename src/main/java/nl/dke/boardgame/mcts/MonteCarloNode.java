@@ -52,6 +52,11 @@ public class MonteCarloNode<S
     private MonteCarloNode<S, A> parent;
 
     /**
+     * The state of the node
+     */
+    private S state;
+
+    /**
      * Create a MonteCarloNode with a given parent and the action which can be applied on the parent
      * to get to this nodes' State
      *
@@ -72,7 +77,11 @@ public class MonteCarloNode<S
      */
     public S getState()
     {
-        return parent.getState().next(action);
+        if(state == null)
+        {
+            state = parent.getState().next(action);
+        }
+        return state;
     }
 
     /**

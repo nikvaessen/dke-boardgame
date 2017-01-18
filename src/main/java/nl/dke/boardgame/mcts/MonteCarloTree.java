@@ -49,7 +49,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         {
             if(child.getState().equals(initialState))
             {
-                potentialNewRoot = new MonteCarloRootNode<S, A>(initialState);
+                potentialNewRoot = treePolicy.getNewRootNode(initialState);
                 break;
             }
 
@@ -121,6 +121,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
         // keep going until the allotted time has run out
         while (System.currentTimeMillis() - startTime < ms)
+        //while(count < 10)
         {
             log(String.format("\n####### iteration %d ######%n", count));
             count++;

@@ -5,6 +5,7 @@ import nl.dke.boardgame.mcts.MonteCarloNode;
 import nl.dke.boardgame.mcts.MonteCarloRootNode;
 import nl.dke.boardgame.mcts.State;
 import nl.dke.boardgame.mcts.hex.HexBoardState;
+import nl.dke.boardgame.util.DoubleCounter;
 import nl.dke.boardgame.util.IntegerCounter;
 
 import java.util.ArrayList;
@@ -189,11 +190,10 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
         node.getAttachable(TOTAL_VISITS).increment(times);
         //qValues += q;
         node.getAttachable(TOTAL_REWARDS).increment(reward);
-        if(node.isRoot())
+        if(!node.isRoot())
         {
-            return;
+            backpropagate(node.getParent(), reward, times);
         }
-        backpropagate(node.getParent(), reward, times);
     }
 
     @Override
@@ -315,19 +315,41 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
     {
         double n = node.getAttachable(TOTAL_VISITS).getValue().doubleValue();
         double q = node.getAttachable(TOTAL_REWARDS).getValue().doubleValue();
-        MonteCarloNode parent = node.getParent();
-        if(parent == null)
-        {
-            throw new IllegalArgumentException("cannot compute UCT value, given node does not have a parent");
-        }
         if(Math.abs(n - 0) < 0.00001d) // equal to 0
         {
             return Double.MAX_VALUE; //infinity
         }
         else
         {
+            double explorationTerm = getExplorationTerm(node, c);
+            if(explorationTerm - Double.MAX_VALUE < 0.00001d)
+            {
+                return Double.MAX_VALUE;
+            }
+            return (q / n) + getExplorationTerm(node, c);
+        }
+    }
+
+    public static double getExplorationTerm(MonteCarloNode node, double c)
+    {
+        MonteCarloNode parent = node.getParent();
+        if(parent == null)
+        {
+            throw new IllegalArgumentException("cannot compute exploration value, given node does not have a parent");
+        }
+        else
+        {
+            double n = node.getAttachable(TOTAL_VISITS).getValue().doubleValue();
+            if(Math.abs(n - 0) < 0.00001d) // equal to 0
+            {
+                return Double.MAX_VALUE; //infinity
+            }
             double nP = parent.getAttachable(TOTAL_VISITS).getValue().doubleValue();
-            return (q / n) + c * Math.sqrt(2 * Math.log(nP) / n);
+            if(Math.abs(nP - 0) < 0.00001d)
+            {
+                throw new IllegalArgumentException("the given parent does not have any visits");
+            }
+            return c * Math.sqrt(2 * Math.log(nP) / n);
         }
     }
 
