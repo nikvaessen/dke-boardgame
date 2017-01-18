@@ -2,6 +2,7 @@ package nl.dke.boardgame.mcts;
 
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;
+import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 
 /**
  * A general class which can do MonteCarlo Tree Search
@@ -39,7 +40,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         long startTime = System.currentTimeMillis(), start, end, count = 0;
 
         log("\n### Starting MCTS search ###\n");
-        MonteCarloRootNode<S, A> root = new MonteCarloRootNode<>(initialState);
+        MonteCarloRootNode<S, A> root = treePolicy.getNewRootNode(initialState);
         log("root node:\n" + root + "\n");
 
         //first, expand the root node until all childs are explored
@@ -87,7 +88,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         //print debug messages
-        System.out.println("total visits to root: " + root.getVisits());
+        System.out.println("total visits to root: " + root.getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue());
         if(DEBUG)
         {
             log("\nFinal Tree:\n");
@@ -110,7 +111,10 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
         // simulate on the newly created child and backpropagate the results
         log("\nsimulation:\n");
-        expandedChild.simulate(simulationPolicy, simulationsPerIteration);
+        int reward = expandedChild.simulate(simulationPolicy, simulationsPerIteration);
+
+        //backpropagate
+        treePolicy.backpropagate(expandedChild, reward, simulationsPerIteration);
     }
 
     public A search(S initialState, int ms)

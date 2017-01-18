@@ -9,7 +9,6 @@ import java.util.List;
  */
 public interface State
 {
-
     /**
      * Get the state resulting from the current state with the given action applied to it
      *
@@ -42,7 +41,6 @@ public interface State
      * @return true if state is terminal, false otherwise
      */
     boolean isTerminal();
-
 
     /**
      * Give an integer number representing who can currently act on the given state
