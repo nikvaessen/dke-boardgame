@@ -49,4 +49,30 @@ public interface TreePolicy<S extends State, A extends Action<S>>
      */
     MonteCarloNode<S, A> bestRootChild(MonteCarloRootNode<S, A> root);
 
+    /**
+     * After simulation of a node, a reward is given based on the winning chances of the state.
+     * Backpropagate this reward over every node in this tree which was part of the simulation
+
+     * @param node the node to start backpropagating on
+     * @param reward the reward to backpropagate
+     */
+    void backpropagate(MonteCarloNode<S, A> node, int reward);
+
+    /**
+     * After simulation of a node, a reward is given based on the winning chances of the state.
+     * Backpropagate this reward over every node in this tree which was part of the simulation
+
+     * @param node the node to start backpropagating on
+     * @param reward the reward to backpropagate
+     * @param times the amount of simulations which took place (>= 1)
+     */
+    void backpropagate(MonteCarloNode<S, A> node, int reward, int times);
+
+    /**
+     * Get a root node for a new tree
+     * @param initialState the initial state of the root node
+     * @return a new root node for a new tree
+     */
+    MonteCarloRootNode<S, A> getNewRootNode(S initialState);
+
 }

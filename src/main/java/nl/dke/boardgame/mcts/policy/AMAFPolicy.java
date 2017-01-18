@@ -36,17 +36,17 @@ public class AMAFPolicy <S extends State, A extends Action<S>>
                 double b = getBetaValue(node);
                 return b * getUCTValue(node, getExplorationParameter()) + (1 -b) * getAMAFValue(node);
             }
-        }
+        };
     }
 
     public static double getAMAFValue(MonteCarloNode node)
     {
-
+        return 0;
     }
 
     public static double getBetaValue(MonteCarloNode node)
     {
-
+        return 0;
     }
 
 }

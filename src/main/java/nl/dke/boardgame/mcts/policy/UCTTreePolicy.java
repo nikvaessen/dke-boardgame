@@ -4,12 +4,13 @@ import nl.dke.boardgame.mcts.Action;
 import nl.dke.boardgame.mcts.MonteCarloNode;
 import nl.dke.boardgame.mcts.MonteCarloRootNode;
 import nl.dke.boardgame.mcts.State;
+import nl.dke.boardgame.mcts.hex.HexBoardState;
+import nl.dke.boardgame.util.IntegerCounter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
 /**
@@ -20,6 +21,12 @@ import java.util.function.Function;
 public class UCTTreePolicy<S extends State, A extends Action<S>>
         implements TreePolicy<S, A>
 {
+
+    /**
+     * Unique names to give the counter objects given to every node which is expanded
+     */
+    public static final String TOTAL_REWARDS = "r";
+    public static final String TOTAL_VISITS  = "v";
 
     /**
      * Exploration value to use for selecting which node to simulate
@@ -86,7 +93,6 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
     @Override
     public MonteCarloNode<S, A> expand(MonteCarloNode<S, A> node) throws IllegalArgumentException
     {
-
         List<A> actions = node.getState().possibleActions();
 
         //System.out.println("before action pruning: " + actions.size());
@@ -105,7 +111,26 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
             {
                 node.setFullyExpanded(true);
             }
-            return new MonteCarloNode<S, A>(node, randomPossibleAction);
+            MonteCarloNode<S, A> newNode = new MonteCarloNode<>(node, randomPossibleAction);
+            attachCounters(newNode);
+            return newNode;
+        }
+    }
+
+    /**
+     * Attach the necessary counters to the montecarlonode
+     * @param node the node to attach the counters to
+     */
+    protected void attachCounters(MonteCarloNode<S, A> node)
+    {
+        try
+        {
+            node.attach(new IntegerCounter(TOTAL_REWARDS));
+            node.attach(new IntegerCounter(TOTAL_VISITS));
+        }
+        catch(IllegalArgumentException e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -135,6 +160,48 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
     public MonteCarloNode<S, A> bestRootChild(MonteCarloRootNode<S, A> root)
     {
         return bestChild(root, getRootNodeValueFunction());
+    }
+
+    /**
+     * After simulation of a node, a reward is given based on the winning chances of the state.
+     * Alternatively add this reward and the negation of the reward back up the tree until the root is found.
+     * @param node the node to start backpropagating on
+     * @param reward the reward to backpropagate
+     */
+    @Override
+    public void backpropagate(MonteCarloNode<S, A> node, int reward)
+    {
+        backpropagate(node, reward, 1);
+    }
+
+    /**
+     * After simulation of a node, a reward is given based on the winning chances of the state.
+     * Alternatively add this reward and the negation of the reward back up the tree until the root is found.
+     *
+     * @param node the node to start backpropagating on
+     * @param reward the reward to backpropagate
+     * @param times the amount of simulations which took place (>= 1)
+     */
+    @Override
+    public void backpropagate(MonteCarloNode<S, A> node, int reward, int times)
+    {
+        //visits += simPerNode;
+        node.getAttachable(TOTAL_VISITS).increment(times);
+        //qValues += q;
+        node.getAttachable(TOTAL_REWARDS).increment(reward);
+        if(node.isRoot())
+        {
+            return;
+        }
+        backpropagate(node.getParent(), reward, times);
+    }
+
+    @Override
+    public MonteCarloRootNode<S, A> getNewRootNode(S initialstate)
+    {
+        MonteCarloRootNode<S, A> root = new MonteCarloRootNode<>(initialstate);
+        attachCounters(root);
+        return root;
     }
 
     /**
@@ -227,7 +294,7 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
     /**
      * Computes the UCT value of a node. The upper confidence bound is defined as:
      * <p>
-     * Q(node)             ( 2 * ln(N(parent))  )
+     * Q(node)             ( 2 * ln(N(parent)))
      * -------  + C * sqrt ( ---------------  )
      * N(node)             (     N(Node)      )
      * <p>
@@ -246,21 +313,20 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
     public static double getUCTValue(MonteCarloNode node, double c)
             throws IllegalArgumentException
     {
-        double n = node.getVisits();
-        double q = node.getqValues();
+        double n = node.getAttachable(TOTAL_VISITS).getValue().doubleValue();
+        double q = node.getAttachable(TOTAL_REWARDS).getValue().doubleValue();
         MonteCarloNode parent = node.getParent();
         if(parent == null)
         {
             throw new IllegalArgumentException("cannot compute UCT value, given node does not have a parent");
         }
-        double nP = parent.getVisits();
         if(Math.abs(n - 0) < 0.00001d) // equal to 0
         {
             return Double.MAX_VALUE; //infinity
         }
         else
         {
-
+            double nP = parent.getAttachable(TOTAL_VISITS).getValue().doubleValue();
             return (q / n) + c * Math.sqrt(2 * Math.log(nP) / n);
         }
     }

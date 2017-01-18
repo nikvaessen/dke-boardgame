@@ -1,5 +1,7 @@
 package nl.dke.boardgame.mcts;
 
+import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
+
 /**
  * The root node of the MonteCarlo Tree. It differs from normal nodes by starting with an initial state
  *
@@ -40,8 +42,8 @@ public class MonteCarloRootNode<S extends State, A extends Action<S>>
     public String toString()
     {
         return String.format("visits: %d\nq: %d\nstate:\n%s",
-                super.getVisits(),
-                super.getqValues(),
+                getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue(),
+                getAttachable(UCTTreePolicy.TOTAL_REWARDS).getValue(),
                 getState().toString());
     }
 }

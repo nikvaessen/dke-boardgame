@@ -71,7 +71,7 @@ public class Table
                         player,
                         new UCTTreePolicy<>(0.7),
                         new MultiThreadRandomHexBoardSimulation(),
-                        5000,
+                        500,
                         25000);
             case alphabeta:
                 return new AlphaBetaPlayer(player);

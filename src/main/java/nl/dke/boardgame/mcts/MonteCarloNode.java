@@ -3,20 +3,23 @@ package nl.dke.boardgame.mcts;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 import nl.dke.boardgame.mcts.policy.TreePolicy;
 import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
+import nl.dke.boardgame.util.Attachable;
+import nl.dke.boardgame.util.Counter;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * This class implements a node in a MonteCarlo tree. It stores the amount of times it is visted, the total reward
- * it has retrieved over the whole tree search, and it represents a State in the MonteCarlo Tree. The State is not
- * stored due to memory constraints, but t is computed by every node storing the action, and retrieving
- * all actions and applying them to the initial state of the the root node.
+ * This class implements a node in a MonteCarlo tree. It stores the amount of times it is visted, the total
+ * reward it has retrieved over the whole tree search, and it represents a State in the MonteCarlo Tree.
+ * The State is not stored due to memory constraints, but t is computed by every node storing the action,
+ * and retrieving all actions and applying them to the initial state of the the root node.
  *
  * @author nik in 29/12/16.
  */
-public class MonteCarloNode<S extends State, A extends Action<S>>
-        implements Iterable<MonteCarloNode<S, A>>
+public class MonteCarloNode<S
+        extends State, A extends Action<S>>
+        implements Iterable<MonteCarloNode<S, A>>, Attachable<Counter>
 {
     /**
      * Random number generator being shared on all nodes
@@ -24,14 +27,14 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
     private static Random rng = new Random(System.currentTimeMillis());
 
     /**
-     * sum of all q-values this node retrieves during backpropagation
+     * List containing all expanded children of this node
      */
-    private int qValues = 0;
+    private LinkedList<MonteCarloNode<S, A>> children = new LinkedList<>();
 
     /**
-     * counter of all visits of this node during search
+     * List containing all attached counters on this node
      */
-    private int visits = 0;
+    private LinkedList<Counter> attached = new LinkedList<>();
 
     /**
      * Action to get from the parent node to this node
@@ -48,7 +51,6 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
      */
     private MonteCarloNode<S, A> parent;
 
-
     /**
      * Create a MonteCarloNode with a given parent and the action which can be applied on the parent
      * to get to this nodes' State
@@ -63,14 +65,6 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
         MonteCarloTree.numberNodes++;
     }
 
-    /**
-     * List containing all expanded children of this node
-     */
-    private LinkedList<MonteCarloNode<S, A>> children = new LinkedList<>();
-
-    public LinkedList<MonteCarloNode<S,A>> getChildren(){
-        return children;
-    }
     /**
      * Get the State created by applying all actions from this Node
      *
@@ -164,17 +158,20 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
     public void simulate(SimulationPolicy<S> simulationPolicy, int simPerNode)
     {
         int reward = simulationPolicy.simulate(getState(), simPerNode);
-
         if(getRoot().getState().nextActor() == getState().nextActor())
         {
-            backPropagate(reward, simPerNode);
+            return reward;
         }
         else
         {
-            backPropagate(-reward, simPerNode);
+            return -reward;
         }
     }
 
+    /**
+     * get the root node of the tree
+     * @return the root node of the tree of this node
+     */
     public MonteCarloNode getRoot()
     {
         if(isRoot())
@@ -235,24 +232,80 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
     }
 
     /**
-     * Get the cumulative rewards this MonteCarloNode has retrieved due to simulations on this MonteCarloNode or a child.
-     *
-     * @return the reward value of this Node during the complete tree search
+     * Attach a counter to this node to use for keeping track of scores for this node
+     * Every counter is expected to have an unique name
+     * @param counter a counter object to attach to this node
      */
-    public int getqValues()
+    @Override
+    public void attach(Counter counter)
+        throws IllegalArgumentException
     {
-        return qValues;
+        if(has(counter.toString()))
+        {
+            throw new IllegalArgumentException("already has a object with the unique identifier of" +
+                    "the given object");
+        }
+        attached.add(counter);
     }
 
     /**
-     * Get the number of times this MonteCarloNode or a child has been visisted. A MonteCarloNode is visited
-     * when the tree search expands and simulated on this MonteCarloNode or a child.
-     *
-     * @return the number of times this MonteCarloNode has been visited
+     * Detach a counter with a specific name from this object
+     * @param name the unique name of the counter
+     * @return true is succesfully deleted, false if not found
      */
-    public int getVisits()
+    @Override
+    public boolean detach(String name)
     {
-        return visits;
+        for(Iterator<Counter> iterable = attached.iterator(); iterable.hasNext(); /* not needed*/)
+        {
+            if(iterable.next().toString().equals(name))
+            {
+                iterable.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * returns true is there is an attached object with the given name
+     * @param name the unique name of the object attached to a node
+     * @return true is there is an object with the given name attached to this object,
+     * false otherwise
+     */
+    @Override
+    public boolean has(String name)
+    {
+        for(Iterator<Counter> iterable = attached.iterator(); iterable.hasNext(); /* not needed*/)
+        {
+            if(iterable.next().toString().equals(name))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * get an attached object from this node
+     * @param name the unique name of an object which is added to this node
+     * @return the requested object
+     * @throws IllegalArgumentException if there is no object with the given name added to this node
+     */
+    @Override
+    public Counter getAttachable(String name)
+        throws IllegalArgumentException
+    {
+        Counter temp;
+        for(Counter c : attached)
+        {
+            if(c.toString().equals(name))
+            {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException("given unique name of object was not found in the list " +
+                "of attached objects");
     }
 
     /**
@@ -280,8 +333,8 @@ public class MonteCarloNode<S extends State, A extends Action<S>>
     public String toString()
     {
         return String.format("visits: %d\nq: %d\nUCT 0.0: %f\nUTC 0.5: %f\nUTC 3.0: %f\nstate:\n%s\naction: %s",
-                visits,
-                qValues,
+                getAttachable(UCTTreePolicy.TOTAL_REWARDS).getValue().intValue(),
+                getAttachable(UCTTreePolicy.TOTAL_REWARDS).getValue().intValue(),
                 UCTTreePolicy.getUCTValue(this, 0),
                 UCTTreePolicy.getUCTValue(this, 0.5),
                 UCTTreePolicy.getUCTValue(this, 3),

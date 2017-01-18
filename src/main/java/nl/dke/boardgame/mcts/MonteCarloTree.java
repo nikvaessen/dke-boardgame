@@ -73,13 +73,14 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
     public A search(S initialState, long ms)
             throws IllegalArgumentException
     {
-        if (ms <= 0)
+        if(ms <= 0)
         {
             throw new IllegalArgumentException(String.format("Cannot search for %d ms, which is <= 0", ms));
         }
         long startTime = System.currentTimeMillis(), start, end, count = 0;
 
         log("\n### Starting MCTS search ###\n");
+        MonteCarloRootNode<S, A> root = treePolicy.getNewRootNode(initialState);
         pruneRoot(initialState);
 
 
@@ -139,6 +140,8 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         //print debug messages
         System.out.println("total visits to root: " + root.getVisits());
         if (DEBUG)
+        System.out.println("total visits to root: " + root.getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue());
+        if(DEBUG)
         {
             log("\nFinal Tree:\n");
             debugTree(root);
@@ -164,7 +167,10 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
         // simulate on the newly created child and backpropagate the results
         log("\nsimulation:\n");
-        expandedChild.simulate(simulationPolicy, simulationsPerIteration);
+        int reward = expandedChild.simulate(simulationPolicy, simulationsPerIteration);
+
+        //backpropagate
+        treePolicy.backpropagate(expandedChild, reward, simulationsPerIteration);
     }
 
     public A search(S initialState, int ms)
@@ -178,7 +184,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         log("Root node: \n" + node + "\n");
         int count = 0;
         log("\nchildren of root:\n\n");
-        for (MonteCarloNode<S, A> child : node)
+        for(MonteCarloNode<S, A> child : node)
         {
             count++;
             log(child + "\n\n");
@@ -190,9 +196,9 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
     private void debugChildren(MonteCarloNode<S, A> node, int layer)
     {
         boolean loop = false;
-        for (MonteCarloNode<S, A> child : node)
+        for(MonteCarloNode<S, A> child : node)
         {
-            if (!loop)
+            if(!loop)
             {
                 log(String.format("\nchildren of above node in layer %d\n\n", layer));
                 loop = true;
@@ -200,7 +206,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
             log(child + "\n");
             debugChildren(child, layer + 1);
         }
-        if (loop)
+        if(loop)
         {
             log(String.format("______end of children in layer %d______\n\n", layer));
         }
@@ -208,7 +214,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
     private static void log(String message)
     {
-        if (DEBUG)
+        if(DEBUG)
         {
             System.out.print(message);
         }
