@@ -46,8 +46,10 @@ The game tree closely follows a \textit{Markov Decision Process} (MDP) in which 
 \item $S$: a set of all possible states of the board
 \item $A$: a set of all possible actions that can transition from one state to the other
 \item $P_a(s, s')$: the probability of reaching state $s'$ by using action $a$ on state $s$
-\item $R_a(s, s')$: the expected reward for reaching state $s'$ by using action $a$ on state $s$
+\item $R_a(s, s')$: the reward for reaching state $s'$ by using action $a$ on state $s$
 \end{itemize}
+
+For Hex, the probability of reaching a state for any action is 1 as long as it is a legal move. 
 
 The MCTS algorithm can be divided into four main parts: 
 \begin{enumerate}
@@ -62,7 +64,7 @@ These four simple parts of the algorithm can be divided into two policies that s
 \item \textit{Tree Policy}: in this policy the stages of selection and expansion take place. The random nodes are selected and expanded, ready to receive their reward value.
 \item \textit{Default Policy}: in this policy the simulation takes place and a reward value is given to the node 
 \end{itemize}
-The backporpagation stage of the MCST doesn't occur within any policy as it just represents the update of the tree after the reward, which is used in later cycles for the tree policy to select and expand new nodes.
+The backpropagation stage of the MCST doesn't occur within any policy as it just represents the update of the tree after the reward, which is used in later cycles for the tree policy to select and expand new nodes.
 
 \begin{algorithm}
     \caption{MCTS}
@@ -85,13 +87,13 @@ In Algorithm 1 we see the general structure of the MCTS. The root of the tree wi
 Different heuristics can be used on top the MCTS algorithm to enhance its performance.
 \subsubsection{Upper Confidence Bounds for Trees (UCT)}
 %%reference Peter Auer
-The UCT is an algorithm which adapts the Upper Confidence Bounds (UCB) exploitation and exploration of trade-offs as a tree policy. The UCT tree policy works by choosing the node $v$ that maximizes the independent multi-armed bandit problem:
+The UCT is an algorithm which adapts the Upper Confidence Bounds (UCB) exploitation and exploration of trade-offs as a tree policy. 
+Selecting a child node to traverse in the selection part of MCTS can be seen as a multi-armed bandit problem.
+The UCT tree policy works by choosing the node $v$ that maximizes the independent multi-armed bandit problem:
 \begin{center}
-$UCT = \bar{X_v} + 2C_p \sqrt{\frac{2\ln n}{n_v}}$
+$UCT = \bar{X_v} + C_p \sqrt{\frac{2\ln n}{n_v}}$
 \end{center}
-In the equation above $n$ represents the amount of time the current node has being visited,$n_v$ the amount of time the visited child node has being visited, and the constant $C_p >0$.
-
-
+In the equation above $n$ represents the amount of time the current node has being visited,$n_v$ the amount of time a  child node has been visited, and the constant $C_p >=0 $ can be used to weight the importance of exploration. If a child is not visited ($n_v = 0$) the exploration term is set to $\infty$.
 
 \begin{algorithm}
 	\caption{UCT}
