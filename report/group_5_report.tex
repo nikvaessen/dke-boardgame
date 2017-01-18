@@ -91,7 +91,9 @@ The UCT is an algorithm which adapts the Upper Confidence Bounds (UCB) exploitat
 Selecting a child node to traverse in the selection part of MCTS can be seen as a multi-armed bandit problem.
 The UCT tree policy works by choosing the node $v$ that maximizes the independent multi-armed bandit problem:
 \begin{center}
-$UCT = \bar{X_v} + C_p \sqrt{\frac{2\ln n}{n_v}}$
+\begin{equation}
+	UCT = \bar{X_v} + C_p \sqrt{\frac{2\ln n}{n_v}}
+\end{equation}
 \end{center}
 In the equation above $n$ represents the amount of time the current node has being visited,$n_v$ the amount of time a  child node has been visited, and the constant $C_p >=0 $ can be used to weight the importance of exploration. If a child is not visited ($n_v = 0$) the exploration term is set to $\infty$.
 
@@ -150,11 +152,12 @@ $
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
+
 \subsubsection{AMAF/RAVE}
 
 Explanation of either AMAF or RAVE \cite{gelly2011monte}
 \subsubsection{Parallelisation}
-Explanation of different parallelisation methods
+Explanation of different parallelization methods
 
 \section{Experiments}
 Explanation of experiments and results, comparing different parameters
