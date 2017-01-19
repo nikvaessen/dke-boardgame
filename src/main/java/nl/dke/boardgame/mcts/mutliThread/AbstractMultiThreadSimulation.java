@@ -4,7 +4,10 @@ import nl.dke.boardgame.mcts.State;
 import nl.dke.boardgame.mcts.policy.SimulationPolicy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -12,7 +15,8 @@ import java.util.concurrent.Future;
 /**
  * Created by nik on 12/01/17.
  */
-public abstract class AbstractMultiThreadSimulation<S extends State, T extends RunnableSimulation>
+public abstract class AbstractMultiThreadSimulation<S extends State,
+        T extends RunnableSimulation, U extends CallableSimulations<S>>
         implements SimulationPolicy<S>
 {
     private ExecutorService threadPool;
@@ -21,6 +25,7 @@ public abstract class AbstractMultiThreadSimulation<S extends State, T extends R
     {
         System.out.printf("MultiThreaded MCTS is using %d processors%n", Runtime.getRuntime().availableProcessors());
         threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        //threadGroup = new ThreadGroup("Leaf parrallilization");
     }
 
     /**
@@ -33,34 +38,28 @@ public abstract class AbstractMultiThreadSimulation<S extends State, T extends R
     @Override
     public int simulate(S state, int times)
     {
-        final RewardTracker rewards = new RewardTracker();
+        int reward = 0;
 
-        ArrayList<Future> futures = new ArrayList<>();
+        Collection<CallableSimulations<S>> callables = new ArrayList<>();
         for(int i = 0; i < times; i++)
         {
-            futures.add(threadPool.submit(getRunnableSimulation(state, rewards)));
+            callables.add(getCallableSimulation(state));
         }
 
-        Future temp;
-        while(!futures.isEmpty())
+        try
         {
-            Iterator<Future> it = futures.iterator();
-            while(it.hasNext())
+            List<Future<Integer>> futures = threadPool.invokeAll(callables);
+            for(Future<Integer> f : futures)
             {
-                temp = it.next();
-                if(temp.isDone())
-                {
-                    it.remove();
-                }
+                reward += f.get();
             }
         }
-
-        if(rewards.getCount() < times)
+        catch(InterruptedException | ExecutionException e)
         {
-            throw new IllegalStateException(String.format("Did not simulate enough times. Expected: %d Actual: %d",
-                    times, rewards.getCount()));
+            e.printStackTrace();
         }
-        return rewards.getReward();
+
+        return reward;
     }
 
     /**
@@ -69,5 +68,12 @@ public abstract class AbstractMultiThreadSimulation<S extends State, T extends R
      * @return a runnable which can be ran in a thread to do a simulation
      */
     public abstract T getRunnableSimulation(S state, RewardTracker tracker);
+
+    /**
+     * Construct a callable for a simulation
+     * @param state the state for the callable
+     * @return the callable which can be simulated
+     */
+    public abstract U getCallableSimulation(S state);
 
 }

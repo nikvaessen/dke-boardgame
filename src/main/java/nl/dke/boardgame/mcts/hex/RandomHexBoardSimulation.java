@@ -14,6 +14,11 @@ import java.util.List;
  */
 public class RandomHexBoardSimulation
 {
+    /**
+     * Simulate a given HexBoardState.
+     * @param state the state to simulate on
+     * @return 1 if the player who is allowed to move wins, otherwise -1
+     */
     public static int simulate(HexBoardState state)
     {
         // reset variables
