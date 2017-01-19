@@ -20,6 +20,15 @@ public interface State
     <S extends State> S next(Action<? extends State> action) throws IllegalArgumentException;
 
     /**
+     * apply a list of actions to this state
+     * @param actions the list of actions to apply to the state
+     * @param <S> the state
+     * @param <A> the action
+     * @return a state with all the actions applied to this state
+     */
+    <S extends State, A extends Action<S>> S apply(List<A> actions);
+
+    /**
      * List all the actions possible from the current state
      *
      * @return a list of all possible actions which can be legally applied to this state

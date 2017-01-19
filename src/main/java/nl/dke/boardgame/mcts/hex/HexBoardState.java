@@ -1,5 +1,6 @@
 package nl.dke.boardgame.mcts.hex;
 
+import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
@@ -184,6 +185,28 @@ public class HexBoardState
             throw new IllegalArgumentException("Action to be applied to a Board is not a HexBoardAction");
         }
         return ((HexBoardAction) action).apply(this);
+    }
+
+    @Override
+    public <S extends State, A extends Action<S>> S apply(List<A> actions)
+    {
+        Board board = this.board.clone();
+        for(Action a : actions)
+        {
+            if(a instanceof HexBoardAction)
+            {
+                try
+                {
+                    board.claim(((HexBoardAction) a).getX(), ((HexBoardAction) a).getY(),
+                            ((HexBoardAction) a).getPlayer());
+                }
+                catch(AlreadyClaimedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return (S) new HexBoardState(board, board.getCurrentPlayer());
     }
 
     /**

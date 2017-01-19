@@ -54,16 +54,16 @@ public class AlphaBetaPlayer extends HexPlayer
         result.board.printBoard();
 
         //Boardhistory of the board alpha-beta returned
-        int[][] history = result.board.getHistory();
-        System.out.println("BoardHistory: ");
-        for(int i = 0; i < history.length; i++)
-        {
-            System.out.print("row: " + history[i][0]);
-            System.out.print(" column: " + history[i][1] + "\n");
-        }
-        //set the move to be the move alpha-beta wants to make (the first newest move in the boardhistory)
-        move.setRow(history[counter - 1][0]);
-        move.setColumn(history[counter - 1][1]);
+        //int[][] history = result.board.getHistory();
+//        System.out.println("BoardHistory: ");
+//        for(int i = 0; i < history.length; i++)
+//        {
+//            System.out.print("row: " + history[i][0]);
+//            System.out.print(" column: " + history[i][1] + "\n");
+//        }
+//        //set the move to be the move alpha-beta wants to make (the first newest move in the boardhistory)
+//        move.setRow(history[counter - 1][0]);
+//        move.setColumn(history[counter - 1][1]);
 
         counter += 2;
         System.out.println("number of leafNodes: " + numberOfLeafNodes);
