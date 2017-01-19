@@ -31,7 +31,7 @@ public abstract class AbstractMultiThreadSimulation<S extends State, T extends R
      * @return the sum of the rewards of the simulations which have taken place
      */
     @Override
-    public synchronized int simulate(S state, int times)
+    public int simulate(S state, int times)
     {
         final RewardTracker rewards = new RewardTracker();
 
