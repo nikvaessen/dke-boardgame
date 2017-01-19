@@ -51,23 +51,23 @@ public class AlphaBetaPlayer extends HexPlayer
 
         //Run alpha-Beta algorithm, returns the boardPlusScore at the leafNode it found
         BoardPlusScore result = alphaBeta(Maxdepth, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
-        System.out.println("final board:" + result.score);
-        result.board.printBoard();
+        //System.out.println("final board:" + result.score);
+        //result.board.printBoard();
 
         //Boardhistory of the board alpha-beta returned
         int[][] history = result.board.getHistory();
-        System.out.println("BoardHistory: ");
+        //System.out.println("BoardHistory: ");
         for(int i = 0; i < history.length; i++)
         {
-            System.out.print("row: " + history[i][0]);
-            System.out.print(" column: " + history[i][1] + "\n");
+            //System.out.print("row: " + history[i][0]);
+            //System.out.print(" column: " + history[i][1] + "\n");
         }
         //set the move to be the move alpha-beta wants to make (the first newest move in the boardhistory)
         move.setRow(history[counter - 1][0]);
         move.setColumn(history[counter - 1][1]);
 
         counter += 2;
-        System.out.println("number of leafNodes: " + numberOfLeafNodes);
+        //System.out.println("number of leafNodes: " + numberOfLeafNodes);
         numberOfLeafNodes = 0;
     }
 
@@ -335,12 +335,12 @@ public class AlphaBetaPlayer extends HexPlayer
         int counter = 0;
         for(int i = 0; i < graph.length; i++)
         {
-            System.out.print(counter++ + "   ");
+            //System.out.print(counter++ + "   ");
             for(int j = 0; j < graph[0].length; j++)
             {
-                System.out.print(graph[i][j] + "  ");
+                //System.out.print(graph[i][j] + "  ");
             }
-            System.out.print("\n");
+            //System.out.print("\n");
         }
     }
 
@@ -497,9 +497,9 @@ class Dijkstra
     {
         for(Integer i : path)
         {
-            System.out.print(i + " ");
+            //System.out.print(i + " ");
         }
-        System.out.println();
+        //System.out.println();
     }
 
     static void makePath(int[] parent, int j)

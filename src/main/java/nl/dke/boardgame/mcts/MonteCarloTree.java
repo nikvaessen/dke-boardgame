@@ -87,7 +87,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         //print debug messages
-        System.out.println("total visits to root: " + root.getVisits());
+        //System.out.println("total visits to root: " + root.getVisits());
         if(DEBUG)
         {
             log("\nFinal Tree:\n");

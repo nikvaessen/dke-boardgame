@@ -316,6 +316,7 @@ public class HexGame
 
             long end = System.currentTimeMillis();
             System.out.println("Total game time: " + (end - start) + " ms");
+            System.out.println("Number of moves: " + gameState.getTotalTurns());
             notifyWatchers();
         }
 
@@ -390,12 +391,12 @@ public class HexGame
          */
         private void allowMove(HexPlayer player, Move move)
         {
-            System.out.println("Turn: " + player.claimsAs().toString());
+            //System.out.println("Turn: " + player.claimsAs().toString());
             player.finishMove(move); //this method blocks until input has been given
             try
             {
-                System.out.printf("Claiming row %d and column %d as %s%n",
-                        move.getRow(), move.getColumn(), player.claimsAs());
+                //System.out.printf("Claiming row %d and column %d as %s%n",
+                        //move.getRow(), move.getColumn(), player.claimsAs());
                 board.claim(move.getRow(), move.getColumn(), player.claimsAs());
                 //mark the turn as completed
                 gameState.completedTurn(getBoardState(), player.claimsAs());
@@ -414,12 +415,12 @@ public class HexGame
          */
         private void allowPieMove(HexPlayer player, PieMove move)
         {
-            System.out.println("Turn: " + player.claimsAs().toString());
+            //System.out.println("Turn: " + player.claimsAs().toString());
             player.finishMove(move); //this method blocks until input has been given
             try
             {
-                System.out.printf("Claiming row %d and column %d as %s%n",
-                        move.getRow(), move.getColumn(), player.claimsAs());
+                //System.out.printf("Claiming row %d and column %d as %s%n",
+                        //move.getRow(), move.getColumn(), player.claimsAs());
                 if(board.getState(move.getRow(), move.getColumn()) == TileState.NEUTRAL)
                 {
                     board.claim(move.getRow(), move.getColumn(), player.claimsAs());
