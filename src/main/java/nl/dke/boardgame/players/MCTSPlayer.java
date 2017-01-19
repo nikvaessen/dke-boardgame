@@ -14,25 +14,29 @@ import nl.dke.boardgame.mcts.policy.TreePolicy;
  * Created by nik on 24/12/16.
  */
 public class MCTSPlayer extends HexPlayer {
+
+
     private TreePolicy<HexBoardState, HexBoardAction> treePolicy;
     private SimulationPolicy<HexBoardState> simulationPolicy;
     private int ms;
     private int simulationsPerIteration;
-    MonteCarloTree<HexBoardState, HexBoardAction> monteCarloTree;
+    private MonteCarloTree<HexBoardState, HexBoardAction> monteCarloTree;
+    private PossiblePlayers name;
 
     public MCTSPlayer(TileState claimer,
                       TreePolicy<HexBoardState, HexBoardAction> treePolicy,
                       SimulationPolicy<HexBoardState> simulationPolicy,
                       int simulationsPerIteration,
-                      int ms) {
+                      int ms,
+                      PossiblePlayers name,
+                      boolean treeReuse) {
         super(claimer);
         this.treePolicy = treePolicy;
         this.simulationPolicy = simulationPolicy;
         this.ms = ms;
         this.simulationsPerIteration = simulationsPerIteration;
-
-        monteCarloTree =
-                new MonteCarloTree<>(treePolicy, simulationPolicy, simulationsPerIteration);
+        monteCarloTree = new MonteCarloTree<>(treePolicy, simulationPolicy, simulationsPerIteration, treeReuse);
+        this.name = name;
     }
 
     @Override
@@ -54,6 +58,6 @@ public class MCTSPlayer extends HexPlayer {
 
     @Override
     public PossiblePlayers getTypeOfPlayer() {
-        return PossiblePlayers.MCTS;
+        return name;
     }
 }

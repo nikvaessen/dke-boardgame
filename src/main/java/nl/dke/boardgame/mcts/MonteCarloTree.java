@@ -20,16 +20,17 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
     private SimulationPolicy<S> simulationPolicy;
 
     private int simulationsPerIteration;
-    public static int numberNodes = 0;
     private MonteCarloRootNode<S, A> root;
     private MonteCarloNode<S, A> pastNode;
+    private boolean treeReuse;
 
-    public MonteCarloTree(TreePolicy<S, A> treePolicy, SimulationPolicy<S> simulationPolicy, int simsPerIt)
+    public MonteCarloTree(TreePolicy<S, A> treePolicy, SimulationPolicy<S> simulationPolicy, int simsPerIt,
+                          boolean treeReuse)
     {
         this.treePolicy = treePolicy;
         this.simulationPolicy = simulationPolicy;
         this.simulationsPerIteration = simsPerIt;
-        numberNodes = 0;
+        this.treeReuse = treeReuse;
     }
 
     /**
@@ -40,32 +41,44 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
     public void checkRoot(S initialState)
     {
         //MonteCarloRootNode<S,A> root = new MonteCarloRootNode<S, A>(initialState);
-        if (pastNode == null)
+        if (pastNode == null || !treeReuse)
         {
             root = treePolicy.getNewRootNode(initialState);
+            System.out.printf("created new root. pastNode = null: %b\t !treeReuse: %b%n",
+                    pastNode == null, !treeReuse);
             return;
         }
+        System.out.printf("previous root was not null and had %d children\n", root.amountOfChildren());
+        System.out.printf("previous node has %d children%n", pastNode.amountOfChildren());
         MonteCarloRootNode<S, A> potentialNewRoot = null;
+        MonteCarloNode<S, A> newRoot = null;
         for(MonteCarloNode<S, A> child : pastNode)
         {
             if(child.getState().equals(initialState))
             {
                 potentialNewRoot = treePolicy.getNewRootNode(initialState);
+                newRoot = child;
+                System.out.println("Found the child of past node which has the same state");
                 break;
             }
 
         }
         if (potentialNewRoot == null)
         {
-           root = treePolicy.getNewRootNode(initialState);
+            System.out.println("No grandchild with same state was found");
+            root = treePolicy.getNewRootNode(initialState);
         }
         else
         {
-            for (MonteCarloNode<S, A> child : root)
+            System.out.printf("Transferring the children from the child of past node. It has %d children%n",
+                    newRoot.amountOfChildren());
+            for (MonteCarloNode<S, A> child : newRoot)
             {
                 child.setParent(potentialNewRoot);
+                potentialNewRoot.addChild(child);
             }
             root = potentialNewRoot;
+            System.out.println(" FINISHED +and #children = " + root.amountOfChildren());
         }
     }
 
@@ -88,6 +101,11 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
         //make sure the correct root is selected
         checkRoot(initialState);
+
+        if(SEARCH_DEBUG)
+        {
+            System.out.printf("Root starts with %d children %n", countNodes(root));
+        }
 
         log("root node:\n" + root + "\n");
 
@@ -139,7 +157,9 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         if(SEARCH_DEBUG)
         {
             System.out.println("total visits to root: " + root.getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue());
-            System.out.printf("amount of iterations in %d ms: %d\n", ms, count);
+            System.out.printf("amount of iterations in %d ms: %d%n", ms, count);
+            System.out.printf("Amount of nodes in the tree: %d%n", countNodes(root));
+            System.out.println("Amount of children of root: " + root.amountOfChildren());
         }
         if(DEEP_DEBUG)
         {
@@ -238,5 +258,27 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         {
             System.out.print(message);
         }
+    }
+
+    private long countNodes(MonteCarloRootNode<S, A> root)
+    {
+        long count = 0;
+        for(MonteCarloNode<S, A> node : root)
+        {
+            count++;
+            count += countNodes(node);
+        }
+        return count;
+    }
+
+    private long countNodes(MonteCarloNode<S, A> node)
+    {
+        long count = 0;
+        for(MonteCarloNode<S, A> child: node)
+        {
+            count++;
+            count += countNodes(child);
+        }
+        return count;
     }
 }

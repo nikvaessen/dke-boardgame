@@ -52,11 +52,6 @@ public class MonteCarloNode<S
     private MonteCarloNode<S, A> parent;
 
     /**
-     * The state of the node
-     */
-    //private S state;
-
-    /**
      * Create a MonteCarloNode with a given parent and the action which can be applied on the parent
      * to get to this nodes' State
      *
@@ -67,7 +62,6 @@ public class MonteCarloNode<S
     {
         this.parent = parent;
         this.action = action;
-        MonteCarloTree.numberNodes++;
     }
 
     /**
@@ -332,5 +326,23 @@ public class MonteCarloNode<S
 
     public void setParent(MonteCarloNode parent) {
         this.parent = parent;
+    }
+
+    /**
+     * return the amount of children of this node
+     * @return the amount of children
+     */
+    public int amountOfChildren()
+    {
+        return children.size();
+    }
+
+    /**
+     * add a child to this node
+     * @param child the child to add
+     */
+    public void addChild(MonteCarloNode<S, A> child)
+    {
+        children.add(child);
     }
 }

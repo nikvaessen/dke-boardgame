@@ -7,25 +7,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * Created by nik on 12/01/17.
  */
-public abstract class AbstractMultiThreadSimulation<S extends State,
-        T extends RunnableSimulation, U extends CallableSimulations<S>>
+public abstract class AbstractMultiThreadSimulation<S extends State,U extends CallableSimulations<S>>
         implements SimulationPolicy<S>
 {
     private ExecutorService threadPool;
 
-    public AbstractMultiThreadSimulation()
+    public AbstractMultiThreadSimulation(int cores)
     {
-        System.out.printf("MultiThreaded MCTS is using %d processors%n", Runtime.getRuntime().availableProcessors());
-        threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        //threadGroup = new ThreadGroup("Leaf parrallilization");
+        int available = Runtime.getRuntime().availableProcessors();
+        if(cores > available || cores <= 0)
+        {
+            throw new IllegalArgumentException(String.format("Cannot start %d threads as this computer only has" +
+                    " %d", cores, available));
+        }
+        threadPool = Executors.newFixedThreadPool(cores);
+        System.out.printf("MultiThreaded MCTS is using %d processors%n", cores);
     }
 
     /**
@@ -61,13 +62,6 @@ public abstract class AbstractMultiThreadSimulation<S extends State,
 
         return reward;
     }
-
-    /**
-     * Constructs the Runnable for a simulation
-     *
-     * @return a runnable which can be ran in a thread to do a simulation
-     */
-    public abstract T getRunnableSimulation(S state, RewardTracker tracker);
 
     /**
      * Construct a callable for a simulation

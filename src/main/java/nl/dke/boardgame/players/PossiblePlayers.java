@@ -10,6 +10,8 @@ public enum PossiblePlayers
     MCTS,
     MCTSLeafPar,
     MCTSAMAF,
+    MCTSLeafParBad,
+    MCTSNoReuse,
     human,
     random,
     alphabeta
