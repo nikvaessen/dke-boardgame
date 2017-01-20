@@ -18,11 +18,11 @@ import nl.dke.boardgame.players.*;
 //// TODO: 21/09/16 document this class
 public class Table
 {
-    private final static int AMOUNT_OF_SIMULATIONS_PER_ITERATION = 10;
-    private final static int TIME_ALLOWED_FOR_MCTS_IN_MS = 30000;
-    private final static double EXPLORATION_PARAMETER_FOR_UCT = 0.7d;
-    private final static double AMAF_BIAS_VALUE = 1;
-    private final static boolean REUSE_TREE = true;
+    public final static int AMOUNT_OF_SIMULATIONS_PER_ITERATION = 1;
+    public final static int TIME_ALLOWED_FOR_MCTS_IN_MS = 1000;
+    public final static double EXPLORATION_PARAMETER_FOR_UCT = 0.7d;
+    public final static double AMAF_BIAS_VALUE = 1;
+    public final static boolean REUSE_TREE = true;
 
     private HexPlayer player1;
 

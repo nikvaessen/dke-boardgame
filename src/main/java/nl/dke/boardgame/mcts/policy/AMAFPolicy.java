@@ -4,6 +4,7 @@ import nl.dke.boardgame.mcts.Action;
 import nl.dke.boardgame.mcts.MonteCarloNode;
 import nl.dke.boardgame.mcts.MonteCarloRootNode;
 import nl.dke.boardgame.mcts.State;
+import nl.dke.boardgame.util.DoubleCounter;
 import nl.dke.boardgame.util.IntegerCounter;
 
 import java.util.List;
@@ -50,71 +51,94 @@ public class AMAFPolicy <S extends State, A extends Action<S>>
     @Override
     public void backpropagate(MonteCarloNode<S, A> node, int reward, int times)
     {
-        this.backpropagate(node, reward, times, node.getState().nextActor());
-    }
-
-    private void backpropagate(MonteCarloNode<S, A> node, int reward, int times, int actor)
-    {
-        //visits += amount of simulations done;
-        node.getAttachable(TOTAL_VISITS).increment(times);
-        //qValues += q;
-        node.getAttachable(TOTAL_REWARDS).increment(reward);
-
-        //back propegate the amaf count and reward
-        amafBackPropegation(node, reward, times, actor);
-
-        if(!node.isRoot())
+        super.backpropagate(node, reward, times);
+        for(MonteCarloNode<S, A> child: node)
         {
-            this.backpropagate(node.getParent(), reward, times, node.getState().nextActor());
+            amafForwardPropegation(child, reward, times, node.getAction());
         }
     }
 
-    private void amafBackPropegation(MonteCarloNode<S, A> node, int reward, int times, int actor)
+//    private void backpropagate(MonteCarloNode<S, A> node, int reward, int times)
+//    {
+//        //visits += amount of simulations done;
+//        node.getAttachable(TOTAL_VISITS).increment(times);
+//        //qValues += q;
+//        node.getAttachable(TOTAL_REWARDS).increment(reward);
+//
+//        //back propegate the amaf count and reward
+//        amafBackPropegation(node, reward, times, actor);
+//
+//        if(!node.isRoot())
+//        {
+//            this.backpropagate(node.getParent(), reward, times, node.getState().nextActor());
+//        }
+//    }
+
+    private void amafForwardPropegation(MonteCarloNode<S, A> node, int reward, int times, A action)
     {
-        if(node.getState().nextActor() == actor)
+        if(node.getAction().equals(action))
         {
-            //amaf count  += amount of simulations done
-            node.getAttachable(TOTAL_AMAF_VISITS).increment(times);
-            //amaf reward =+ q
-            node.getAttachable(TOTAL_AMAF_REWARD).increment(reward);
-         }
-        //repeat this until root
-        if(!node.isRoot())
+            node.getAttachable(TOTAL_AMAF_VISITS).increment(reward);
+            node.getAttachable(TOTAL_AMAF_REWARD).increment(times);
+        }
+        else
         {
-            amafBackPropegation(node.getParent(), reward, times, actor);
+            for(MonteCarloNode<S, A> child : node)
+            {
+                amafForwardPropegation(child, reward, times, action);
+            }
         }
     }
 
     @Override
     protected Function<MonteCarloNode<S, A>, Double> getNodeValueFunction()
     {
-        return new Function<MonteCarloNode<S, A>, Double>()
+        return (MonteCarloNode<S, A> node) -> getNodeValue(node, getExplorationParameter(), bias);
+    }
+
+    public static double getNodeValue(MonteCarloNode node, double c, double bias)
+    {
+        double uct = getExplorationTerm(node, c);
+        if(doubleIsInfinity(uct))
         {
-            @Override
-            public Double apply(MonteCarloNode<S, A> node)
-            {
-                double uct = getExplorationTerm(node, getExplorationParameter());
-                if(Math.abs(uct - Double.MAX_VALUE) < 0.001d)
-                {
-                    return Double.MAX_VALUE;
-                }
-                double b = getBetaValue(node, bias);
-                double q = b * getAverageReward(node) + (1 -b) * getAMAFValue(node);
-                return q + uct;
-            }
-        };
+            return Double.MAX_VALUE;
+        }
+        double b = getBetaValue(node, bias);
+        double reward = getAverageReward(node);
+        double amaf = getAMAFValue(node);
+        if(doubleIsInfinity(b) || doubleIsInfinity(reward) || doubleIsInfinity(amaf))
+        {
+            return Double.MAX_VALUE;
+        }
+        double q = b * getAverageReward(node) + (1 -b) * getAMAFValue(node);
+        return q + uct;
+    }
+
+    private static boolean doubleIsInfinity(double d)
+    {
+        return Math.abs(d - Double.MAX_VALUE) < 0.001d;
     }
 
     public static double getAverageReward(MonteCarloNode node)
     {
-        return node.getAttachable(TOTAL_REWARDS).getValue().doubleValue() /
-                node.getAttachable(TOTAL_VISITS).getValue().doubleValue();
+        double r = node.getAttachable(TOTAL_REWARDS).getValue().doubleValue();
+        double v = node.getAttachable(TOTAL_VISITS).getValue().doubleValue();
+        if(v == 0)
+        {
+            return Double.MAX_VALUE;
+        }
+        return r / v;
     }
 
     public static double getAMAFValue(MonteCarloNode node)
     {
-        return node.getAttachable(TOTAL_AMAF_REWARD).getValue().doubleValue() /
-                node.getAttachable(TOTAL_AMAF_VISITS).getValue().doubleValue();
+        double r = node.getAttachable(TOTAL_AMAF_REWARD).getValue().doubleValue();
+        double v = node.getAttachable(TOTAL_AMAF_VISITS).getValue().doubleValue();
+        if(v == 0)
+        {
+            return 0;
+        }
+        return r / v;
     }
 
     public static double getBetaValue(MonteCarloNode node, double b)
@@ -123,7 +147,10 @@ public class AMAFPolicy <S extends State, A extends Action<S>>
         double n = node.getAttachable(TOTAL_VISITS).getValue().doubleValue();
         //total amaf visits
         double an = node.getAttachable(TOTAL_AMAF_VISITS).getValue().doubleValue();
-
+        if(n == 0 && an == 0)
+        {
+            return 1;
+        }
         return an / (n + an + 4 * n * an * Math.sqrt(b));
     }
 

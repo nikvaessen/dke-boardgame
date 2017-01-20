@@ -193,7 +193,7 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
 
         if(!node.isRoot())
         {
-            backpropagate(node.getParent(), reward, times);
+            this.backpropagate(node.getParent(), reward, times);
         }
     }
 
