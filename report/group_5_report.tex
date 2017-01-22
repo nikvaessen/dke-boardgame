@@ -77,7 +77,7 @@ The backpropagation stage of the MCTS does not occur within any policy as it jus
 
 \begin{algorithm}
     \caption{Monte-Carlo Tree Search}
-    \label{MCTS}
+    \label{alg:MCTS}
     \begin{algorithmic}
         \Procedure{MCTS}{$s_0$} 
             \State create root node $v_0$ with state $s_0$
@@ -91,7 +91,7 @@ The backpropagation stage of the MCTS does not occur within any policy as it jus
     \end{algorithmic}
 \end{algorithm}
 
-In Algorithm 1 we see the general structure of the MCTS. The root of the tree will be the board state at the beginning current turn. After the tree has fully expanded according to computational budget using the repeated MCTS process explained before, the best child is selected. We return the action $a$ which connects the current state $s$ to the best child.
+In Algorithm \ref{alg:MCTS} we see the general structure of the MCTS. The root of the tree will be the board state at the beginning current turn. After the tree has fully expanded according to computational budget using the repeated MCTS process explained before, the best child is selected. We return the action $a$ which connects the current state $s$ to the best child.
 \subsection{Improvements on General MCTS}
 Different heuristics can be used on top the MCTS algorithm to enhance its performance.
 \subsubsection{Upper Confidence Bounds for Trees (UCT)}
@@ -177,6 +177,34 @@ When backpropagating the result of a simulation in a certain node \textit{t} in 
 
 
 To solve this issue the AMAF algorithm keeps track of the two scores separately and uses a weight $\beta$ to reduce the importance of the AMAF score over time. 
+
+
+\begin{center}
+	\label{Beta}
+	\begin{equation}
+    \beta = \frac{\tilde{n}}{n+\tilde{n} + 4n\tilde{n}\tilde{b}^2} 	\cite{gelly2011monte}
+	\end{equation}
+\end{center}
+
+To calculate the $\beta$ value AMAF uses the equation denoted above in (2). Where $\tilde{n}$ is the visits of AMAF and $n$ is total number of visits or amount of simulations. The equation also includes a bias $\tilde{b}$ which is in this algorithm a parameter which can be adjusted by testing the performance. \cite{gelly2011monte}
+
+\begin{algorithm}
+	\caption{AMAF BACKUP }
+	\label{alg:AMAFBACKUP}
+	\begin{algorithmic}
+		\Procedure{BACKUP}{$s_0,...,s_T$} 
+		\State create root node $v_0$ with state $s_0$
+		\While{within computational budget} 
+		\State $v_l \gets$ TreePolicy($v_0$)
+		\State $ \Delta \gets$ DefaultPolicy($s(v_l)$)
+		\State Backup($v_l, \Delta$)
+		\EndWhile\label{}
+		\State \textbf{return} $a$(BestChild($v_0$))
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+In algorithm \ref{alg:AMAFBACKUP}
 
 
 \subsubsection{Parallelisation}
