@@ -13,7 +13,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 {
 
     public static final boolean DEEP_DEBUG = false;
-    public static final boolean SEARCH_DEBUG = true;
+    public static final boolean SEARCH_DEBUG = false;
 
     private TreePolicy<S, A> treePolicy;
 
@@ -44,12 +44,12 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         if (pastNode == null || !treeReuse)
         {
             root = treePolicy.getNewRootNode(initialState);
-            System.out.printf("created new root. pastNode = null: %b\t !treeReuse: %b%n",
-                    pastNode == null, !treeReuse);
+//            System.out.printf("created new root. pastNode = null: %b\t !treeReuse: %b%n",
+//                    pastNode == null, !treeReuse);
             return;
         }
-        System.out.printf("previous root was not null and had %d children\n", root.amountOfChildren());
-        System.out.printf("previous node has %d children%n", pastNode.amountOfChildren());
+//        System.out.printf("previous root was not null and had %d children\n", root.amountOfChildren());
+//        System.out.printf("previous node has %d children%n", pastNode.amountOfChildren());
         MonteCarloRootNode<S, A> potentialNewRoot = null;
         MonteCarloNode<S, A> newRoot = null;
         for(MonteCarloNode<S, A> child : pastNode)
@@ -58,28 +58,28 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
             {
                 potentialNewRoot = treePolicy.getNewRootNode(initialState);
                 newRoot = child;
-                System.out.println("Found the child of past node which has the same state");
+//                System.out.println("Found the child of past node which has the same state");
                 break;
             }
 
         }
         if (potentialNewRoot == null)
         {
-            System.out.println("No grandchild with same state was found");
+//            System.out.println("No grandchild with same state was found");
             root = treePolicy.getNewRootNode(initialState);
         }
         else
         {
-            System.out.printf("Transferring the children from the child of past node. It has %d children%n",
-                    newRoot.amountOfChildren());
+//            System.out.printf("Transferring the children from the child of past node. It has %d children%n",
+//                    newRoot.amountOfChildren());
             for (MonteCarloNode<S, A> child : newRoot)
             {
                 child.setParent(potentialNewRoot);
                 potentialNewRoot.addChild(child);
             }
             root = potentialNewRoot;
-            System.out.println(" FINISHED +and #children = " + root.amountOfChildren());
-        }
+//            System.out.println(" FINISHED +and #children = " + root.amountOfChildren());
+         }
     }
 
     /**
@@ -97,7 +97,6 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
             throw new IllegalArgumentException(String.format("Cannot search for %d ms, which is <= 0", ms));
         }
         long startTime = System.currentTimeMillis(), start, end, count = 0;
-        log("\n### Starting MCTS search ###\n");
 
         //make sure the correct root is selected
         checkRoot(initialState);
@@ -106,23 +105,31 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         {
             System.out.printf("Root starts with %d children %n", countNodes(root));
         }
-
-        log("root node:\n" + root + "\n");
-
+        if(DEEP_DEBUG)
+        {
+            log("\n### Starting MCTS search ###\n");
+            log("root node:\n" + root + "\n");
+        }
         //first, expand the root node until all childs are explored
         while (!root.isFullyExpanded() && System.currentTimeMillis() - startTime < ms)
         {
-            log(String.format("\n####### iteration %d ######%n", count));
             count++;
-            start = System.nanoTime();
+            if(DEEP_DEBUG)
+            {
+                log(String.format("\n####### iteration %d ######%n", count));
+                start = System.nanoTime();
+            }
 
             //do an iteration
             iteration(root);
 
-            end = System.nanoTime();
-            log("\nCurrent Tree:\n");
-            debugTree(root);
-            log(String.format("\nIteration %d of MCTS took %d nano seconds\n", count, end - start));
+            if(DEEP_DEBUG)
+            {
+                end = System.nanoTime();
+                log("\nCurrent Tree:\n");
+                debugTree(root);
+                log(String.format("\nIteration %d of MCTS took %d nano seconds\n", count, end - start));
+            }
         }
 
         //check if any child is a terminal child and wins the game. No search needed if there is
@@ -139,25 +146,29 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         // keep going until the allotted time has run out
         while (System.currentTimeMillis() - startTime < ms)
         {
-            log(String.format("\n####### iteration %d ######%n", count));
             count++;
-            start = System.nanoTime();
-
+            if(DEEP_DEBUG)
+            {
+                log(String.format("\n####### iteration %d ######%n", count));
+                start = System.nanoTime();
+            }
             //do an iteration of MCTS
             iteration(root);
 
-            end = System.nanoTime();
-            log("\nCurrent Tree:\n");
-            debugTree(root);
-            log(String.format("\nIteration %d of MCTS took %d nano seconds\n", count, end - start));
+            if(DEEP_DEBUG)
+            {
+                end = System.nanoTime();
+                log("\nCurrent Tree:\n");
+                debugTree(root);
+                log(String.format("\nIteration %d of MCTS took %d nano seconds\n", count, end - start));
+            }
         }
 
         //print debug messages
-
+        System.out.printf("amount of iterations in %d ms: %d%n", ms, count);
         if(SEARCH_DEBUG)
         {
             System.out.println("total visits to root: " + root.getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue());
-            System.out.printf("amount of iterations in %d ms: %d%n", ms, count);
             System.out.printf("Amount of nodes in the tree: %d%n", countNodes(root));
             System.out.println("Amount of children of root: " + root.amountOfChildren());
         }
@@ -192,10 +203,14 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         // expand this node and store the child
         // if critical node cannot be expanded, critical node is returned instead
         MonteCarloNode<S, A> expandedChild = treePolicy.choose(root);
-        log("Expanded child:\n" + expandedChild + "\n");
+
+        if(DEEP_DEBUG)
+        {
+            log("Expanded child:\n" + expandedChild + "\n");
+            log("\nsimulation:\n");
+        }
 
         // simulate on the newly created child and backpropagate the results
-        log("\nsimulation:\n");
         int reward = expandedChild.simulate(simulationPolicy, simulationsPerIteration);
 
         log("\nbackpropagation:\n");
