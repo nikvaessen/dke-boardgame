@@ -165,7 +165,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         //print debug messages
-        System.out.printf("amount of iterations in %d ms: %d%n", ms, count);
+        //System.out.printf("amount of iterations in %d ms: %d%n", ms, count);
         if(SEARCH_DEBUG)
         {
             System.out.println("total visits to root: " + root.getAttachable(UCTTreePolicy.TOTAL_VISITS).getValue());
