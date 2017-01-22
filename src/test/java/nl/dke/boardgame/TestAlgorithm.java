@@ -54,26 +54,26 @@ public class TestAlgorithm
         //exploration parameters
         double[] Cp = {0, 0.2, 0.4, 0.6, 0.8, 1.0, 3.0, 5.0};
 
-        int[] spis = {1, 10, 100};
-
-        String st = "";
+        int[] spis = {1};
 
         for(double c1 : Cp){
             for(int spi1 : spis){
-                st += "Exploration value of " + c1 + " with " + spi1 + " simulations per iteration \n";
+
                 for(double c2 : Cp) {
                     for(int spi2 : spis){
 
                         HexPlayer player1 = new MCTSPlayer(TileState.PLAYER1, new UCTTreePolicy<>(c1),
-                                new SingleThreadRandomHexBoardSimulation(), spi1, 20000,
+                                new SingleThreadRandomHexBoardSimulation(), spi1, 15000,
                                 PossiblePlayers.MCTS, false);
 
                         HexPlayer player2 = new MCTSPlayer(TileState.PLAYER2, new UCTTreePolicy<>(c2),
-                                new SingleThreadRandomHexBoardSimulation(), spi2, 20000,
-                                PossiblePlayers.MCTS, false);;
+                                new SingleThreadRandomHexBoardSimulation(), spi2, 15000,
+                                PossiblePlayers.MCTS, false);
 
                         GameState end = testAlgorithm(player1,player2);
 
+                        String st = "";
+                        st += "Exploration value of " + c1 + " with " + spi1 + " simulations per iteration \n";
                         st += "\tExploration value of " + c2 + " with " + spi2 + " simulations per iteration \n";
                         st += "\t\tWinner is " + end.getWinner().toString();
 
