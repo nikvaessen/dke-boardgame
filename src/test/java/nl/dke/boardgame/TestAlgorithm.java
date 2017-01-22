@@ -113,7 +113,7 @@ public class TestAlgorithm
             //sleep for a minute
             try
             {
-                Thread.sleep(600);
+                Thread.sleep(60000);
 
             }
             catch(InterruptedException e)
