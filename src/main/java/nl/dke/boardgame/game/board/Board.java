@@ -124,6 +124,11 @@ public class Board
     	return height;
     }
 
+    public int getSize()
+    {
+        return height*width;
+    }
+
     /**
      * Creates and fills a board of hextiles, and the connections from each tile
      * @param width the width of the board to create

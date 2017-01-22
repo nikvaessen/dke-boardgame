@@ -1,5 +1,6 @@
 package nl.dke.boardgame.players;
 
+import Jama.Matrix;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.Move;
@@ -7,27 +8,21 @@ import nl.dke.boardgame.game.PieMove;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import javafx.util.Pair;
-import sun.reflect.generics.tree.Tree;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.*;
 
 /**
  * Created by Xavier on 1-11-2016.
  */
-public class AlphaBetaPlayer extends HexPlayer {
+public class AlphaBetaDijkstra extends HexPlayer {
 
-    public AlphaBetaPlayer(TileState state) {
+    public AlphaBetaDijkstra(TileState state) {
         super(state);
         if(this.claimsAs() == TileState.PLAYER2) counter =2;
-        else counter =1;
+        else counter = 1;
     }
 
     TileState maximizer;
@@ -44,8 +39,6 @@ public class AlphaBetaPlayer extends HexPlayer {
     int boardWidth;int boardHeight;int boardSize;
 
     public void finishMove(Move move) {
-
-
         bitch =0;
         Board currentBoard = move.getBoard();
 
@@ -57,27 +50,29 @@ public class AlphaBetaPlayer extends HexPlayer {
         maximizer = this.claimsAs();
 
         //Run alpha-Beta algorithm, returns the boardPlusScore at the leafNode it found
-        BoardPlusScore result = alphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
+        BoardPlusScore result = alphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
         System.out.println("final board:" + result.score );
         result.board.printBoard();
 
         //Boardhistory of the board alpha-beta returned
         int [][] history = result.board.getHistory();
-        System.out.println("BoardHistory: ");
-        for(int i = 0; i < history.length; i++){
-            System.out.print("row: " + history[i][0]);
-            System.out.print(" column: " + history[i][1] +"\n");
-        }
+
+//        System.out.println("BoardHistory: ");
+//        for(int i = 0; i < history.length; i++){
+//            System.out.print("row: " + history[i][0]);
+//            System.out.print(" column: " + history[i][1] +"\n");
+//        }
         //set the move to be the move alpha-beta wants to make (the first newest move in the boardhistory)
         move.setRow(history[counter - 1][0]);
         move.setColumn(history[counter - 1][1]);
+
 
         counter+=2;
         System.out.println("number of leafNodes: " + numberOfLeafNodes);
         numberOfLeafNodes = 0;
     }
 
-    public BoardPlusScore alphaBeta(int depth,int alpha, int beta, Board boardAB, TileState t){
+    public BoardPlusScore alphaBeta(int depth,double alpha, double beta, Board boardAB, TileState t){
         if(depth == 0 ){
             //creates a new BoardPlusScore object with the current board and the value according to the evaluation function
             numberOfLeafNodes++;
@@ -91,7 +86,7 @@ public class AlphaBetaPlayer extends HexPlayer {
         ArrayList<Board> allPossibleBoards = boardAB.getAllPossibleBoardsAfter1Move(t);
 
         if(t == maximizer){
-            int bestScore = Integer.MIN_VALUE;
+            double bestScore = Integer.MIN_VALUE;
             for(Board b : allPossibleBoards){
                 justToStoreBoardandScore = alphaBeta(depth-1,alpha,beta,b,switchClaimer(t));
                 if(justToStoreBoardandScore.score > bestScore){
@@ -105,7 +100,7 @@ public class AlphaBetaPlayer extends HexPlayer {
             }
             return bestBoardandScore;
         }else{
-            int bestScore = Integer.MAX_VALUE;
+            double bestScore = Integer.MAX_VALUE;
             for(Board b: allPossibleBoards) {
                 justToStoreBoardandScore = alphaBeta(depth-1,alpha,beta,b,switchClaimer(t));
                 if(justToStoreBoardandScore.score < bestScore){
@@ -124,11 +119,11 @@ public class AlphaBetaPlayer extends HexPlayer {
 
     class BoardPlusScore{
         Board board;
-        int score;
+        double score;
         public BoardPlusScore(Board board){
             this.board = board;
         }
-        public BoardPlusScore(Board board, int score){
+        public BoardPlusScore(Board board, double score){
             this.board = board;
             this.score = score;
         }
@@ -139,7 +134,7 @@ public class AlphaBetaPlayer extends HexPlayer {
     }
 
     public PossiblePlayers getTypeOfPlayer() {
-        return PossiblePlayers.alphabeta;
+        return PossiblePlayers.alphabetaDijkstra;
     }
 
     public TileState switchClaimer(TileState t) {
@@ -173,7 +168,7 @@ public class AlphaBetaPlayer extends HexPlayer {
         If a hexagon is neutral it gets a value of 1.
         If a hexagon is claimed by an opponent it gets a value of 999.
 
-        Then the weights of the edges are calculated by adding the values of the adjacent tiles/vertices.
+        Then the weights of the edges are   lated by adding the values of the adjacent tiles/vertices.
 
         So let's say you have a claimed tile next to a neutral tile, the weight of the edge between would be 0 + 1 = 1.
         */
@@ -216,88 +211,6 @@ public class AlphaBetaPlayer extends HexPlayer {
         }
         //printGraph(graph);
         return graph;
-    }
-    public int evaluateBoardElectrical(Board board, TileState claimer){
-        int[][] graphPlayerOne = getGraph(board, TileState.PLAYER1);
-        int[][] graphPlayerTwo = getGraph(board, TileState.PLAYER2);
-
-        /*First we change the graphs.
-        All the connected nodes with edges of zero, become one node.
-        */
-        for(int row = 0; row < graphPlayerOne.length; row++){
-            for(int col = 0; col < graphPlayerOne[0].length; col++){
-
-                if(graphPlayerOne[row][col] == 0){
-                    for(int i = 0; i < graphPlayerOne[col].length; i++){
-                        if(graphPlayerOne[col][i] != graphPlayerOne[row][i] && graphPlayerOne[col][i] <=2 ){
-                            if(row != i && col != i){
-                                graphPlayerOne[row][i] = graphPlayerOne[col][i];
-                                graphPlayerOne[i][row] = graphPlayerOne[col][i];
-                            }
-                        }
-                        graphPlayerOne[col][i] = 999;
-                    }
-
-                }
-
-            }
-        }
-
-
-
-
-        /*
-        make Matrix A,x,z
-        A consists of: [G, B; C, D]
-        x consists of: [v;j]
-        z consists of: [i;e]
-        */
-
-        /* MAKING MATRIX G:(nxn)
-        1.Each element in the diagonal matrix is equal to the sum of the conductance (one over the resistance) of each element connected to
-        the corresponding node.  So the first diagonal element is the sum of conductances connected to node 1,
-        the second diagonal element is the sum of conductances connected to node 2, and so on.
-
-        2.The off diagonal elements are the negative conductance of the element connected to the pair of corresponding node.
-        Therefore a resistor between nodes 1 and 2 goes into the G matrix at location (1,2) and locations (2,1).
-        */
-        double[][] G = new double[122][122];
-
-        for(int row = 0; row < 122; row++){
-            for(int col = 0; col < 122; col++){
-                if(row == col){ // fill the diagonal elements of the G matrix.
-                    double diagNumber = 0;
-                    for(int i = 0; i < graphPlayerOne[row+1].length; i++){//iterate over the graph row
-                        if(graphPlayerOne[row+1][i] <=2 && graphPlayerOne[row+1][i] >=1){
-                            diagNumber+= (1.0/(double)graphPlayerOne[row+1][i]);
-                        }
-                    }
-                    G[row][col] = diagNumber;
-                }
-            }
-        }
-        for(int row = 1; row < 122; row++){
-            for(int col = 0; col < 122; col++){
-                if(row != col){
-                    if(graphPlayerOne[row][col] <=2 && graphPlayerOne[row][col] >=1){
-                        G[row][col] = -(1.0 / (double)graphPlayerOne[row][col]);
-                    }
-                    G[row][col] = 0;
-                }
-            }
-        }
-        //G DONE (hopefully)
-        int[][] B = new int[1][122];
-        B[0][121] = 1;
-        //B DONE (hopefully)
-        int[][] C = new int[122][1];
-        C[121][0] = 1;
-        //C DONE (hopefully) (C is the transpose of B)
-        int[][] D = new int[1][1];
-        D[0][0] = 0;
-        //D DONE
-
-        return 0;
     }
 
     public int evaluateBoardDijkstra(Board board, TileState claimer){
@@ -380,6 +293,16 @@ public class AlphaBetaPlayer extends HexPlayer {
             System.out.print("\n");
         }
     }
+    public void printGraph(ArrayList<ArrayList<Double>> graph) {
+        int counter = 0;
+        for (int i = 0; i < graph.size(); i++) {
+            System.out.print(counter++ + "   ");
+            for (int j = 0; j < graph.get(i).size(); j++) {
+                System.out.print(graph.get(i).get(j) + "  ");
+            }
+            System.out.print("\n");
+        }
+    }
 
     //for if you don't know the values of the 2 tiles
     public int getEdgeValue(Board board, int row1, int column1, int row2, int column2, TileState tilestate) {
@@ -424,7 +347,7 @@ class Data implements Comparable<Data> {
 }
 
 class Dijkstra {
-	/* dijkstra(G,n,i,j)
+    /* dijkstra(G,n,i,j)
 		Given a weighted adjacency matrix for graph G, returns the shortest path.
 
 		If G[i][j] > 2, there is no edge between vertex i and vertex j
@@ -440,9 +363,9 @@ class Dijkstra {
         path.clear();
         //Get the number of vertices in G
         int n = G.length;
-	
-	stackoverflowerrorcounter = 0;    
-	
+
+        stackoverflowerrorcounter = 0;
+
         //parent
         int parent[] = new int[G.length];
         parent[0] = -1;
@@ -489,8 +412,8 @@ class Dijkstra {
 
             }
         }
-        System.out.println("g.length-1:" + (G.length-1) );
-        makePath(parent, G.length-1);
+        //System.out.println("g.length-1:" + (G.length - 1));
+        makePath(parent, G.length - 1);
         //printPath(path);
 
 //        if (distance[j] == Integer.MAX_VALUE || distance[j] < 0) {
@@ -501,16 +424,19 @@ class Dijkstra {
         return path;
 
     }
-    static void printPath(List<Integer> path){
-        for(Integer i: path){
-            System.out.print(i+" ");
-        }System.out.println();
-    }
-    static void makePath(int[] parent, int j){
-        if(parent[j] == -1) return;
-	stackoverflowerrorcounter++;
 
-        if(stackoverflowerrorcounter > 100){
+    static void printPath(List<Integer> path) {
+        for (Integer i : path) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+    }
+
+    static void makePath(int[] parent, int j) {
+        if (parent[j] == -1) return;
+        stackoverflowerrorcounter++;
+
+        if (stackoverflowerrorcounter > 100) {
             return;
         }
         makePath(parent, parent[j]);
@@ -518,4 +444,6 @@ class Dijkstra {
         path.add(j);
     }
 }
+
+
 
