@@ -22,6 +22,32 @@ public class TestAlgorithm
     private static final int height = 11;
 
     @Test
+    public void exploAndSipInMCTS(){
+        //exploration parameters
+        double[] Cp = {0, 0.2, 0.4, 0.6, 0.8, 1.0, 3.0, 5.0};
+
+        int[] spis = {1, 10, 50, 100, 500, 1000, 10000};
+
+        for(double c1 : Cp){
+            for(int spi1 : spis){
+                for(double c2 : Cp) {
+                    for(int spi2 : spis){
+
+                        HexPlayer p1 = new MCTSPlayer(TileState.PLAYER1, new UCTTreePolicy<>(c1),
+                                new SingleThreadRandomHexBoardSimulation(), spi1, 20000,
+                                PossiblePlayers.MCTS, false);
+
+                        HexPlayer p2 = new MCTSPlayer(TileState.PLAYER2, new UCTTreePolicy<>(c2),
+                                new SingleThreadRandomHexBoardSimulation(), spi2, 20000,
+                                PossiblePlayers.MCTS, false);;
+
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
     public void testMCTSvsMCTS()
     {
 
