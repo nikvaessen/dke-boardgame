@@ -26,6 +26,7 @@ public class Tester implements Watcher{
 		test();
 	}
 
+
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
@@ -34,13 +35,13 @@ public class Tester implements Watcher{
 	
 	public void test(){
 		if (currentTests < NO_OF_TESTS) {
-			Table table = new Table();
-			table.setPlayer1(player1, depthLimit);
-			table.setPlayer2(player2, timeLimit);
-			table.setBoardDimensions(dim,dim);
-			table.setPieRuleEnabled(false);
-			new GameFrame(table.createNewGame(), this);
-			currentTests++;
+//			Table table = new Table();
+//			table.setPlayer1(player1, depthLimit);
+//			table.setPlayer2(player2, timeLimit);
+//			table.setBoardDimensions(dim,dim);
+//			table.setPieRuleEnabled(false);
+//			new GameFrame(table.createNewGame(), this);
+//			currentTests++;
 		}
 	}
 

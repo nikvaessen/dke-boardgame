@@ -23,6 +23,7 @@ public class Table
     public final static double EXPLORATION_PARAMETER_FOR_UCT = 0.7d;
     public final static double AMAF_BIAS_VALUE = 1;
     public final static boolean REUSE_TREE = true;
+    public final static int ALPHA_BETA_LIMIT = 1;
 
     private HexPlayer player1;
 
@@ -43,14 +44,14 @@ public class Table
         return game;
     }
 
-    public void setPlayer1(PossiblePlayers type, int limit)
+    public void setPlayer1(PossiblePlayers type)
     {
-        player1 = createPlayer(type, TileState.PLAYER1, limit);
+        player1 = createPlayer(type, TileState.PLAYER1);
     }
 
-    public void setPlayer2(PossiblePlayers type, int limit)
+    public void setPlayer2(PossiblePlayers type)
     {
-        player2 = createPlayer(type, TileState.PLAYER2, limit);
+        player2 = createPlayer(type, TileState.PLAYER2);
     }
 
     public void setPlayer1(InputProcessor processor)
@@ -63,7 +64,7 @@ public class Table
         player2 = new HumanHexPlayer(TileState.PLAYER2, processor);
     }
 
-    private HexPlayer createPlayer(PossiblePlayers type, TileState player, int limit)
+    private HexPlayer createPlayer(PossiblePlayers type, TileState player)
     {
         switch(type)
         {
@@ -114,7 +115,7 @@ public class Table
                             PossiblePlayers.MCTSAMAF,
                             REUSE_TREE);
             case alphabeta:
-                return new AlphaBetaPlayer(player, limit);
+                return new AlphaBetaPlayer(player, ALPHA_BETA_LIMIT);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
                         "HexPlayer, given argument" + type + " is not " +

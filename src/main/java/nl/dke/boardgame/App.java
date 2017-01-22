@@ -11,14 +11,10 @@ import nl.dke.boardgame.players.PossiblePlayers;
  */
 public class App
 {
-	
-	private static boolean test = true;
-	
+
     public static void main(String[] args)
     {
         HexGame.DELAY_BETWEEN_TURNS = 10;
-        if (test) new Tester();
-        else new MainFrame();
-        
+        new MainFrame();
     }
 }

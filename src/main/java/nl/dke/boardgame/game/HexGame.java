@@ -174,14 +174,12 @@ public class HexGame
      *
      * @throws IllegalStateException when the game has already been started
      */
-    public void start(Tester tester, GameFrame frame)
+    public void start()
             throws IllegalStateException
     {
         if(!started)
         {
-        	if (tester == null) System.out.println("No tester in start");
-        	else if (frame == null) System.out.println("No frame in start");
-            startGame(tester, frame);
+            startGame();
         }
         else
         {
@@ -224,12 +222,9 @@ public class HexGame
     /**
      * Starts the game by allowing player 1 to make a move
      */
-    private void startGame(Tester tester, GameFrame frame)
+    private void startGame()
     {
-        started = true;
-        if (tester == null) System.out.println("No tester in startGame");
-    	else if (frame == null) System.out.println("No frame in startGame");
-        new Thread(new GameLoop(tester, frame)).start();
+        new Thread(new GameLoop()).start();
     }
 
     /**
@@ -291,16 +286,11 @@ public class HexGame
         
         private List<Watcher> watchers;
 
-        //@Override
-        
-        public GameLoop(Tester tester, GameFrame frame) {
+        public GameLoop() {
         	watchers = new ArrayList<>();
-        	if (tester == null) System.out.println("No tester in gameLoop");
-        	else if (frame == null) System.out.println("No frame in gameLoop");
-        	attachWatcher(frame);
-        	attachWatcher(tester);
         }
-        
+
+        @Override
         public void run()
         {
             long start = System.currentTimeMillis();
@@ -405,7 +395,7 @@ public class HexGame
                 e.printStackTrace();
 
                 //grade period before making the move again
-                sleep(1000);
+                sleep(HexGame.DELAY_BETWEEN_TURNS);
                 allowMove(player, move);
             }
         }

@@ -21,16 +21,15 @@ public class GameFrame extends JFrame implements Watcher
 
     private InfoPanel infoPanel;
 
-    public GameFrame(HexGame game, Tester tester)
+    public GameFrame(HexGame game)
     {
-        this(game, tester, null);
+        this(game,  null);
     }
     
 
-    public GameFrame(HexGame game, Tester tester, InputProcessor inputProcessor)
-    {;
+    public GameFrame(HexGame game, InputProcessor inputProcessor)
+    {
         this.game = game;
-        if (tester == null) System.out.println("No tester");
         //set main gui settings
         setLayout(new GridBagLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,7 +64,7 @@ public class GameFrame extends JFrame implements Watcher
         setVisible(true);
 
         //and start game
-        game.start(tester, this);
+        game.start();
     }
     
     public void closeFrame() {
