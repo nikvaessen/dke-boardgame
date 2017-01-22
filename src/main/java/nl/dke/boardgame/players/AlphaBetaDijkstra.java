@@ -1,6 +1,5 @@
 package nl.dke.boardgame.players;
 
-import Jama.Matrix;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.Move;
@@ -8,27 +7,32 @@ import nl.dke.boardgame.game.PieMove;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import javafx.util.Pair;
+import sun.reflect.generics.tree.Tree;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.*;
 
 /**
  * Created by Xavier on 1-11-2016.
  */
-public class AlphaBetaDijkstra extends HexPlayer {
+public class AlphaBetaPlayer extends HexPlayer {
 
-    public AlphaBetaDijkstra(TileState state) {
+    public AlphaBetaPlayer(TileState state) {
         super(state);
         if(this.claimsAs() == TileState.PLAYER2) counter =2;
-        else counter = 1;
+        else counter =1;
     }
 
     TileState maximizer;
     Board lol;
     public static Board sickness;
-    public static int bitch =0;
     int[][] rootNodeGraph;
     int[][] dummyGraph;
     Board dummyBoard;
@@ -36,47 +40,39 @@ public class AlphaBetaDijkstra extends HexPlayer {
     Dijkstra dijkstraObject;
     int counter;
     int numberOfLeafNodes = 0;
-    int boardWidth;int boardHeight;int boardSize;
+
 
     public void finishMove(Move move) {
-        bitch =0;
         Board currentBoard = move.getBoard();
-
-        boardWidth = currentBoard.getWidth();
-        boardHeight= currentBoard.getHeight();
-        boardSize  = boardWidth*boardHeight;
-
         dijkstraObject = new Dijkstra();
         maximizer = this.claimsAs();
 
         //Run alpha-Beta algorithm, returns the boardPlusScore at the leafNode it found
-        BoardPlusScore result = alphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
+        BoardPlusScore result = alphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
         System.out.println("final board:" + result.score );
         result.board.printBoard();
 
         //Boardhistory of the board alpha-beta returned
         int [][] history = result.board.getHistory();
-
-//        System.out.println("BoardHistory: ");
-//        for(int i = 0; i < history.length; i++){
-//            System.out.print("row: " + history[i][0]);
-//            System.out.print(" column: " + history[i][1] +"\n");
-//        }
+        System.out.println("BoardHistory: ");
+        for(int i = 0; i < history.length; i++){
+            System.out.print("row: " + history[i][0]);
+            System.out.print(" column: " + history[i][1] +"\n");
+        }
         //set the move to be the move alpha-beta wants to make (the first newest move in the boardhistory)
         move.setRow(history[counter - 1][0]);
         move.setColumn(history[counter - 1][1]);
-
 
         counter+=2;
         System.out.println("number of leafNodes: " + numberOfLeafNodes);
         numberOfLeafNodes = 0;
     }
 
-    public BoardPlusScore alphaBeta(int depth,double alpha, double beta, Board boardAB, TileState t){
+    public BoardPlusScore alphaBeta(int depth,int alpha, int beta, Board boardAB, TileState t){
         if(depth == 0 ){
             //creates a new BoardPlusScore object with the current board and the value according to the evaluation function
             numberOfLeafNodes++;
-            return new BoardPlusScore(boardAB, evaluateBoardDijkstra(boardAB,maximizer));
+            return new BoardPlusScore(boardAB, evaluateBoard(boardAB,maximizer));
         }
 
         BoardPlusScore justToStoreBoardandScore = null;
@@ -86,7 +82,7 @@ public class AlphaBetaDijkstra extends HexPlayer {
         ArrayList<Board> allPossibleBoards = boardAB.getAllPossibleBoardsAfter1Move(t);
 
         if(t == maximizer){
-            double bestScore = Integer.MIN_VALUE;
+            int bestScore = Integer.MIN_VALUE;
             for(Board b : allPossibleBoards){
                 justToStoreBoardandScore = alphaBeta(depth-1,alpha,beta,b,switchClaimer(t));
                 if(justToStoreBoardandScore.score > bestScore){
@@ -100,7 +96,7 @@ public class AlphaBetaDijkstra extends HexPlayer {
             }
             return bestBoardandScore;
         }else{
-            double bestScore = Integer.MAX_VALUE;
+            int bestScore = Integer.MAX_VALUE;
             for(Board b: allPossibleBoards) {
                 justToStoreBoardandScore = alphaBeta(depth-1,alpha,beta,b,switchClaimer(t));
                 if(justToStoreBoardandScore.score < bestScore){
@@ -119,11 +115,11 @@ public class AlphaBetaDijkstra extends HexPlayer {
 
     class BoardPlusScore{
         Board board;
-        double score;
+        int score;
         public BoardPlusScore(Board board){
             this.board = board;
         }
-        public BoardPlusScore(Board board, double score){
+        public BoardPlusScore(Board board, int score){
             this.board = board;
             this.score = score;
         }
@@ -134,7 +130,7 @@ public class AlphaBetaDijkstra extends HexPlayer {
     }
 
     public PossiblePlayers getTypeOfPlayer() {
-        return PossiblePlayers.alphabetaDijkstra;
+        return PossiblePlayers.alphabeta;
     }
 
     public TileState switchClaimer(TileState t) {
@@ -168,44 +164,44 @@ public class AlphaBetaDijkstra extends HexPlayer {
         If a hexagon is neutral it gets a value of 1.
         If a hexagon is claimed by an opponent it gets a value of 999.
 
-        Then the weights of the edges are   lated by adding the values of the adjacent tiles/vertices.
+        Then the weights of the edges are calculated by adding the values of the adjacent tiles/vertices.
 
         So let's say you have a claimed tile next to a neutral tile, the weight of the edge between would be 0 + 1 = 1.
         */
 
-        int[][] graph = new int[boardSize+2][boardSize+2];
+        int[][] graph = new int[123][123];
         for (int i = 0; i < graph.length; i++) {
             for (int j = 0; j < graph[0].length; j++) {
                 graph[i][j] = 999;
             }
         }
         if(tilestate.equals(TileState.PLAYER1)){//edgepieces from left to right--RED
-            for(int i = 1; i <= boardWidth; i++){
-                graph[0][i + (i-1)*boardWidth-1] = getEdgeValue(board, i-1, 0, 0, tilestate);
-                graph[i + (i-1)*boardWidth-1][0] = getEdgeValue(board, i-1, 0, 0, tilestate);
+            for(int i = 1; i <= 11; i++){
+                graph[0][i + (i-1)*10] = getEdgeValue(board, i-1, 0, 0, tilestate);
+                graph[i + (i-1)*10][0] = getEdgeValue(board, i-1, 0, 0, tilestate);
 
-                graph[boardSize+1][i*boardWidth] = getEdgeValue(board,i-1,boardWidth-1,0,tilestate);
-                graph[i*boardWidth][boardSize+1] = getEdgeValue(board,i-1,boardWidth-1,0,tilestate);
+                graph[122][i*11] = getEdgeValue(board,i-1,10,0,tilestate);
+                graph[i*11][122] = getEdgeValue(board,i-1,10,0,tilestate);
             }
         }
         if(tilestate.equals(TileState.PLAYER2)){//edgepieces from top to bottom--BLUE
-            for(int i = 1; i <= boardHeight; i++){
+            for(int i = 1; i <= 11; i++){
                 graph[0][i] = getEdgeValue(board, 0, i-1, 0, tilestate);
                 graph[i][0] = getEdgeValue(board, 0, i-1, 0, tilestate);
 
-                graph[boardSize+1][i+boardSize-boardHeight] = getEdgeValue(board, boardHeight-1, i-1, 0,tilestate);
-                graph[i+boardSize-boardHeight][boardSize+1] = getEdgeValue(board, boardHeight-1, i-1, 0,tilestate);
+                graph[122][i+110] = getEdgeValue(board, 10, i-1, 0,tilestate);
+                graph[i+110][122] = getEdgeValue(board, 10, i-1, 0,tilestate);
             }
         }
 
         //populate the matrix
-        for (int i = 0; i < boardHeight; i++) {
-            for (int j = 0; j < boardHeight; j++) {
+        for (int i = 0; i < 11; i++) {
+            for (int j = 0; j < 11; j++) {
                 //we need the value of the currentTile & the neighbouring tiles, then add the values & put these in the matrix
                 //we also need the 'indexes/locations' of the neighbouring tiles
                 List<HexTile> neighbourList = board.getNeighbours(i, j);
                 for (HexTile neighbour : neighbourList) {
-                    graph[(boardHeight * i) + j + 1][(neighbour.getRow() * boardHeight) + neighbour.getColumn() + 1] = getEdgeValue(board, i, j, neighbour.getRow(), neighbour.getColumn(), tilestate);
+                    graph[(11 * i) + j + 1][(neighbour.getRow() * 11) + neighbour.getColumn() + 1] = getEdgeValue(board, i, j, neighbour.getRow(), neighbour.getColumn(), tilestate);
                 }
             }
         }
@@ -213,7 +209,7 @@ public class AlphaBetaDijkstra extends HexPlayer {
         return graph;
     }
 
-    public int evaluateBoardDijkstra(Board board, TileState claimer){
+    public int evaluateBoard(Board board, TileState claimer){
         /*
         You make the graphs from both player's perspective, then calculated the shortest path, which would be the chain of tiles that has the most amount of claimed tiles in it.
         Then you count the number of empty pieces in that chain.
@@ -225,15 +221,15 @@ public class AlphaBetaDijkstra extends HexPlayer {
         int row;int column;
         int path1Counter = 0;int path2Counter = 0;
 
-        List<Integer> path1 = dijkstraObject.dijkstra(graphPlayerOne,0,boardSize+1);
+        List<Integer> path1 = dijkstraObject.dijkstra(graphPlayerOne,0,122);
         for(Integer x: path1){
-            if(x == boardSize+1){}
+            if(x == 122){}
             else {
-                row = x / boardHeight;
-                column = (x % boardHeight) - 1;
-                if(x % boardHeight == 0){
-                    row = (x / boardHeight) - 1;
-                    column = boardHeight-1;
+                row = x / 11;
+                column = (x % 11) - 1;
+                if(x % 11 == 0){
+                    row = (x / 11) - 1;
+                    column = 10;
                 }
 
                 if (board.getState(row, column).equals(TileState.NEUTRAL)) {
@@ -241,15 +237,15 @@ public class AlphaBetaDijkstra extends HexPlayer {
                 }
             }
         }
-        List<Integer> path2 = dijkstraObject.dijkstra(graphPlayerTwo,0,boardSize+1);
+        List<Integer> path2 = dijkstraObject.dijkstra(graphPlayerTwo,0,122);
         for(Integer x: path2){
-            if(x == boardSize+1){}
+            if(x == 122){}
             else {
-                row = x / boardHeight;
-                column = (x % boardHeight) - 1;
-                if(x % boardHeight == 0){
-                    row = (x / boardHeight) - 1;
-                    column = boardHeight-1;
+                row = x / 11;
+                column = (x % 11) - 1;
+                if(x % 11 == 0){
+                    row = (x / 11) - 1;
+                    column = 10;
                 }
 
                 if (board.getState(row, column).equals(TileState.NEUTRAL)) {
@@ -279,26 +275,6 @@ public class AlphaBetaDijkstra extends HexPlayer {
             System.out.print(counter++ + "   ");
             for (int j = 0; j < graph[0].length; j++) {
                 System.out.print(graph[i][j] + "  ");
-            }
-            System.out.print("\n");
-        }
-    }
-    public void printGraph(double[][] graph) {
-        int counter = 1;
-        for (int i = 0; i < graph.length; i++) {
-            System.out.print(counter++ + "   ");
-            for (int j = 0; j < graph[0].length; j++) {
-                System.out.print(graph[i][j] + "  ");
-            }
-            System.out.print("\n");
-        }
-    }
-    public void printGraph(ArrayList<ArrayList<Double>> graph) {
-        int counter = 0;
-        for (int i = 0; i < graph.size(); i++) {
-            System.out.print(counter++ + "   ");
-            for (int j = 0; j < graph.get(i).size(); j++) {
-                System.out.print(graph.get(i).get(j) + "  ");
             }
             System.out.print("\n");
         }
@@ -347,7 +323,7 @@ class Data implements Comparable<Data> {
 }
 
 class Dijkstra {
-    /* dijkstra(G,n,i,j)
+	/* dijkstra(G,n,i,j)
 		Given a weighted adjacency matrix for graph G, returns the shortest path.
 
 		If G[i][j] > 2, there is no edge between vertex i and vertex j
@@ -363,9 +339,9 @@ class Dijkstra {
         path.clear();
         //Get the number of vertices in G
         int n = G.length;
-
-        stackoverflowerrorcounter = 0;
-
+	
+	stackoverflowerrorcounter = 0;    
+	
         //parent
         int parent[] = new int[G.length];
         parent[0] = -1;
@@ -412,8 +388,7 @@ class Dijkstra {
 
             }
         }
-        //System.out.println("g.length-1:" + (G.length - 1));
-        makePath(parent, G.length - 1);
+        makePath(parent, 122);
         //printPath(path);
 
 //        if (distance[j] == Integer.MAX_VALUE || distance[j] < 0) {
@@ -424,19 +399,16 @@ class Dijkstra {
         return path;
 
     }
-
-    static void printPath(List<Integer> path) {
-        for (Integer i : path) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
+    static void printPath(List<Integer> path){
+        for(Integer i: path){
+            System.out.print(i+" ");
+        }System.out.println();
     }
+    static void makePath(int[] parent, int j){
+        if(parent[j] == -1) return;
+	stackoverflowerrorcounter++;
 
-    static void makePath(int[] parent, int j) {
-        if (parent[j] == -1) return;
-        stackoverflowerrorcounter++;
-
-        if (stackoverflowerrorcounter > 100) {
+        if(stackoverflowerrorcounter > 100){
             return;
         }
         makePath(parent, parent[j]);
@@ -444,6 +416,4 @@ class Dijkstra {
         path.add(j);
     }
 }
-
-
 
