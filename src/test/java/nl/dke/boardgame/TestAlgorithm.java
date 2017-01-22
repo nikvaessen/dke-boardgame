@@ -12,10 +12,11 @@ import nl.dke.boardgame.players.RandomHexPlayer;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -23,7 +24,7 @@ import java.util.concurrent.*;
  */
 public class TestAlgorithm
 {
-    private static final int width  = 11;
+    private static final int width = 11;
     private static final int height = 11;
     private File logfile = new File("logs/test_" + System.currentTimeMillis());
     private PrintWriter writer;
@@ -33,8 +34,7 @@ public class TestAlgorithm
         try
         {
             writer = new PrintWriter(logfile);
-        }
-        catch(IOException e)
+        } catch(IOException e)
         {
             e.printStackTrace();
         }
@@ -51,12 +51,14 @@ public class TestAlgorithm
     }
 
     @Test
-    public void testWritter(){
+    public void testWritter()
+    {
         writeToFile("Hello World");
     }
 
     @Test
-    public void exploAndSipInMCTS(){
+    public void exploAndSipInMCTS()
+    {
         //exploration parameters
         double[] Cp = {0, 0.2, 0.4, /*0.6, 0.8, 1.0, 3.0, 5.0*/};
 
@@ -64,11 +66,15 @@ public class TestAlgorithm
 
         ExecutorService threads = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        for(double c1 : Cp){
-            for(int spi1 : spis){
+        for(double c1 : Cp)
+        {
+            for(int spi1 : spis)
+            {
 
-                for(double c2 : Cp) {
-                    for(int spi2 : spis){
+                for(double c2 : Cp)
+                {
+                    for(int spi2 : spis)
+                    {
                         int p1counter = 0;
                         int p2counter = 0;
 
@@ -79,7 +85,8 @@ public class TestAlgorithm
                         writeToFile(st);
 
                         Collection<Callable<GameState>> callables = new ArrayList<>();
-                        for(int i = 0; i<10; i++) {
+                        for(int i = 0; i < 10; i++)
+                        {
 
                             callables.add(new Callable<GameState>()
                             {
@@ -97,33 +104,33 @@ public class TestAlgorithm
                                     return testAlgorithm(player1, player2);
                                 }
                             });
+                        }
 
-                            try
+                        try
+                        {
+                            List<Future<GameState>> futures = threads.invokeAll(callables);
+                            for(Future<GameState> state : futures)
                             {
-                                List<Future<GameState>> futures = threads.invokeAll(callables);
-                                for(Future<GameState> state : futures)
+                                GameState end = state.get();
+                                String win = "\t\tWinner of game " + (i + 1) + " is: " + end.getWinner().toString() + "\n";
+
+                                if(end.getWinner() == TileState.PLAYER1)
                                 {
-                                    GameState end = state.get();
-                                    String win = "\t\tWinner of game "+ (i+1) + " is: " + end.getWinner().toString() + "\n";
-
-                                    if(end.getWinner() == TileState.PLAYER1) {
-                                        p1counter++;
-                                    }
-                                    else {
-                                        p2counter++;
-                                    }
-
-                                    System.out.println(printBoard(end.getCurrentBoard()));
-                                    writeToFile("\n" + printBoard(end.getCurrentBoard()) + "\n");
-                                    writeToFile(win);
-                                    System.out.print(win);
+                                    p1counter++;
                                 }
-                            }
-                            catch(InterruptedException | ExecutionException e)
-                            {
-                                e.printStackTrace();
-                            }
+                                else
+                                {
+                                    p2counter++;
+                                }
 
+                                System.out.println(printBoard(end.getCurrentBoard()));
+                                writeToFile("\n" + printBoard(end.getCurrentBoard()) + "\n");
+                                writeToFile(win);
+                                System.out.print(win);
+                            }
+                        } catch(InterruptedException | ExecutionException e)
+                        {
+                            e.printStackTrace();
                         }
 
                         String count1 = "Player1 won " + p1counter + " games";
@@ -164,8 +171,7 @@ public class TestAlgorithm
             try
             {
                 Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
+            } catch(InterruptedException e)
             {
                 e.printStackTrace();
             }
@@ -173,15 +179,23 @@ public class TestAlgorithm
         return game.getGameState();
     }
 
-    String printBoard(TileState[][] board){
+    String printBoard(TileState[][] board)
+    {
         String st = "";
-        for(TileState[] tiles: board){
-            for(TileState tile : tiles){
-                if(tile == TileState.NEUTRAL){
+        for(TileState[] tiles : board)
+        {
+            for(TileState tile : tiles)
+            {
+                if(tile == TileState.NEUTRAL)
+                {
                     st += "0 ";
-                } else if(tile == TileState.PLAYER1){
+                }
+                else if(tile == TileState.PLAYER1)
+                {
                     st += "1 ";
-                } else{
+                }
+                else
+                {
                     st += "2 ";
                 }
             }
