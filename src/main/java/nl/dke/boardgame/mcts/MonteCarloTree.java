@@ -138,7 +138,6 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
 
         // keep going until the allotted time has run out
         while (System.currentTimeMillis() - startTime < ms)
-        //while(count <= 58)
         {
             log(String.format("\n####### iteration %d ######%n", count));
             count++;
