@@ -109,10 +109,12 @@ public class TestAlgorithm
                         try
                         {
                             List<Future<GameState>> futures = threads.invokeAll(callables);
+                            int counter = 0;
                             for(Future<GameState> state : futures)
                             {
+                                counter++;
                                 GameState end = state.get();
-                                String win = "\t\tWinner of game " + (i + 1) + " is: " + end.getWinner().toString() + "\n";
+                                String win = "\t\tWinner of game " + counter + " is: " + end.getWinner().toString() + "\n";
 
                                 if(end.getWinner() == TileState.PLAYER1)
                                 {
