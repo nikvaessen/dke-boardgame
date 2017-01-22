@@ -3,14 +3,12 @@ package nl.dke.boardgame;
 import nl.dke.boardgame.game.GameState;
 import nl.dke.boardgame.game.HexGame;
 import nl.dke.boardgame.game.HexPlayer;
-import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.mcts.hex.randomImpl.SingleThreadRandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 import nl.dke.boardgame.players.MCTSPlayer;
 import nl.dke.boardgame.players.PossiblePlayers;
 import nl.dke.boardgame.players.RandomHexPlayer;
-import nl.dke.boardgame.util.ArrayPrinter;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -43,15 +41,13 @@ public class TestAlgorithm
     private GameState testAlgorithm(HexPlayer player1, HexPlayer player2)
     {
         HexGame.DELAY_BETWEEN_TURNS = 0;
-        final HexGame game = new HexGame(width, height, player1, player2);
-        Thread thread = new Thread(game::start);
-        thread.start();
+        HexGame game = new HexGame(width, height, player1, player2);
+        game.start();
         while(!game.isGameOver())
         {
             try
             {
-                thread.join();
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
             catch (InterruptedException e)
             {
