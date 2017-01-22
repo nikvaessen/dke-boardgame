@@ -51,8 +51,8 @@ public class AMAFPolicy <S extends State, A extends Action<S>>
     @Override
     public void backpropagate(MonteCarloNode<S, A> node, int reward, int times)
     {
-        super.backpropagate(node, reward, times);
-        for(MonteCarloNode<S, A> child: node)
+        innerBackpropagate(node, reward, times);
+        for(MonteCarloNode<S, A> child: node.getParent())
         {
             amafForwardPropegation(child, reward, times, node.getAction());
         }
@@ -74,10 +74,28 @@ public class AMAFPolicy <S extends State, A extends Action<S>>
 //        }
 //    }
 
+    private void innerBackpropagate(MonteCarloNode<S, A> node,  int reward, int times)
+    {
+        //visits += simPerNode;
+        node.getAttachable(TOTAL_VISITS).increment(times);
+        //qValues += q;
+        node.getAttachable(TOTAL_REWARDS).increment(reward);
+
+        if(!node.isRoot())
+        {
+            this.innerBackpropagate(node.getParent(), reward, times);
+        }
+    }
+
     private void amafForwardPropegation(MonteCarloNode<S, A> node, int reward, int times, A action)
     {
+//        System.out.printf("action: %s\t forward prop action: %s\t equal: %b\n",
+//                node.getAction(),
+//                action,
+//                node.getAction().equals(action));
         if(node.getAction().equals(action))
         {
+            //System.out.println("incrementing amaf vist and reward");
             node.getAttachable(TOTAL_AMAF_VISITS).increment(reward);
             node.getAttachable(TOTAL_AMAF_REWARD).increment(times);
         }

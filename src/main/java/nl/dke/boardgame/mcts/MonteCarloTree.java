@@ -12,7 +12,7 @@ import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 public class MonteCarloTree<S extends State, A extends Action<S>>
 {
 
-    public static final boolean DEEP_DEBUG = true;
+    public static final boolean DEEP_DEBUG = false;
     public static final boolean SEARCH_DEBUG = true;
 
     private TreePolicy<S, A> treePolicy;
@@ -137,8 +137,8 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         // keep going until the allotted time has run out
-        //while (System.currentTimeMillis() - startTime < ms)
-        while(count <= 58)
+        while (System.currentTimeMillis() - startTime < ms)
+        //while(count <= 58)
         {
             log(String.format("\n####### iteration %d ######%n", count));
             count++;
@@ -199,6 +199,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         log("\nsimulation:\n");
         int reward = expandedChild.simulate(simulationPolicy, simulationsPerIteration);
 
+        log("\nbackpropagation:\n");
         //backpropagate
         treePolicy.backpropagate(expandedChild, reward, simulationsPerIteration);
     }

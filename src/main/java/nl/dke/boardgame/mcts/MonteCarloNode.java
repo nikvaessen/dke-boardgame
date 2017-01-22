@@ -321,20 +321,35 @@ public class MonteCarloNode<S
         {
             s += String.format("%s: %f%n", a.toString(), a.getValue().doubleValue());
         }
-        s += String.format("node value with UTC with c = %f : %f%n", Table.EXPLORATION_PARAMETER_FOR_UCT,
-                UCTTreePolicy.getUCTValue(this, Table.EXPLORATION_PARAMETER_FOR_UCT));
-        s += String.format("node value with AMAF with c = %f, b = %f : " +
-                        "q: %f amaf: %f beta: %f expl: %f node: %f%n",
-                Table.EXPLORATION_PARAMETER_FOR_UCT,
-                Table.AMAF_BIAS_VALUE,
-                AMAFPolicy.getAverageReward(this),
-                AMAFPolicy.getAMAFValue(this),
-                AMAFPolicy.getBetaValue(this, Table.AMAF_BIAS_VALUE),
-                AMAFPolicy.getUCTValue(this, Table.EXPLORATION_PARAMETER_FOR_UCT),
-                AMAFPolicy.getNodeValue(this,
-                        Table.EXPLORATION_PARAMETER_FOR_UCT,
-                        Table.AMAF_BIAS_VALUE)
-        );
+
+        try
+        {
+            s += String.format("node value with UTC with c = %f : %f%n", Table.EXPLORATION_PARAMETER_FOR_UCT,
+                    UCTTreePolicy.getUCTValue(this, Table.EXPLORATION_PARAMETER_FOR_UCT));
+        }
+        catch (IllegalArgumentException e)
+        {
+            //e.printStackTrace();
+        }
+        try
+        {
+            s += String.format("node value with AMAF with c = %f, b = %f : " +
+                            "q: %f amaf: %f beta: %f expl: %f node: %f%n",
+                    Table.EXPLORATION_PARAMETER_FOR_UCT,
+                    Table.AMAF_BIAS_VALUE,
+                    AMAFPolicy.getAverageReward(this),
+                    AMAFPolicy.getAMAFValue(this),
+                    AMAFPolicy.getBetaValue(this, Table.AMAF_BIAS_VALUE),
+                    AMAFPolicy.getUCTValue(this, Table.EXPLORATION_PARAMETER_FOR_UCT),
+                    AMAFPolicy.getNodeValue(this,
+                            Table.EXPLORATION_PARAMETER_FOR_UCT,
+                            Table.AMAF_BIAS_VALUE)
+            );
+        }
+        catch (IllegalArgumentException e)
+        {
+            //e.printStackTrace();
+        }
         return s;
     }
 
