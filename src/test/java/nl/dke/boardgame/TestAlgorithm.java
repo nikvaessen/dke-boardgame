@@ -15,7 +15,8 @@ import java.io.File;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Class to test methods
@@ -61,6 +62,8 @@ public class TestAlgorithm
 
         int[] spis = {1, 10};
 
+        ExecutorService threads = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
         for(double c1 : Cp){
             for(int spi1 : spis){
 
@@ -75,33 +78,54 @@ public class TestAlgorithm
                         System.out.print(st);
                         writeToFile(st);
 
+                        Collection<Callable<GameState>> callables = new ArrayList<>();
                         for(int i = 0; i<10; i++) {
 
-                            HexPlayer player1 = new MCTSPlayer(TileState.PLAYER1, new UCTTreePolicy<>(c1),
-                                    new SingleThreadRandomHexBoardSimulation(), spi1, 15000,
-                                    PossiblePlayers.MCTS, false);
+                            callables.add(new Callable<GameState>()
+                            {
+                                @Override
+                                public GameState call() throws Exception
+                                {
+                                    HexPlayer player1 = new MCTSPlayer(TileState.PLAYER1, new UCTTreePolicy<>(c1),
+                                            new SingleThreadRandomHexBoardSimulation(), spi1, 15000,
+                                            PossiblePlayers.MCTS, false);
 
-                            HexPlayer player2 = new MCTSPlayer(TileState.PLAYER2, new UCTTreePolicy<>(c2),
-                                    new SingleThreadRandomHexBoardSimulation(), spi2, 15000,
-                                    PossiblePlayers.MCTS, false);
+                                    HexPlayer player2 = new MCTSPlayer(TileState.PLAYER2, new UCTTreePolicy<>(c2),
+                                            new SingleThreadRandomHexBoardSimulation(), spi2, 15000,
+                                            PossiblePlayers.MCTS, false);
 
-                            GameState end = testAlgorithm(player1, player2);
+                                    return testAlgorithm(player1, player2);
+                                }
+                            });
 
+                            try
+                            {
+                                List<Future<GameState>> futures = threads.invokeAll(callables);
+                                for(Future<GameState> state : futures)
+                                {
+                                    GameState end = state.get();
+                                    String win = "\t\tWinner of game "+ (i+1) + " is: " + end.getWinner().toString() + "\n";
 
-                            String win = "\t\tWinner of game "+ (i+1) + " is: " + end.getWinner().toString() + "\n";
+                                    if(end.getWinner() == TileState.PLAYER1) {
+                                        p1counter++;
+                                    }
+                                    else {
+                                        p2counter++;
+                                    }
 
-                            if(end.getWinner() == TileState.PLAYER1) {
-                                p1counter++;
+                                    System.out.println(printBoard(end.getCurrentBoard()));
+                                    writeToFile("\n" + printBoard(end.getCurrentBoard()) + "\n");
+                                    writeToFile(win);
+                                    System.out.print(win);
+                                }
                             }
-                            else {
-                                p2counter++;
+                            catch(InterruptedException | ExecutionException e)
+                            {
+                                e.printStackTrace();
                             }
 
-                            System.out.println(printBoard(end.getCurrentBoard()));
-                            writeToFile("\n" + printBoard(end.getCurrentBoard()) + "\n");
-                            writeToFile(win);
-                            System.out.print(win);
                         }
+
                         String count1 = "Player1 won " + p1counter + " games";
                         String count2 = "Player2 won " + p2counter + " games";
                         writeToFile("\t" + count1 + "\n\t" + count2);
