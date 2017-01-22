@@ -60,12 +60,13 @@ public class TestAlgorithm
     {
         //exploration parameters
         double[] Cp = {0, 0.2, 0.4, /*0.6, 0.8, 1.0, 3.0, 5.0*/};
+        double[] Cpt = {0.6, 0.8, 1.0};
 
         int[] spis = {1, 10};
 
-        ExecutorService threads = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService threads = Executors.newFixedThreadPool(2);
         Collection<Callable<TestResult>> callables = new ArrayList<>();
-        for(double c1 : Cp)
+        for(double c1 : Cpt)
         {
             for(int spi1 : spis)
             {
