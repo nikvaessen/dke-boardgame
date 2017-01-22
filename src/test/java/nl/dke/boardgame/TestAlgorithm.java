@@ -11,6 +11,10 @@ import nl.dke.boardgame.players.PossiblePlayers;
 import nl.dke.boardgame.players.RandomHexPlayer;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOError;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 /**
@@ -20,6 +24,30 @@ public class TestAlgorithm
 {
     private static final int width  = 11;
     private static final int height = 11;
+    private File logfile = new File("logs/test_" + System.currentTimeMillis());
+    private PrintWriter writer;
+
+    private void makeWriter()
+    {
+        try
+        {
+            writer = new PrintWriter(logfile);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeToFile(String s)
+    {
+        if(writer == null)
+        {
+            makeWriter();
+        }
+        writer.write(s);
+        writer.flush();
+    }
 
     @Test
     public void exploAndSipInMCTS(){
@@ -50,6 +78,7 @@ public class TestAlgorithm
                         st += "\t\tWinner is " + end.getWinner().toString();
 
                         System.out.print(st);
+                        writeToFile(st);
                     }
                 }
             }
