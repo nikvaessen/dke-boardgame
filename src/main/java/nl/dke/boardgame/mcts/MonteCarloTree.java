@@ -144,7 +144,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         // keep going until the allotted time has run out
-        while (count <= 10)
+        while (count <= 15000)
         {
             count++;
             if(DEEP_DEBUG)
