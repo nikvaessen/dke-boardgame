@@ -52,8 +52,14 @@ The game tree closely follows a \textit{Markov Decision Process} (MDP) in which 
 \end{itemize}
 
 For Hex, the probability of reaching a state for any action is 1 as long as it is a legal move. 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{figure_mcts.jpg}
+	\caption{The four steps of Monte-Carlo Tree Search \cite{chaslot2008progressive}}
+	\label{fig:mcts}
+\end{figure}
 
-The MCTS algorithm can be divided into four main parts: 
+The MCTS algorithm can be divided into four main parts(see figure \ref{fig:mcts}): 
 \begin{enumerate}
 \item Selection: In this part the algorithm looks for the most urgent node with a state $s$ that hasn't being visited before.
 \item Expansion: one or more nodes are expanded by adding leaf nodes according the values left in $A$
@@ -159,8 +165,25 @@ $
 
 Explanation of either AMAF or RAVE \cite{gelly2011monte}
 \subsubsection{Parallelisation}
-Explanation of different parallelization methods
+There are three different types of parallelisation, depending on in what stage Monto-Carlo Tree Search is parallelised. The three options are: leaf parallelisation, root parallelisation and tree parallelisation. 
 
+In this paper we only consider leaf parallelisation since this is a straightforward to implement. To select a leaf node this method uses one main thread, which is the same thread that runs the game logic. From this leaf node it simulates independent games for each available thread. When all games are finished the main thread backpropagates all the values.\cite{chaslot2008parallel} Leaf parallelisation is depicted in figure \ref{fig:leaf}.
+
+A problem with leaf parallelisation is that threads have to wait for each other which could slow then the process a way to solve this is end simulations for a move if a certain amount of games is won. For instance, if 16 threads are available, and 8 (faster) finished games are all losses, it will be highly probable that most games
+will lead to a loss. Therefore, playing 8 more games is a waste of computational power. This will enable the program to traverse the tree more often.\cite{chaslot2008parallel}
+
+To reduce the cost of using threads we implemented both the \textit{Java ExecutorService} interface and \textit{ThreadGroups} and we compared them
+
+\begin{figure}
+	\centering
+	\includegraphics[]{figure_leafparallisation}
+		\caption{Visual explanation of leaf parallelisation, the down arrows are the threads \cite{chaslot2008parallel}}
+		\label{fig:leaf}
+\end{figure}
+
+
+\subsubsection{Tree reuse}
+The ordinary implementation of Monte-Carlo Tree Search builds a new tree for every move a player has to make. An obvious improvement to speed up the algorithm would be that the program does not build a tree every move but it tries to keep the tree it made in the previous move by searching through the children of the previous move and check if the node already exist. Since the program does not know the move of the opponent it could be that the move does not exist This strategy enables the algorithm to have already some reward values for certain moves so the predictions can be done more accurately.
 \section{Experiments}
 Explanation of experiments and results, comparing different parameters
 \section{Results}
