@@ -162,7 +162,7 @@ $
     \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{AMAF}
+\subsubsection{All Moves As First (AMAF)}
 Originally the AMAF method has been introduced to improve the learning process inside MCTS trees. The selection of the UCT algorithm is based on a estimated value obtained by simulating the move in the node a couple times. This can lead to a problem if there is a large state space since the algorithm has to do many simulations before it can sample all the moves in a node. To conquer this issue AMAF, also known as RAVE, is introduced.\\
 \\
 For every node the algorithm stores for all legal moves the following values 
@@ -189,22 +189,40 @@ To solve this issue the AMAF algorithm keeps track of the two scores separately 
 To calculate the $\beta$ value AMAF uses the equation denoted above in (2). Where $\tilde{n}$ is the visits of AMAF and $n$ is total number of visits or amount of simulations. The equation also includes a bias $\tilde{b}$ which is in this algorithm a parameter which can be adjusted by testing the performance. \cite{gelly2011monte}
 
 \begin{algorithm}
-	\caption{AMAF BACKUP }
-	\label{alg:AMAFBACKUP}
+	\caption{All Moves As First (AMAF)}
+	\label{alg:AMAF}
 	\begin{algorithmic}
-		\Procedure{BACKUP}{$s_0,...,s_T$} 
-		\State create root node $v_0$ with state $s_0$
-		\While{within computational budget} 
-		\State $v_l \gets$ TreePolicy($v_0$)
-		\State $ \Delta \gets$ DefaultPolicy($s(v_l)$)
-		\State Backup($v_l, \Delta$)
-		\EndWhile\label{}
-		\State \textbf{return} $a$(BestChild($v_0$))
-		\EndProcedure
+		\Function{backpropagate}{$node$, $reward$, $times$} 
+		\State innerBackpropagate($node$, $reward$, $times$)
+		\For{every child of the parent of $node$}
+		\State amafForwardPropagation($child$, $reward$, $times$, $action$)
+		\EndFor\label{}
+		\EndFunction \\
+		
+		\Function{innerBackpropagate}{$node$, $reward$, $times$}
+		\State $visits$ $\leftarrow$ $visits + 1$
+		\State $reward$ $\leftarrow$ $reward + 1$
+		\If{$node \neq root$}
+			\State innerBackpropagate($parent$, $reward$, $times$)
+		\EndIf
+		\EndFunction \\
+		
+		\Function{amafFowardPropagation}{$node$, $reward$, $times$, $action$}
+		\If{$node action$ $=$ $action$}
+			\State $visits$ $\leftarrow$ $visits + 1$
+			\State $reward$ $\leftarrow$ $reward + 1$
+		\Else
+			\For{every child of the parent of the $node$}
+				\State amafForwardPropagation($child$, $reward$, $times$, $action$)
+			\EndFor
+		\EndIf
+		\EndFunction
 	\end{algorithmic}
 \end{algorithm}
 
-In algorithm \ref{alg:AMAFBACKUP}
+In algorithm \ref{alg:AMAF}
+
+
 
 
 \subsubsection{Parallelisation}
