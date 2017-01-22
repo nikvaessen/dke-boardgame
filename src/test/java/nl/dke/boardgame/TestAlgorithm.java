@@ -26,7 +26,7 @@ public class TestAlgorithm
         //exploration parameters
         double[] Cp = {0, 0.2, 0.4, 0.6, 0.8, 1.0, 3.0, 5.0};
 
-        int[] spis = {1, 10, 50, 100, 500, 1000, 10000};
+        int[] spis = {1, 10, 100};
 
         String st = "";
 
