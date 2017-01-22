@@ -50,6 +50,11 @@ public class TestAlgorithm
     }
 
     @Test
+    public void testWritter(){
+        writeToFile("Hello World");
+    }
+
+    @Test
     public void exploAndSipInMCTS(){
         //exploration parameters
         double[] Cp = {0, 0.2, 0.4, 0.6, 0.8, 1.0, 3.0, 5.0};
@@ -61,24 +66,42 @@ public class TestAlgorithm
 
                 for(double c2 : Cp) {
                     for(int spi2 : spis){
-
-                        HexPlayer player1 = new MCTSPlayer(TileState.PLAYER1, new UCTTreePolicy<>(c1),
-                                new SingleThreadRandomHexBoardSimulation(), spi1, 15000,
-                                PossiblePlayers.MCTS, false);
-
-                        HexPlayer player2 = new MCTSPlayer(TileState.PLAYER2, new UCTTreePolicy<>(c2),
-                                new SingleThreadRandomHexBoardSimulation(), spi2, 15000,
-                                PossiblePlayers.MCTS, false);
-
-                        GameState end = testAlgorithm(player1,player2);
+                        int p1counter = 0;
+                        int p2counter = 0;
 
                         String st = "";
-                        st += "Exploration value of " + c1 + " with " + spi1 + " simulations per iteration \n";
-                        st += "\tExploration value of " + c2 + " with " + spi2 + " simulations per iteration \n";
-                        st += "\t\tWinner is " + end.getWinner().toString();
-
+                        st += "Player 1 with exploration value of " + c1 + " with " + spi1 + " simulations per iteration \n";
+                        st += "\tPlayer 2 with exploration value of " + c2 + " with " + spi2 + " simulations per iteration \n";
                         System.out.print(st);
                         writeToFile(st);
+
+                        for(int i = 0; i<10; i++) {
+
+                            HexPlayer player1 = new MCTSPlayer(TileState.PLAYER1, new UCTTreePolicy<>(c1),
+                                    new SingleThreadRandomHexBoardSimulation(), spi1, 15000,
+                                    PossiblePlayers.MCTS, false);
+
+                            HexPlayer player2 = new MCTSPlayer(TileState.PLAYER2, new UCTTreePolicy<>(c2),
+                                    new SingleThreadRandomHexBoardSimulation(), spi2, 15000,
+                                    PossiblePlayers.MCTS, false);
+
+                            GameState end = testAlgorithm(player1, player2);
+
+
+                            String win = "\t\tWinner of game "+ (i+1) + " is: " + end.getWinner().toString();
+
+                            if(end.getWinner() == TileState.PLAYER1)
+                                p1counter++;
+                            else
+                                p2counter++;
+
+                            writeToFile(win);
+                            System.out.print(win);
+                        }
+                        String count1 = "Player1 won " + p1counter + " games";
+                        String count2 = "Player2 won " + p2counter + " games";
+                        writeToFile(count1 + "\n" + count2);
+                        System.out.print(count1 + "\n" + count2);
                     }
                 }
             }
