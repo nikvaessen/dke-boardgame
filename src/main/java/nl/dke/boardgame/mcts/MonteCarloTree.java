@@ -144,7 +144,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         // keep going until the allotted time has run out
-        while (System.currentTimeMillis() - startTime < ms)
+        while (count <= 25000)
         {
             count++;
             if(DEEP_DEBUG)
