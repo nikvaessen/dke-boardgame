@@ -305,8 +305,8 @@ public class HexGame
             }
 
             long end = System.currentTimeMillis();
-            System.out.println("Total game time: " + (end - start) + " ms");
-            System.out.println("Number of moves: " + gameState.getTotalTurns());
+            //System.out.println("Total game time: " + (end - start) + " ms");
+            //System.out.println("Number of moves: " + gameState.getTotalTurns());
             notifyWatchers();
         }
 
@@ -336,7 +336,7 @@ public class HexGame
                 }
                 playerWon = player1Won ? TileState.PLAYER1 : TileState.PLAYER2;
                 gameState.playerWon(playerWon);
-                System.out.println(playerWon + " won!");
+                //System.out.println(playerWon + " won!");
                 return;
             }
 

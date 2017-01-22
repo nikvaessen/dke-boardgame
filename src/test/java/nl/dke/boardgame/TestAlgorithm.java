@@ -8,7 +8,6 @@ import nl.dke.boardgame.mcts.hex.randomImpl.SingleThreadRandomHexBoardSimulation
 import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 import nl.dke.boardgame.players.MCTSPlayer;
 import nl.dke.boardgame.players.PossiblePlayers;
-import nl.dke.boardgame.players.RandomHexPlayer;
 import org.junit.Test;
 
 import java.io.File;
@@ -17,7 +16,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -47,7 +45,7 @@ public class TestAlgorithm
         {
             makeWriter();
         }
-        writer.write(s);
+        writer.println(s);
         writer.flush();
     }
 
@@ -85,8 +83,8 @@ public class TestAlgorithm
                             HexPlayer player2 = new MCTSPlayer(TileState.PLAYER2, new UCTTreePolicy<>(c2),
                                     new SingleThreadRandomHexBoardSimulation(), spi2, 15000,
                                     PossiblePlayers.MCTS, false);
-                            String p1info = "Player 1 with exploration value of " + c1 + " with " + spi1 + " simulations per iteration \n";
-                            String p2info = "\tPlayer 2 with exploration value of " + c2 + " with " + spi2 + " simulations per iteration \n";
+                            String p1info = "Player 1 with exploration value of " + c1 + " with " + spi1 + " simulations per iteration";
+                            String p2info = "Player 2 with exploration value of " + c2 + " with " + spi2 + " simulations per iteration";
 
                             callables.add(new TestCallable(player1, player2, p1info, p2info));
                         }
@@ -114,7 +112,7 @@ public class TestAlgorithm
             //sleep for a minute
             try
             {
-                Thread.sleep(60000);
+                Thread.sleep(600);
 
             }
             catch(InterruptedException e)
@@ -152,7 +150,9 @@ public class TestAlgorithm
     {
         counter++;
         GameState end = result.getState();
-        String win = "\t\tWinner of game " + counter + " is: " + end.getWinner().toString() + "\n";
+        String info = "#### Results of game " + counter + " ####\n";
+        System.out.println(info);
+        writeToFile(info);
 
         if(end.getWinner() == TileState.PLAYER1)
         {
@@ -163,21 +163,16 @@ public class TestAlgorithm
             p2counter++;
         }
 
-        String p1info = "Player 1: \n" + result.getPlayer1();
-        String p2info = "Player 2: \n" + result.getPlayer2();
-        System.out.println(p1info);
-        System.out.println(p2info);
-        writeToFile(p1info);
-        writeToFile(p2info);
+        System.out.println(result.getPlayer1());
+        System.out.println(result.getPlayer2());
+        writeToFile(result.getPlayer1());
+        writeToFile(result.getPlayer2());
 
         System.out.println(printBoard(end.getCurrentBoard()));
-        writeToFile("\n" + printBoard(end.getCurrentBoard()) + "\n");
+        writeToFile("\n" + printBoard(end.getCurrentBoard()));
+        String win = "winner: " + result.getState().getWinner() + "\n";
         writeToFile(win);
-        System.out.print(win);
-        String count1 = "Player1 won " + p1counter + " games";
-        String count2 = "Player2 won " + p2counter + " games";
-        writeToFile("\t" + count1 + "\n\t" + count2);
-        System.out.print(count1 + "\n" + count2);
+        System.out.println(win);
     }
 
     private class TestResult
