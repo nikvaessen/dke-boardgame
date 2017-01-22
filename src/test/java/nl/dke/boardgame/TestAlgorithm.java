@@ -59,7 +59,7 @@ public class TestAlgorithm
         //exploration parameters
         double[] Cp = {0, 0.2, 0.4, /*0.6, 0.8, 1.0, 3.0, 5.0*/};
 
-        int[] spis = {1};
+        int[] spis = {1, 10};
 
         for(double c1 : Cp){
             for(int spi1 : spis){
@@ -88,19 +88,23 @@ public class TestAlgorithm
                             GameState end = testAlgorithm(player1, player2);
 
 
-                            String win = "\t\tWinner of game "+ (i+1) + " is: " + end.getWinner().toString();
+                            String win = "\t\tWinner of game "+ (i+1) + " is: " + end.getWinner().toString() + "\n";
 
-                            if(end.getWinner() == TileState.PLAYER1)
+                            if(end.getWinner() == TileState.PLAYER1) {
                                 p1counter++;
-                            else
+                            }
+                            else {
                                 p2counter++;
+                            }
 
+                            System.out.println(printBoard(end.getCurrentBoard()));
+                            writeToFile("\n" + printBoard(end.getCurrentBoard()) + "\n");
                             writeToFile(win);
                             System.out.print(win);
                         }
                         String count1 = "Player1 won " + p1counter + " games";
                         String count2 = "Player2 won " + p2counter + " games";
-                        writeToFile(count1 + "\n" + count2);
+                        writeToFile("\t" + count1 + "\n\t" + count2);
                         System.out.print(count1 + "\n" + count2);
                     }
                 }
@@ -132,6 +136,7 @@ public class TestAlgorithm
         game.start();
         while(!game.isGameOver())
         {
+            //System.out.println(printBoard(game.getGameState().getCurrentBoard()));
             try
             {
                 Thread.sleep(1000);
@@ -142,6 +147,23 @@ public class TestAlgorithm
             }
         }
         return game.getGameState();
+    }
+
+    String printBoard(TileState[][] board){
+        String st = "";
+        for(TileState[] tiles: board){
+            for(TileState tile : tiles){
+                if(tile == TileState.NEUTRAL){
+                    st += "0 ";
+                } else if(tile == TileState.PLAYER1){
+                    st += "1 ";
+                } else{
+                    st += "2 ";
+                }
+            }
+            st += "\n";
+        }
+        return st;
     }
 
 }
