@@ -2,8 +2,12 @@ package nl.dke.boardgame.game;
 
 import nl.dke.boardgame.display.game.InputProcessor;
 import nl.dke.boardgame.game.board.TileState;
+import nl.dke.boardgame.mcts.hex.HexBoardAction;
+import nl.dke.boardgame.mcts.hex.HexBoardState;
 import nl.dke.boardgame.mcts.hex.randomImpl.MultiThreadRandomHexBoardSimulation;
+import nl.dke.boardgame.mcts.hex.randomImpl.OldMultiThreadRandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.randomImpl.SingleThreadRandomHexBoardSimulation;
+import nl.dke.boardgame.mcts.policy.AMAFPolicy;
 import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 import nl.dke.boardgame.players.*;
 
@@ -14,6 +18,12 @@ import nl.dke.boardgame.players.*;
 //// TODO: 21/09/16 document this class
 public class Table
 {
+    public final static int AMOUNT_OF_SIMULATIONS_PER_ITERATION = 1;
+    public final static int TIME_ALLOWED_FOR_MCTS_IN_MS = 1000;
+    public final static double EXPLORATION_PARAMETER_FOR_UCT = 0.7d;
+    public final static double AMAF_BIAS_VALUE = 1;
+    public final static boolean REUSE_TREE = true;
+
     private HexPlayer player1;
 
     private HexPlayer player2;
@@ -62,17 +72,47 @@ public class Table
             case MCTS:
                 return new MCTSPlayer(
                         player,
-                        new UCTTreePolicy<>(0.7),
+                        new UCTTreePolicy<>(EXPLORATION_PARAMETER_FOR_UCT),
                         new SingleThreadRandomHexBoardSimulation(),
-                        10,
-                        limit);
+                        AMOUNT_OF_SIMULATIONS_PER_ITERATION,
+                        TIME_ALLOWED_FOR_MCTS_IN_MS,
+                        PossiblePlayers.MCTS,
+                        REUSE_TREE);
+            case MCTSNoReuse:
+                return new MCTSPlayer(player,
+                        new UCTTreePolicy<>(EXPLORATION_PARAMETER_FOR_UCT),
+                        new SingleThreadRandomHexBoardSimulation(),
+                        AMOUNT_OF_SIMULATIONS_PER_ITERATION,
+                        TIME_ALLOWED_FOR_MCTS_IN_MS,
+                        PossiblePlayers.MCTSNoReuse,
+                        false);
             case MCTSLeafPar:
                 return new MCTSPlayer(
                         player,
-                        new UCTTreePolicy<>(0.7),
-                        new MultiThreadRandomHexBoardSimulation(),
-                        10,
-                        limit);
+                        new UCTTreePolicy<>(EXPLORATION_PARAMETER_FOR_UCT),
+                        new MultiThreadRandomHexBoardSimulation(2),
+                        AMOUNT_OF_SIMULATIONS_PER_ITERATION,
+                        TIME_ALLOWED_FOR_MCTS_IN_MS,
+                        PossiblePlayers.MCTSLeafPar,
+                        REUSE_TREE);
+            case MCTSLeafParBad:
+                return new MCTSPlayer(
+                        player,
+                        new UCTTreePolicy<>(EXPLORATION_PARAMETER_FOR_UCT),
+                        new OldMultiThreadRandomHexBoardSimulation(2),
+                        AMOUNT_OF_SIMULATIONS_PER_ITERATION,
+                        TIME_ALLOWED_FOR_MCTS_IN_MS,
+                        PossiblePlayers.MCTSLeafParBad,
+                        REUSE_TREE);
+            case MCTSAMAF:
+                    return new MCTSPlayer(
+                            player,
+                            new AMAFPolicy<>(0, AMAF_BIAS_VALUE),
+                            new SingleThreadRandomHexBoardSimulation(),
+                            AMOUNT_OF_SIMULATIONS_PER_ITERATION,
+                            TIME_ALLOWED_FOR_MCTS_IN_MS,
+                            PossiblePlayers.MCTSAMAF,
+                            REUSE_TREE);
             case alphabeta:
                 return new AlphaBetaPlayer(player, limit);
             default:

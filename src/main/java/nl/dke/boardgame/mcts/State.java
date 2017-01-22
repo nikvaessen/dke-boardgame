@@ -9,7 +9,6 @@ import java.util.List;
  */
 public interface State
 {
-
     /**
      * Get the state resulting from the current state with the given action applied to it
      *
@@ -19,6 +18,15 @@ public interface State
      *                                  it does not correspond to the given state or the action cannot legally be applied to that state
      */
     <S extends State> S next(Action<? extends State> action) throws IllegalArgumentException;
+
+    /**
+     * apply a list of actions to this state
+     * @param actions the list of actions to apply to the state
+     * @param <S> the state
+     * @param <A> the action
+     * @return a state with all the actions applied to this state
+     */
+    <S extends State, A extends Action<S>> S apply(List<A> actions);
 
     /**
      * List all the actions possible from the current state
@@ -42,7 +50,6 @@ public interface State
      * @return true if state is terminal, false otherwise
      */
     boolean isTerminal();
-
 
     /**
      * Give an integer number representing who can currently act on the given state

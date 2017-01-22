@@ -9,6 +9,9 @@ public enum PossiblePlayers
     //      the creation of this HexPlayer (createPlayer() method)
     MCTS,
     MCTSLeafPar,
+    MCTSAMAF,
+    MCTSLeafParBad,
+    MCTSNoReuse,
     human,
     random,
     alphabeta

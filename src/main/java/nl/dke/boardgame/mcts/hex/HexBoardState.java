@@ -1,5 +1,6 @@
 package nl.dke.boardgame.mcts.hex;
 
+import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.game.board.Board;
 import nl.dke.boardgame.game.board.HexTile;
 import nl.dke.boardgame.game.board.TileState;
@@ -186,6 +187,28 @@ public class HexBoardState
         return ((HexBoardAction) action).apply(this);
     }
 
+    @Override
+    public <S extends State, A extends Action<S>> S apply(List<A> actions)
+    {
+        Board board = this.board.clone();
+        for(Action a : actions)
+        {
+            if(a instanceof HexBoardAction)
+            {
+                try
+                {
+                    board.claim(((HexBoardAction) a).getX(), ((HexBoardAction) a).getY(),
+                            ((HexBoardAction) a).getPlayer());
+                }
+                catch(AlreadyClaimedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return (S) new HexBoardState(board, board.getCurrentPlayer());
+    }
+
     /**
      * Give an integer number representing who can currently act on the given state
      *
@@ -195,6 +218,17 @@ public class HexBoardState
     public int nextActor()
     {
         return player == TileState.PLAYER1 ? 1 : 2;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+
+        if(o instanceof HexBoardState)
+        {
+            return board.equals(((HexBoardState) o).getBoard());
+        }
+        return false;
     }
 
     public String toString()

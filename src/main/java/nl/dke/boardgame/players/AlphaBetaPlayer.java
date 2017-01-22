@@ -55,16 +55,16 @@ public class AlphaBetaPlayer extends HexPlayer
         //result.board.printBoard();
 
         //Boardhistory of the board alpha-beta returned
-        int[][] history = result.board.getHistory();
-        //System.out.println("BoardHistory: ");
-        for(int i = 0; i < history.length; i++)
-        {
-            //System.out.print("row: " + history[i][0]);
-            //System.out.print(" column: " + history[i][1] + "\n");
-        }
-        //set the move to be the move alpha-beta wants to make (the first newest move in the boardhistory)
-        move.setRow(history[counter - 1][0]);
-        move.setColumn(history[counter - 1][1]);
+        //int[][] history = result.board.getHistory();
+//        System.out.println("BoardHistory: ");
+//        for(int i = 0; i < history.length; i++)
+//        {
+//            System.out.print("row: " + history[i][0]);
+//            System.out.print(" column: " + history[i][1] + "\n");
+//        }
+//        //set the move to be the move alpha-beta wants to make (the first newest move in the boardhistory)
+//        move.setRow(history[counter - 1][0]);
+//        move.setColumn(history[counter - 1][1]);
 
         counter += 2;
         //System.out.println("number of leafNodes: " + numberOfLeafNodes);
@@ -453,7 +453,7 @@ class Dijkstra
                 if(distance[i] + G[i][index] < distance[index])
                 { // if D[v] + w((v,z)) < D[z] then
                     int oldIndex = distance[index];
-                    distance[index] = distance[i] + G[i][index]; // D[z] â†� D[v] + w((v,z))
+                    distance[index] = distance[i] + G[i][index]; // D[z] ← D[v] + w((v,z))
                     parent[index] = i;
                     PQ.remove(new Data(index, oldIndex));
                     PQ.add(new Data(index, distance[index])); // update PQ wrt D[z]
@@ -466,13 +466,13 @@ class Dijkstra
         { // If PQ isn't empty
             Data vertex = PQ.poll(); // RemoveMin
             for(int index = 0; index < G.length; index++)
-            { // for each edge (u,z) with z âˆˆ PQ do
+            { // for each edge (u,z) with z ∈ PQ do
                 if(G[vertex.index][index] <= 2 && inTree[index] == true)
-                { // z âˆˆ PQ
+                { // z ∈ PQ
                     if(distance[vertex.index] + G[vertex.index][index] < distance[index])
                     { // if D[v] + w((v,z)) < D[z] then
                         int oldIndex = distance[index];
-                        distance[index] = distance[vertex.index] + G[vertex.index][index]; // D[z] â†� D[v] + w((v,z))
+                        distance[index] = distance[vertex.index] + G[vertex.index][index]; // D[z] ← D[v] + w((v,z))
                         parent[index] = vertex.index;
                         PQ.remove(new Data(index, oldIndex));
                         PQ.add(new Data(index, distance[index])); // update PQ wrt D[z]

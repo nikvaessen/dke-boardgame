@@ -23,8 +23,8 @@ import java.util.List;
 public class Board
         implements Watchable
 {
-    int counter = 0;
-    int[][] boardHistory = new int[121][2];
+    //int counter = 0;
+    //int[][] boardHistory = new int[121][2];
 
     /**
      * The 2D array of Tiles which together make the game board
@@ -45,6 +45,11 @@ public class Board
      * The height of the board
      */
     private int height;
+
+    /**
+     * The amount of tiles claimed by the current board;
+     */
+    private int claimedTiles = 0;
 
     /**
      * Constructs the Hex game board
@@ -327,9 +332,10 @@ public class Board
                     row, column, board.length, board[row].length));
         }
         board[row][column].claim(state);
-        boardHistory[counter][0] = row;
-        boardHistory[counter][1] = column;
-        counter++;
+        claimedTiles++;
+        //boardHistory[counter][0] = row;
+        //boardHistory[counter][1] = column;
+        //counter++;
         notifyWatchers();
     }
 
@@ -390,6 +396,28 @@ public class Board
         return row > -1 && row < board.length;
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj instanceof Board)
+        {
+            Board otherBoard = (Board) obj;
+            for(int i = 0; i < board.length; i++)
+            {
+                for (int j = 0; j < board[i].length; j++)
+                {
+                    if(!board[i][j].equals(otherBoard.getTile(i, j)))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * Checks whether the given column number is in the span of the columns
      *
@@ -413,7 +441,21 @@ public class Board
                 board[i][j].reset();
             }
         }
+        claimedTiles = 0;
         notifyWatchers();
+    }
+
+    /**
+     * This method returns who can currently play. This is based on the amount of tiles which are claimed
+     * If it are an even amount of claimed tiles(including zero), player 1 can move.
+     * Otherwise, player 2 moves.
+     * This method relies on the outer functions claiming on this board to only allow legal claims (e.g it makes
+     * sure the order is player 1 --> player 2 --> player 2 --> ect
+     * @return the player who is currently allowed to move
+     */
+    public TileState getCurrentPlayer()
+    {
+        return (claimedTiles % 2 == 0 ? TileState.PLAYER1 : TileState.PLAYER2);
     }
 
     /**
@@ -421,11 +463,9 @@ public class Board
      *
      * @return an identical Board class with the same claimed tiles
      */
-    Board clone;
-
     public synchronized Board clone()
     {
-        clone = new Board(width, height);
+        Board clone = new Board(width, height);
         for(int i = 0; i < height; i++)
         {
             for(int j = 0; j < width; j++)
@@ -435,36 +475,37 @@ public class Board
                 {
                     try
                     {
-                        clone.getTile(i, j).claim(state);
-                    } catch(AlreadyClaimedException e)
+                        clone.claim(i, j, state);
+                    }
+                    catch(AlreadyClaimedException e)
                     {
                         e.printStackTrace();
                     }
                 }
             }
         }
-        clone.boardHistory = cloneHistory();
-        clone.counter = counter;
+//        clone.boardHistory = cloneHistory();
+//        clone.counter = counter;
         return clone;
     }
 
-    public int[][] getHistory()
-    {
-        return boardHistory;
-    }
-
-    public int[][] cloneHistory()
-    {
-        int[][] clone = new int[boardHistory.length][boardHistory[0].length];
-        for(int i = 0; i < boardHistory.length; i++)
-        {
-            for(int j = 0; j < boardHistory[0].length; j++)
-            {
-                clone[i][j] = boardHistory[i][j];
-            }
-        }
-        return clone;
-    }
+//    public int[][] getHistory()
+//    {
+//        return boardHistory;
+//    }
+//
+//    public int[][] cloneHistory()
+//    {
+//        int[][] clone = new int[boardHistory.length][boardHistory[0].length];
+//        for(int i = 0; i < boardHistory.length; i++)
+//        {
+//            for(int j = 0; j < boardHistory[0].length; j++)
+//            {
+//                clone[i][j] = boardHistory[i][j];
+//            }
+//        }
+//        return clone;
+//    }
 
     /**
      * Add a watcher to the list so that they get notified when a Tile changes
