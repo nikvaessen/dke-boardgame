@@ -1,6 +1,7 @@
 package nl.dke.boardgame.game.board;
 
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
+import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.util.Watchable;
 import nl.dke.boardgame.util.Watcher;
 
@@ -23,13 +24,12 @@ import java.util.List;
 public class Board
         implements Watchable
 {
-    //int counter = 0;
-    //int[][] boardHistory = new int[121][2];
-
+    int counter = 0;
+    int[][] boardHistory = new int[19*19][2];
     /**
      * The 2D array of Tiles which together make the game board
      */
-    private HexTile[][] board;
+    public HexTile[][] board;
 
     /**
      * List of watchers to notify when the board changes
@@ -39,12 +39,12 @@ public class Board
     /**
      * The width of the board
      */
-    private int width;
+    public int width;
 
     /**
      * The height of the board
      */
-    private int height;
+    public int height;
 
     /**
      * The amount of tiles claimed by the current board;
@@ -84,7 +84,7 @@ public class Board
                 if(this.getState(i, j) == TileState.NEUTRAL)
                 {
 
-                    Board newBoard = this.clone();
+                    Board newBoard = this.clone(true);
                     try
                     {
                         newBoard.claim(i, j, t);
@@ -102,11 +102,9 @@ public class Board
     public void printBoard()
     {
         String spaces = " ";
-        for(int i = 0; i < 11; i++)
-        {
+        for(int i = 0; i < width; i++){
             System.out.print(spaces);
-            for(int j = 0; j < 11; j++)
-            {
+            for(int j = 0; j < height; j++){
 
                 if(this.getState(i, j) == TileState.NEUTRAL)
                 {
@@ -145,6 +143,11 @@ public class Board
     public int getHeight()
     {
         return height;
+    }
+
+    public int getSize()
+    {
+        return height*width;
     }
 
     /**
@@ -231,7 +234,7 @@ public class Board
      * @return the state of the HexTile at the given position
      * @throws IllegalArgumentException when the given location is not valid
      */
-    private HexTile getTile(int row, int column)
+    public HexTile getTile(int row, int column)
             throws IllegalArgumentException
     {
         if(!canAccess(row, column))
@@ -333,9 +336,9 @@ public class Board
         }
         board[row][column].claim(state);
         claimedTiles++;
-        //boardHistory[counter][0] = row;
-        //boardHistory[counter][1] = column;
-        //counter++;
+        boardHistory[counter][0] = row;
+        boardHistory[counter][1] = column;
+        counter++;
         notifyWatchers();
     }
 
@@ -463,7 +466,8 @@ public class Board
      *
      * @return an identical Board class with the same claimed tiles
      */
-    public synchronized Board clone()
+    Board clone;
+    public Board clone(boolean bool)
     {
         Board clone = new Board(width, height);
         for(int i = 0; i < height; i++)
@@ -477,36 +481,31 @@ public class Board
                     {
                         clone.claim(i, j, state);
                     }
-                    catch(AlreadyClaimedException e)
+                    catch (AlreadyClaimedException e)
                     {
                         e.printStackTrace();
                     }
                 }
             }
         }
-//        clone.boardHistory = cloneHistory();
-//        clone.counter = counter;
+        if(bool == true){
+        clone.boardHistory = cloneHistory();
+        clone.counter = counter;
+    }
         return clone;
     }
-
-//    public int[][] getHistory()
-//    {
-//        return boardHistory;
-//    }
-//
-//    public int[][] cloneHistory()
-//    {
-//        int[][] clone = new int[boardHistory.length][boardHistory[0].length];
-//        for(int i = 0; i < boardHistory.length; i++)
-//        {
-//            for(int j = 0; j < boardHistory[0].length; j++)
-//            {
-//                clone[i][j] = boardHistory[i][j];
-//            }
-//        }
-//        return clone;
-//    }
-
+    public int[][] getHistory(){
+        return boardHistory;
+    }
+    public int[][] cloneHistory(){
+     int[][] clone = new int[boardHistory.length][boardHistory[0].length];
+        for(int i = 0; i < boardHistory.length; i++){
+            for(int j = 0; j < boardHistory[0].length; j++){
+                clone[i][j] = boardHistory[i][j];
+            }
+        }
+        return clone;
+    }
     /**
      * Add a watcher to the list so that they get notified when a Tile changes
      * its state

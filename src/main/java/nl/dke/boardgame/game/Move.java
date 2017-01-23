@@ -45,7 +45,7 @@ public class Move
             throw new IllegalArgumentException("Neutral cannot make moves");
         }
         this.player = player;
-        this.board = board.clone();
+        this.board = board.clone(true);
     }
 
     /**
