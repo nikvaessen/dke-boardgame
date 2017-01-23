@@ -195,6 +195,8 @@ public class TestAlgorithm
                 }
             }
         }
+
+        singleThreadTesting(callables);
     }
 
 
