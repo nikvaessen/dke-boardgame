@@ -24,6 +24,7 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
     private MonteCarloNode<S, A> pastNode;
     private boolean treeReuse;
 
+
     public MonteCarloTree(TreePolicy<S, A> treePolicy, SimulationPolicy<S> simulationPolicy, int simsPerIt,
                           boolean treeReuse)
     {
@@ -144,7 +145,8 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         }
 
         // keep going until the allotted time has run out
-        while (count <= 15000)
+        //while (count <= 15000)
+        while(System.currentTimeMillis() - startTime < ms)
         {
             count++;
             if(DEEP_DEBUG)

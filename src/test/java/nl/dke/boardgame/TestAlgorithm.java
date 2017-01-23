@@ -1,5 +1,6 @@
 package nl.dke.boardgame;
 
+import com.sun.org.apache.regexp.internal.RE;
 import nl.dke.boardgame.game.GameState;
 import nl.dke.boardgame.game.HexGame;
 import nl.dke.boardgame.game.HexPlayer;
@@ -60,10 +61,8 @@ public class TestAlgorithm
     {
         //exploration parameters
         double[] Cp = {0, 0.2, 0.4, /*0.6, 0.8, 1.0, 3.0, 5.0*/};
-
         int[] spis = {1, 10};
 
-        ExecutorService threads = Executors.newFixedThreadPool(2);
         Collection<Callable<TestResult>> callables = new ArrayList<>();
         for(double c1 : Cp)
         {
@@ -94,9 +93,14 @@ public class TestAlgorithm
             }
         }
 
-        System.out.println("Amount of tests to do: " + callables.size());
-        int p1counter = 0;
-        int p2counter = 0;
+        //and test all games
+        singleThreadTesting(callables);
+    }
+
+    private void multiThreadTesting(Collection<Callable<TestResult>> callables)
+    {
+        //make multiple threads
+        ExecutorService threads = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         //add all takss to the threadpool to do them
         Collection<Future<TestResult>> futures = new ArrayList<>();
@@ -104,7 +108,28 @@ public class TestAlgorithm
         {
             futures.add(threads.submit(callable));
         }
+        //wait for completing
+        waitForCompletion(futures);
+    }
 
+    private void singleThreadTesting(Collection<Callable<TestResult>> callables)
+    {
+        ExecutorService thread = Executors.newSingleThreadExecutor();
+
+        //add all takss to the threadpool to do them
+        Collection<Future<TestResult>> futures = new ArrayList<>();
+        for(Callable<TestResult> callable : callables)
+        {
+            futures.add(thread.submit(callable));
+        }
+
+        //wait for completing
+        waitForCompletion(futures);
+    }
+
+    private void waitForCompletion(Collection<Future<TestResult>> futures)
+    {
+        System.out.println("Amount of tests to do: " + futures.size());
         //every minute, see which tasks have completed and print their results
         while(!futures.isEmpty())
         {
@@ -121,6 +146,7 @@ public class TestAlgorithm
             }
 
             //go over the list and see which ones are done
+            int counter = 0;
             Iterator<Future<TestResult>> iter = futures.iterator();
             while(iter.hasNext())
             {
@@ -131,7 +157,8 @@ public class TestAlgorithm
                     {
                         TestResult result = future.get();
                         iter.remove();
-                        handle(result);
+                        counter++;
+                        handle(result, counter);
                     }
                     catch(ExecutionException | InterruptedException e)
                     {
@@ -143,25 +170,13 @@ public class TestAlgorithm
     }
 
 
-    private static int p1counter = 0;
-    private static int p2counter = 0;
-    private static int counter  =  0;
-    private void handle(TestResult result)
+    private void handle(TestResult result, int counter)
     {
         counter++;
         GameState end = result.getState();
         String info = "#### Results of game " + counter + " ####\n";
         System.out.println(info);
         writeToFile(info);
-
-        if(end.getWinner() == TileState.PLAYER1)
-        {
-            p1counter++;
-        }
-        else
-        {
-            p2counter++;
-        }
 
         System.out.println(result.getPlayer1());
         System.out.println(result.getPlayer2());
