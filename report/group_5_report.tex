@@ -31,14 +31,99 @@ The history of creating algorithms to play Hex is rich with successful attempts,
 The rules of Hex are very simple. Each player is given a colour, typically blue and red or black and white. The players then take turns placing tiles down on the board to claim a space. The aim is to create a path one side of the board to the other, either top to bottom or left to right. Since the first player is always at distinct advantage there exsists the Pie Rule, which states that after the second player has made their first move they may swap the positions of the first two tiles. This rule is not impliemented in the algorithms descriped in this paper, as both algorithms will have equal time as player one and player two.
 
 \section{Algorithms}
-\subsection{Alpha-beta Hex Players}
-The alpha-beta player consists of a player which uses a minimax game tree and applies $\alpha - \beta$ pruning as it builds the tree.
-% cite Artificial Intelligence: A Modern approach
-\subsubsection{Minimax algorithm}
-The minimax algorithm tries to find the best next possible action by fully expanding each node and seeing all possible moves in a certain depth. After the tree is fully expanded the leaf nodes are evaluated and given a value. 
+\subsection{Alpha-beta}
+MiniMax search with α – β pruning is a standard approach to deterministic games with perfect information and Hex is such an environment. MiniMax search investigates future positions of the board and evaluates them. It was used by the first Hex playing Machine by Shannon and Moore (1959) and alpha – beta based Hex players have dominated Hex competitions until 2008.\cite{arneson2010monte} MiniMax search determines what the best move in each position is using a game tree. MiniMax evaluates the game tree using an evaluation function from the perspective of one player, referred to as MAX. The opponent is referred to as MIN. \cite{russell1995modern}. MiniMax is a depth – first search and the game tree is evaluated from the leaf towards the root. The root of the tree is associated with MAX. From here each level of the tree is associated with a player in an alternating way. Nodes at depth = 1 are associated with min, depth = 2 is associated with max and so on. MAX nodes receive the maximal evaluation of the nodes one level below it as MAX aims to maximize utility. MIN nodes receive the minimal evaluation of the nodes one level below it as MIN aims to minimize the utility of MAX. \cite{russell1995modern}
 
-\subsection{Electric circuit}
-Explanation of the electric circuit of Anshelivic
+\begin{algorithm}
+	\caption{Minimax}
+	\label{alg:minimax}
+	\begin{algorithmic}
+		\Function{Minimax-Decision}{$game$}{\textbf{ returns $an$ $operator$}}
+		\For{\textbf{each} $op$ \textbf{in} OPERATORS[$game$]}
+		\State VALUE[$OP$] $\leftarrow$ 
+		\State MINIMAX-VALUE(APPLY($op$,$game$),$game$)
+		\EndFor\label{}\\
+		\Return{the $op$ with the highest VALUE[$op$]}
+		\EndFunction \\
+	\end{algorithmic}
+	\begin{algorithmic}
+		\Function{Minimax-Value}{$state$,$game$}{\textbf{ returns $a$ $utility$ $value$}}
+		\If{TERMINAL-TEST[$game$]($state$)} 
+		\State	\Return {UTILITY[$game$]($state$)}
+		\ElsIf{MAX is to move in $state$}
+		\State	\Return {the highest MINIMAX-VALUE \State of SUCCESSORS($state$)}
+		\Else
+		\State 	\Return {the lowest MINIMAX-VALUE \State of SUCCESSORS($state$)}
+		\EndIf
+		\EndFunction \\
+	\end{algorithmic}
+\end{algorithm}
+
+$\alpha$ - $\beta$ pruning is a strategy to simplify the search. The idea behind alpha – beta pruning is to prune subtrees for which we know that they do not yield a better strategy. “Consider a node n somewhere in the tree (. . .)  such that Player has a choice of moving to that node. If Player has a better choice m either at the parent node of n, or at any choice point further up, then n will never be reached in actual play. So, once we have found out enough about n (by examining some of its descendants) to reach this conclusion, we can prune it.” \cite{russell1995modern}. This strategy increases the efficiency of the search.
+
+\begin{algorithm}
+	\caption{Alphabeta}
+	\label{alg:alphabeta}
+	\begin{algorithmic}
+		\Function{Max-Value}{$stategame,\alpha, \beta$}{\textbf{ returns } the minimax value of $state$}
+		\State \textbf{inputs: } $state$, current state in game
+		\State $game$ , game description
+		\State $\alpha$, the best score of MAX along the path to $state$
+		\State $\beta$, the best score for MIN along the path to $state$
+		\State 
+		\If{CUTOFF-TEST($state$)}
+			\State \Return{EVAL($state$)}
+		\EndIf
+		\For{\textbf{each} $s$ \textbf{in} SUCCESORS($state$)}
+			\State $\alpha$ $\leftarrow$ MAX($\alpha$, MIN-VALUE($s$, $game$, $\alpha$, $\beta$))
+		\EndFor \label{}
+		\EndFunction\\
+		
+		\Function{Min-Value}{$state, game, \alpha, ft$}{\textbf{ returns } the minimax value of $state$} \\
+		\If{CUTOFF-TEST($state$)}
+		\State \Return{EVAL($state$)}
+		\EndIf
+		\For{\textbf{each} $s$ \textbf{in} SUCCESSORS($state$)}
+			\State $ft$ $\leftarrow$ MIN($ft$, MAX-VALUE($s, game , \alpha, \beta$)) 
+			\If{$ft$ \textless $a$}
+		 \Return{$a$}
+			\EndIf
+		\EndFor \label{}
+		\EndFunction
+		
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection{Evaluation Functions}
+Shannon and Moore (1959) model the board as an electrical circuit which overcomes this limitation as it considers all paths in parallel. Their ideas have been used by Anshelevich(2002)\cite{anshelevich2002hierarchical} to develop the Hex player Hexy. The board is represented as a graph. Positions on the board are vertices and adjacent positions are connected by edges. Edges of the graph are resistors and resistance is assigned in the following way: 
+\\
+\\
+For Black's circuit:  \\
+\begin{equation}
+r_B(c)=\begin{cases}
+1, & \text{if $c$ is empty},\\
+0, & \text{if $c$ is occupied by a black piece},\\
++\infty & \text{if $c$ is occupied by a white piece}.
+\end{cases}
+\end{equation}
+\\
+And likewise, for the circuit of the other player . 
+One can see that positions occupied by the opponent are practically not a part of the circuit as they have an infinite resistance. A voltage is then applied to the two sides that the player needs to connect. (Anshelevich, 2002)\cite{anshelevich2002hierarchical}.
+
+By calculating the equivalent resistance of the board. The lower the resistance, the better the evaluation. The equivalent resistance can be calculated using a system of linear equations based on Kirchhoff’s Current Law.
+
+H. Challup, Mellor and Rosamund (2005)\cite{chalup2005machine} also used Dijkstra’s (YEAR) algorithm for shortest path finding in a graph. In contrast to the previous evaluation this evaluation only considers a single path and not the whole board.  The board is represented as a graph. Positions on the board are vertices and adjacent positions are connected by edges. The edges are weighted using the following evaluation. Positions occupied by the opponent do not belong to the graph.
+
+\begin{equation}
+W(p_1,p_2)=\begin{cases}
+0, & \text{if $p_1$  and $p_2$ are both occupied by the player},\\
+1, & \text{if one out of $p_1$ and $p_2$  is occupied by the player},\\
+2 & \text{if both positions are unoccupied}.
+\end{cases}
+\end{equation}
+\cite{chalup2005machine}
+
+Then the shortest path between the two sides of the board that need to be connected by the player is calculated. Shorter paths are preferred by the player. 
 
 \subsection{Monte Carlo Tree Search}
 A powerful A.I. technique for board games is the Monte Carlo Tree Search(MCTS). It applies optimization techniques of random simulations to the game tree. 
