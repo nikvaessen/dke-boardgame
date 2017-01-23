@@ -72,10 +72,15 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
         {
 //            System.out.printf("Transferring the children from the child of past node. It has %d children%n",
 //                    newRoot.amountOfChildren());
+
             for (MonteCarloNode<S, A> child : newRoot)
             {
                 child.setParent(potentialNewRoot);
                 potentialNewRoot.addChild(child);
+            }
+            if(potentialNewRoot.getActions().size() == potentialNewRoot.amountOfChildren())
+            {
+                potentialNewRoot.setFullyExpanded(true);
             }
             root = potentialNewRoot;
 //            System.out.println(" FINISHED +and #children = " + root.amountOfChildren());

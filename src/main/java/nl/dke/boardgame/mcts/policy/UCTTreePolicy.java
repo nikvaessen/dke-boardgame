@@ -350,7 +350,7 @@ public class UCTTreePolicy<S extends State, A extends Action<S>>
             {
                 throw new IllegalArgumentException("the given parent does not have any visits");
             }
-            return c * Math.sqrt(2 * Math.log(nP) / n);
+            return c * Math.sqrt(Math.log(nP) / n);
         }
     }
 
