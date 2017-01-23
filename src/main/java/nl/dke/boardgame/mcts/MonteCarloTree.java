@@ -77,6 +77,10 @@ public class MonteCarloTree<S extends State, A extends Action<S>>
                 child.setParent(potentialNewRoot);
                 potentialNewRoot.addChild(child);
             }
+            if(potentialNewRoot.getActions().size() == potentialNewRoot.amountOfChildren())
+            {
+                potentialNewRoot.setFullyExpanded(true);
+            }
             root = potentialNewRoot;
 //            System.out.println(" FINISHED +and #children = " + root.amountOfChildren());
          }
