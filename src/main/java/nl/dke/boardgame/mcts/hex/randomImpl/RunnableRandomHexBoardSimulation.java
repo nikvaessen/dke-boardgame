@@ -45,7 +45,7 @@ public class RunnableRandomHexBoardSimulation
     private int simulate(HexBoardState state)
     {
         // reset variables
-        Board board = state.getBoard().clone();
+        Board board = state.getBoard().clone(false);
         TileState currentPlayer = state.getPlayer();
 
         //get list of possible actions and apply them on the board in a random order

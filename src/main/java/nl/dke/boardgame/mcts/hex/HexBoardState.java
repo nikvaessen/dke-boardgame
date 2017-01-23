@@ -190,7 +190,7 @@ public class HexBoardState
     @Override
     public <S extends State, A extends Action<S>> S apply(List<A> actions)
     {
-        Board board = this.board.clone();
+        Board board = this.board.clone(false);
         for(Action a : actions)
         {
             if(a instanceof HexBoardAction)

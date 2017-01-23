@@ -49,7 +49,7 @@ public class HexBoardAction
     @Override
     public HexBoardState apply(HexBoardState before) throws IllegalArgumentException
     {
-        Board board = before.getBoard().clone();
+        Board board = before.getBoard().clone(false);
         try
         {
             board.claim(x, y, player);

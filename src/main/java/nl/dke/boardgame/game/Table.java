@@ -123,8 +123,6 @@ public class Table
                             TIME_ALLOWED_FOR_MCTS_IN_MS,
                             PossiblePlayers.MCTSAMAF,
                             REUSE_TREE);
-            case alphabeta:
-                return new AlphaBetaPlayer(player, ALPHA_BETA_LIMIT);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
                         "HexPlayer, given argument" + type + " is not " +

@@ -9,7 +9,7 @@ public class Tester implements Watcher{
 	
 	//possible things to change
 	private final int NO_OF_TESTS = 10;
-	private PossiblePlayers player1 = PossiblePlayers.alphabeta;
+	//private PossiblePlayers player1 = PossiblePlayers.alphabeta;
 	private PossiblePlayers player2 = PossiblePlayers.MCTS;
 	private int depthLimit = 2;
 	private int timeLimit= 20000;

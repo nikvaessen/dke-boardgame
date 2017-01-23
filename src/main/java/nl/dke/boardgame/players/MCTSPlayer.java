@@ -43,7 +43,7 @@ public class MCTSPlayer extends HexPlayer {
     public void finishMove(Move move) {
 
 
-        HexBoardState state = new HexBoardState(move.getBoard().clone(), move.getPlayer());
+        HexBoardState state = new HexBoardState(move.getBoard().clone(false), move.getPlayer());
 
             HexBoardAction action = monteCarloTree.search(state, ms);
         //System.out.println("Number of nodes = " + monteCarloTree.numberNodes);
