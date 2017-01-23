@@ -12,7 +12,8 @@ public enum PossiblePlayers
     MCTSAMAF,
     MCTSLeafParBad,
     MCTSNoReuse,
-    human,
     random,
-    alphabeta
+    human,
+    alphabetaDijkstra,
+    alphabetaElectrical
 }

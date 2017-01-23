@@ -23,13 +23,13 @@ public class HexGame
      * The width and height of the board when the constructor is not given any
      * arguments
      */
-    public final static int DEFAULT_BOARD_DIMENSION = 2;
+    public final static int DEFAULT_BOARD_DIMENSION = 11;
 
     /**
      * The minimum width and height of the board which are allowed to be given
      * as an argument to the constructor
      */
-    public final static int MINIMUM_BOARD_DIMENSION = 2;
+    public final static int MINIMUM_BOARD_DIMENSION = 9;
 
     /**
      * The maximum width and height of the board which are allowed to be given
@@ -224,6 +224,7 @@ public class HexGame
      */
     private void startGame()
     {
+        started = true;
         new Thread(new GameLoop()).start();
     }
 
@@ -283,7 +284,7 @@ public class HexGame
         private boolean player1Won = false;
 
         private boolean player2Won = false;
-        
+
         private List<Watcher> watchers;
 
         public GameLoop() {
@@ -390,7 +391,8 @@ public class HexGame
                 board.claim(move.getRow(), move.getColumn(), player.claimsAs());
                 //mark the turn as completed
                 gameState.completedTurn(getBoardState(), player.claimsAs());
-            } catch(MoveNotCompletedException | AlreadyClaimedException e)
+            }
+            catch(MoveNotCompletedException | AlreadyClaimedException e)
             {
                 e.printStackTrace();
 
@@ -405,12 +407,12 @@ public class HexGame
          */
         private void allowPieMove(HexPlayer player, PieMove move)
         {
-            //System.out.println("Turn: " + player.claimsAs().toString());
+            System.out.println("Turn: " + player.claimsAs().toString());
             player.finishMove(move); //this method blocks until input has been given
             try
             {
-                //System.out.printf("Claiming row %d and column %d as %s%n",
-                        //move.getRow(), move.getColumn(), player.claimsAs());
+                System.out.printf("Claiming row %d and column %d as %s%n",
+                        move.getRow(), move.getColumn(),  player.claimsAs());
                 if(board.getState(move.getRow(), move.getColumn()) == TileState.NEUTRAL)
                 {
                     board.claim(move.getRow(), move.getColumn(), player.claimsAs());

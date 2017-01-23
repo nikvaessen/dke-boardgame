@@ -1,6 +1,11 @@
 package nl.dke.boardgame.game;
 
 import nl.dke.boardgame.display.game.InputProcessor;
+import nl.dke.boardgame.players.AlphaBetaElectrical;
+import nl.dke.boardgame.players.AlphaBetaDijkstra;
+import nl.dke.boardgame.players.HumanHexPlayer;
+import nl.dke.boardgame.players.PossiblePlayers;
+import nl.dke.boardgame.players.RandomHexPlayer;
 import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.mcts.hex.HexBoardAction;
 import nl.dke.boardgame.mcts.hex.HexBoardState;
@@ -70,6 +75,10 @@ public class Table
         {
             case random:
                 return new RandomHexPlayer(player);
+            case alphabetaDijkstra:
+                return new AlphaBetaDijkstra(player);
+            case alphabetaElectrical:
+                return new AlphaBetaElectrical(player);
             case MCTS:
                 return new MCTSPlayer(
                         player,
