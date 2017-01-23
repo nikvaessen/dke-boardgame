@@ -23,7 +23,7 @@
 
 \section{Introduction}
 Hex is a well-known board game first created in 1942 by Piet Hein, a Danish physicist, with later improvements being made by John F. Nash in 1948. It gained the name Hex in 1952 when a version of the game was release by the firm Parker Brothers, Inc \cite{gardener1959hex}. The basic idea of Hex is to create a bridge across a diamond shape board of hexagons. The generally accepted normal size of the board is 11 $\times$ 11, however it can be played on boards of differing sizes. One player will try to create a bridge from the top of the board to the bottom, while the other player tries to make one from left to right. The game is fully deterministic, as by finishing one player’s bridge will always block the other player. As the first player is always at an advantage, Hex has a unique rule to address this. Called the Pie Rule, it states that after the second player has had their first move, they may switch the placement of the first two tiles.\\
--The history of creating algorithms to play Hex is rich with successful attempts, all using a different approach. In this paper, several of these attempts will be implemented and tested against both each other, while also seeing if limiting factors in these algorithms (time per move, tree depth, etc.) have major effects on the results.
+The history of creating algorithms to play Hex is rich with successful attempts, all using a different approach. In this paper, several of these attempts will be implemented and tested against both each other, while also seeing if limiting factors in these algorithms (time per move, tree depth, etc.) have major effects on the results.
 
 
 
@@ -233,7 +233,7 @@ In this paper only  leaf parallelisation was considered since this is a straight
 A problem with leaf parallelisation is that threads have to wait for each other which could slow then the process a way to solve this is end simulations for a move if a certain amount of games is won. For instance, if 16 threads are available, and 8 (faster) finished games are all losses, it will be highly probable that most games
 will lead to a loss. Therefore, playing 8 more games is a waste of computational power. This will enable the program to traverse the tree more often.\cite{chaslot2008parallel}
 
-To reduce the cost of using threads we implemented both the \textit{Java ExecutorService} interface and \textit{ThreadGroups} and we compared them
+To reduce the cost of using threads, both the \textit{Java ExecutorService} interface and \textit{ThreadGroups} were implemented and compared.
 \begin{figure}
 	\centering
 	\includegraphics[]{figure_leafparallisation}
