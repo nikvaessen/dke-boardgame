@@ -144,11 +144,7 @@ public class TestAlgorithm
     }
 
     /**
-     * JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN
-     * JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN
-     * JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN deze moet je runnen  JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN
-     * JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN
-     * JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN JEROEN
+     * jeroen has to run this one
      */
     @Test
     public void testLeafParallelisation()
@@ -199,6 +195,56 @@ public class TestAlgorithm
         singleThreadTesting(callables);
     }
 
+    /**
+     * Tom has to run this one
+     */
+    @Test
+    public void testTreeReuuse()
+    {
+        int[] possibleMS = {10000, 300000};
+        int[] possibleSPI = {1, 10};
+
+        Collection<Callable<TestResult>> callables = new ArrayList<>();
+        for(int ms : possibleMS)
+        {
+            for(int spi : possibleSPI)
+            {
+                for(int i = 1; i <= 20; i++)
+                {
+                    HexPlayer player1 = new MCTSPlayer(
+                            TileState.PLAYER1,
+                            new UCTTreePolicy<>(0.6d),
+                            new SingleThreadRandomHexBoardSimulation(),
+                            1,
+                            ms,
+                            PossiblePlayers.MCTS,
+                            false
+                    );
+                    HexPlayer player2 = new MCTSPlayer(
+                            TileState.PLAYER2,
+                            new UCTTreePolicy<>(0.6d),
+                            new SingleThreadRandomHexBoardSimulation(),
+                            spi,
+                            ms,
+                            PossiblePlayers.MCTS,
+                            true
+                    );
+                    String p1info = "Player 1 with 0 treereuse, ms: " + ms + " spi: " + spi;
+                    String p2info = "Player 2 with 1 treereuse, ms: " + ms + " spi: " + spi;
+                    if(i <= 10)
+                    {
+                        callables.add(new TestCallable(player1, player2, p1info, p2info));
+                    }
+                    else
+                    {
+                        callables.add(new TestCallable(player2, player1, p2info, p1info));
+                    }
+                }
+            }
+        }
+
+        singleThreadTesting(callables);
+    }
 
     private void multiThreadTesting(Collection<Callable<TestResult>> callables)
     {
