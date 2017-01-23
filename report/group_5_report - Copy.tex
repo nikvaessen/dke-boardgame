@@ -5,7 +5,8 @@
 \usepackage{algorithm}
 \usepackage{amsmath}
 
-
+\usepackage{apacite}
+\bibliographystyle{apacite}
 
 
 \title{AI Implementations for Hex}
@@ -41,49 +42,42 @@ The rules of Hex are simple. Each player is given a colour, typically blue and r
 \textbf{BACKGROUND JOHN NASH STEALING ARGUMENT SWAP RULE} \cite{nash1952}
 
 \section{Algorithms}
-\subsection{Game tree}
-Game trees closely follows a \textit{Markov Decision Process} (MDP) in which every node of the tree is represented by a State $s \in S$ and the connection between the nodes is represented by an action $a \in A$. \cite{browne2012survey}
-\begin{itemize}
-	\item $S$: a set of all possible states of the board
-	\item $A$: a set of all possible actions that can transition from one state to the other
-	\item $P_a(s, s')$: the probability of reaching state $s'$ by using action $a$ on state $s$
-	\item $R_a(s, s')$: the reward for reaching state $s'$ by using action $a$ on state $s$
-\end{itemize}
 \subsection{Alpha-beta}
-MiniMax search with $\alpha$ - $\beta$ pruning is a standard approach to deterministic games with perfect information and Hex is such an environment. MiniMax search investigates future positions of the board and evaluates them. It was used by the first Hex playing machine by Shannon and Moore \cite{shannon1953computers} and alpha-beta based Hex players have dominated Hex competitions until 2008.\cite{arneson2010monte} 
+MiniMax search with $\alpha$ - $\beta$ pruning is a standard approach to deterministic games with perfect information and Hex is such an environment. MiniMax search investigates future positions of the board and evaluates them. It was used by the first Hex playing machine by Shannon and Moore (1959) and alphabeta based Hex players have dominated Hex competitions until 2008.\cite{arneson2010monte} 
 
-MiniMax search determines what the best move in each position is using a game tree. MiniMax evaluates the game tree using an evaluation function from the perspective of one player, referred to as MAX. The opponent is referred to as MIN. \cite{russell1995modern} MiniMax is a depth-first search. The game tree is evaluated from the leaf towards the root. The root of the tree is associated with MAX. Each level of the tree is associated with a player in an alternating way. Nodes with an odd depth are associated with MIN and nodes with an even depth are associated with MAX. 
+MiniMax search determines what the best move in each position is using a game tree. MiniMax evaluates the game tree using an evaluation function from the perspective of one player, referred to as MAX. The opponent is referred to as MIN. \cite{russell1995modern} MiniMax is a depth-first search and the game tree is evaluated from the leaf towards the root. The root of the tree is associated with MAX. From here each level of the tree is associated with a player in an alternating way. Nodes with an odd depth are associated with MIN and nodes with an even depth are associated with MAX. 
 
 MAX nodes receive the maximal evaluation of the nodes one level below it as MAX aims to maximize utility. MIN nodes receive the minimal evaluation of the nodes one level below it as MIN aims to minimize the utility of MAX. \cite{russell1995modern}
 
-%\begin{algorithm}
-%	\caption{Minimax}
-%	\label{alg:minimax}
-%	\begin{algorithmic}
-%		\Function{Minimax-Decision}{$game$}{\textbf{ returns $an$ $operator$}}
-%		\For{\textbf{each} $op$ \textbf{in} OPERATORS[$game$]}
-%		\State VALUE[$OP$] $\leftarrow$ 
-%		\EndFor\label{}\\
-%		\Return{the $op$ with the highest VALUE[$op$]}
-%		\EndFunction \\
-%	\end{algorithmic}
-%	\begin{algorithmic}
-%		\Function{Minimax-Value}{$state$,$game$}{\textbf{ returns $a$ $utility$ $value$}}
-%		\If{TERMINAL-TEST[$game$]($state$)} 
-%		\State	\Return {UTILITY[$game$]($state$)}
-%		\ElsIf{MAX is to move in $state$}
-%		\State	\Return {the highest MINIMAX-VALUE \State of SUCCESSORS($state$)}
-%		\Else
-%		\State 	\Return {the lowest MINIMAX-VALUE \State of SUCCESSORS($state$)}
-%		\EndIf
-%		\EndFunction \\
-%	\end{algorithmic}
-%\end{algorithm}
+\begin{algorithm}
+	\caption{Minimax}
+	\label{alg:minimax}
+	\begin{algorithmic}
+		\Function{Minimax-Decision}{$game$}{\textbf{ returns $an$ $operator$}}
+		\For{\textbf{each} $op$ \textbf{in} OPERATORS[$game$]}
+		\State VALUE[$OP$] $\leftarrow$ 
+		\State MINIMAX-VALUE(APPLY($op$,$game$),$game$)
+		\EndFor\label{}\\
+		\Return{the $op$ with the highest VALUE[$op$]}
+		\EndFunction \\
+	\end{algorithmic}
+	\begin{algorithmic}
+		\Function{Minimax-Value}{$state$,$game$}{\textbf{ returns $a$ $utility$ $value$}}
+		\If{TERMINAL-TEST[$game$]($state$)} 
+		\State	\Return {UTILITY[$game$]($state$)}
+		\ElsIf{MAX is to move in $state$}
+		\State	\Return {the highest MINIMAX-VALUE \State of SUCCESSORS($state$)}
+		\Else
+		\State 	\Return {the lowest MINIMAX-VALUE \State of SUCCESSORS($state$)}
+		\EndIf
+		\EndFunction \\
+	\end{algorithmic}
+\end{algorithm}
 
-$\alpha$ - $\beta$ pruning is a strategy to simplify the search. The idea behind alpha-beta pruning is to prune subtrees for which we know that they do not yield a better strategy. ''Consider a node n somewhere in the tree (...)  such that Player has a choice of moving to that node. If Player has a better choice m either at the parent node of n, or at any choice point further up, then n will never be reached in actual play. So, once we have found out enough about n (by examining some of its descendants) to reach this conclusion, we can prune it.'' \cite{russell1995modern}. This strategy increases the efficiency of the search. Pseudocode for the Minimax algorithm with alpha-beta pruning is provided below. (see Algorithm \ref{alg:alphabeta})
+$\alpha$ - $\beta$ pruning is a strategy to simplify the search. The idea behind alpha – beta pruning is to prune subtrees for which we know that they do not yield a better strategy. “Consider a node n somewhere in the tree (. . .)  such that Player has a choice of moving to that node. If Player has a better choice m either at the parent node of n, or at any choice point further up, then n will never be reached in actual play. So, once we have found out enough about n (by examining some of its descendants) to reach this conclusion, we can prune it.” \cite{russell1995modern}. This strategy increases the efficiency of the search.
 
 \begin{algorithm}
-	\caption{Alpha-beta}
+	\caption{Alphabeta}
 	\label{alg:alphabeta}
 	\begin{algorithmic}
 		\Function{Max-Value}{$stategame,\alpha, \beta$}{\textbf{ returns } the minimax value of $state$}
@@ -116,7 +110,7 @@ $\alpha$ - $\beta$ pruning is a strategy to simplify the search. The idea behind
 \end{algorithm}
 
 \subsection{Evaluation Functions}
-Shannon and Moore \cite{shannon1953computers} model the board as an electrical circuit which overcomes this limitation as it considers all paths in parallel. Their ideas have been used by Anshelevich \cite{anshelevich2002hierarchical} to develop the Hex player Hexy. The board is represented as a graph. Positions on the board are vertices and adjacent positions are connected by edges. Edges of the graph are resistors and resistance is assigned in the following way: 
+Shannon and Moore (1959) model the board as an electrical circuit which overcomes this limitation as it considers all paths in parallel. Their ideas have been used by Anshelevich(2002)\cite{anshelevich2002hierarchical} to develop the Hex player Hexy. The board is represented as a graph. Positions on the board are vertices and adjacent positions are connected by edges. Edges of the graph are resistors and resistance is assigned in the following way: 
 \\
 \\
 For Black's circuit:  \\
@@ -129,15 +123,14 @@ r_B(c)=\begin{cases}
 \end{equation*}
 \\
 And likewise, for the circuit of the other player . 
-One can see that positions occupied by the opponent are not a part of the circuit as they have an infinite resistance. A voltage is then applied to the two sides that the player needs to connect. \cite{anshelevich2002hierarchical}.
+One can see that positions occupied by the opponent are practically not a part of the circuit as they have an infinite resistance. A voltage is then applied to the two sides that the player needs to connect. (Anshelevich, 2002)\cite{anshelevich2002hierarchical}.
 
-By calculating the equivalent resistance of the board an evaluation of the board is achieved. The lower the resistance, the better the evaluation. The equivalent resistance can be calculated using a system of linear equations based on Kirchhoff’s Current Law. \cite{anshelevich2002hierarchical}
+By calculating the equivalent resistance of the board. The lower the resistance, the better the evaluation. The equivalent resistance can be calculated using a system of linear equations based on Kirchhoff’s Current Law.
 
-H. Challup, Mellor and Rosamund \cite{chalup2005machine} also used Dijkstra’s algorithm for shortest path finding in a graph. In contrast to the previous evaluation this evaluation only considers a single path and not the whole board.  The board is represented as a graph. Positions on the board are vertices and adjacent positions are connected by edges. The edges are weighted using the following evaluation. (\ref{dijkstra}) Positions occupied by the opponent do not belong to the graph.
+H. Challup, Mellor and Rosamund (2005)\cite{chalup2005machine} also used Dijkstra’s (YEAR) algorithm for shortest path finding in a graph. In contrast to the previous evaluation this evaluation only considers a single path and not the whole board.  The board is represented as a graph. Positions on the board are vertices and adjacent positions are connected by edges. The edges are weighted using the following evaluation. Positions occupied by the opponent do not belong to the graph.
 \begin{center}
-\begin{equation}
-\label{dijkstra}
-\tag{1. Dijkstra evaluation \cite{chalup2005machine}}
+\begin{equation*}
+\tag{Dijkstra evaluation \cite{chalup2005machine}}
 W(p_1,p_2)=\begin{cases}
 0, & \text{if $p_1$  and $p_2$ are both occupied}\\
    & \text{by the player},\\
@@ -145,14 +138,20 @@ W(p_1,p_2)=\begin{cases}
    & \text{occupied by the player},\\
 2 & \text{if both positions are unoccupied}.
 \end{cases}
-\end{equation}
+\end{equation*}
 \end{center}
-The shortest path between the two sides of the board that need to be connected by the player is calculated. Shorter paths are preferred by the player. 
+Then the shortest path between the two sides of the board that need to be connected by the player is calculated. Shorter paths are preferred by the player. 
 
 \subsection{Monte Carlo Tree Search}
-A powerful AI technique for board games is the Monte Carlo Tree Search(MCTS). It applies optimization techniques of random simulations to the game tree. 
+A powerful A.I. technique for board games is the Monte Carlo Tree Search(MCTS). It applies optimization techniques of random simulations to the game tree. 
 
-
+The game tree closely follows a \textit{Markov Decision Process} (MDP) in which every node of the tree is represented by a State $s \in S$ and the connection between the nodes is represented by an action $a \in A$.
+\begin{itemize}
+\item $S$: a set of all possible states of the board
+\item $A$: a set of all possible actions that can transition from one state to the other
+\item $P_a(s, s')$: the probability of reaching state $s'$ by using action $a$ on state $s$
+\item $R_a(s, s')$: the reward for reaching state $s'$ by using action $a$ on state $s$
+\end{itemize}
 
 For Hex, the probability of reaching a state for any action is 1 as long as it is a legal move. 
 \begin{figure}
@@ -161,19 +160,22 @@ For Hex, the probability of reaching a state for any action is 1 as long as it i
 	\caption{The four steps of Monte-Carlo Tree Search \cite{chaslot2008progressive}}
 	\label{fig:mcts}
 	\end{figure}
-The MCTS algorithm can be divided into four main parts (see figure \ref{fig:mcts}): 
+The MCTS algorithm can be divided into four main parts(see figure \ref{fig:mcts}): 
 \begin{enumerate}
-\item Selection: In this part the algorithm looks for the most urgent node with a state $s$ that has not being visited before.
+\item Selection: In this part the algorithm looks for the most urgent node with a state $s$ that hasn't being visited before.
 \item Expansion: one or more nodes are expanded by adding leaf nodes according the values left in $A$.
 \item Simulation: a simulation takes place in order to assign a reward value to the newly added node/s.
 \item Backpropagation: the statistics of the tree are updated through backpropagation.
 \end{enumerate}
+
 These four simple parts of the algorithm can be divided into two policies that simplify the process.
 \begin{itemize}
 \item \textit{Tree Policy}: in this policy the stages of selection and expansion take place. The random nodes are selected and expanded, ready to receive their reward value.
 \item \textit{Default Policy}: in this policy the simulation takes place and a reward value is given to the node 
 \end{itemize}
 The backpropagation stage of the MCTS does not occur within any policy as it just represents the update of the tree after the reward, which is used in later cycles for the tree policy to select and expand new nodes.
+
+
 
 \begin{algorithm}
     \caption{Monte-Carlo Tree Search}
@@ -190,23 +192,21 @@ The backpropagation stage of the MCTS does not occur within any policy as it jus
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
+
 In Algorithm \ref{alg:MCTS} we see the general structure of the MCTS. The root of the tree will be the board state at the beginning current turn. After the tree has fully expanded according to computational budget using the repeated MCTS process explained before, the best child is selected. We return the action $a$ which connects the current state $s$ to the best child.
 \subsection{Improvements on General MCTS}
 Different heuristics can be used on top the MCTS algorithm to enhance its performance.
 \subsubsection{Upper Confidence Bounds for Trees (UCT)}
-
+%%reference Peter Auer
 The UCT is an algorithm which adapts the Upper Confidence Bounds (UCB) exploitation and exploration of trade-offs as a tree policy. 
-Selecting a child node to traverse in the selection part of MCTS can be seen as a multi-armed bandit problem.\cite{auer2002using}
-
+Selecting a child node to traverse in the selection part of MCTS can be seen as a multi-armed bandit problem.
 The UCT tree policy works by choosing the node $v$ that maximizes the independent multi-armed bandit problem:
 \begin{center}
-\begin{equation*}
+\begin{equation}
 	UCT = \bar{X_v} + C_p \sqrt{\frac{\ln n}{n_v}}
-\end{equation*}
+\end{equation}
 \end{center}
-In the equation above $n$ represents the amount of time the current node has being visited, $n_v$ the amount of time a  child node has been visited, and the constant $C_p \geq0 $ can be used to weight the importance of exploration. If a child is not visited ($n_v = 0$) the exploration term is set to $\infty$.
-
-\textbf{XXXX NEEDS TEXT ABOUT ALGORITHMS}
+In the equation above $n$ represents the amount of time the current node has being visited,$n_v$ the amount of time a  child node has been visited, and the constant $C_p >=0 $ can be used to weight the importance of exploration. If a child is not visited ($n_v = 0$) the exploration term is set to $\infty$.
 
 \begin{algorithm}
 	\caption{Upper Confidence Threshold}
@@ -265,23 +265,30 @@ $
 \end{algorithm}
 
 \subsubsection{All Moves As First (AMAF)}
-Originally the AMAF method has been introduced to improve the learning process inside MCTS trees. The selection of the UCT algorithm is based on a estimated value obtained by simulating the move in the node a couple times. This can lead to a problem if there is a large state space since the algorithm has to do many simulations before it can sample all the moves in a node. To conquer this issue AMAF, also known as RAVE, is introduced.
+Originally the AMAF method has been introduced to improve the learning process inside MCTS trees. The selection of the UCT algorithm is based on a estimated value obtained by simulating the move in the node a couple times. This can lead to a problem if there is a large state space since the algorithm has to do many simulations before it can sample all the moves in a node. To conquer this issue AMAF, also known as RAVE, is introduced.\\
+\\
 For every node the algorithm stores for all legal moves the following values 
 \begin{itemize}
 	\item The average UCT result obtained from all simulations in which move $a$ is performed in state $s$
 	\item The average AMAF result, obtained from all the simulations in which move $a$ is performed further down the path that passes by node $s$
 \end{itemize}
+
+
+
 When backpropagating the result of a simulation in a certain node \textit{t} in the tree, the UCT result is updated for the move $a$ that was directly played in the state, and the AMAF value is updated for all the legal moves in node $t$ that have been encountered at a later stage in the simulations. AMAF will encounter more samples and will use them to make better predictions. However, the disadvantage of this information is that AMAF information is more global whilst the UCT information is more local. This makes AMAF scores useful for less visited nodes, but when the number of visits increases, the UCT values should become more important. \cite{sironicomparison}
+
 
 To solve this issue the AMAF algorithm keeps track of the two scores separately and uses a weight $\beta$ to reduce the importance of the AMAF score over time. 
 
+
 \begin{center}
-	\begin{equation*}
+	\label{Beta}
+	\begin{equation}
     \beta = \frac{\tilde{n}}{n+\tilde{n} + 4n\tilde{n}\tilde{b}^2} 	\cite{gelly2011monte}
-	\end{equation*}
+	\end{equation}
 \end{center}
 
-To calculate the $\beta$ value AMAF uses the equation denoted above. Where $\tilde{n}$ is the visits of AMAF and $n$ is total number of visits or amount of simulations. The equation also includes a bias $\tilde{b}$ which is in this algorithm a parameter which can be adjusted by testing the performance. \cite{gelly2011monte}
+To calculate the $\beta$ value AMAF uses the equation denoted above in (2). Where $\tilde{n}$ is the visits of AMAF and $n$ is total number of visits or amount of simulations. The equation also includes a bias $\tilde{b}$ which is in this algorithm a parameter which can be adjusted by testing the performance. \cite{gelly2011monte}
 
 \begin{algorithm}
 	\caption{All Moves As First (AMAF)}
@@ -315,21 +322,24 @@ To calculate the $\beta$ value AMAF uses the equation denoted above. Where $\til
 	\end{algorithmic}
 \end{algorithm}
 
-In algorithm \ref{alg:AMAF} \textbf{XXXX NEEDS TEXT ABOUT ALGORITHMS}
+In algorithm \ref{alg:AMAF}
 
-\subsubsection{Parallelization}
-There are three different types of parallelisation, depending on in what stage Monto-Carlo Tree Search is parallelised. The three options are: leaf parallelization, root parallelization and tree parallelization. 
 
-In this paper only  leaf parallelization was considered since this is a straightforward to implement. To select a leaf node this method uses one main thread, which is the same thread that runs the game logic. From this leaf node it simulates independent games for each available thread. When all games are finished the main thread backpropagates all the values.\cite{chaslot2008parallel} Leaf parallelization is depicted in figure \ref{fig:leaf}.
 
-A problem with leaf parallelization is that threads have to wait for each other which could slow then the process a way to solve this is end simulations for a move if a certain amount of games is won. For instance, if 16 threads are available, and 8 (faster) finished games are all losses, it will be highly probable that most games
+
+\subsubsection{Parallelisation}
+There are three different types of parallelisation, depending on in what stage Monto-Carlo Tree Search is parallelised. The three options are: leaf parallelisation, root parallelisation and tree parallelisation. 
+
+In this paper only  leaf parallelisation was considered since this is a straightforward to implement. To select a leaf node this method uses one main thread, which is the same thread that runs the game logic. From this leaf node it simulates independent games for each available thread. When all games are finished the main thread backpropagates all the values.\cite{chaslot2008parallel} Leaf parallelisation is depicted in figure \ref{fig:leaf}.
+
+A problem with leaf parallelisation is that threads have to wait for each other which could slow then the process a way to solve this is end simulations for a move if a certain amount of games is won. For instance, if 16 threads are available, and 8 (faster) finished games are all losses, it will be highly probable that most games
 will lead to a loss. Therefore, playing 8 more games is a waste of computational power. This will enable the program to traverse the tree more often.\cite{chaslot2008parallel}
 
 To reduce the cost of using threads, both the \textit{Java ExecutorService} interface and \textit{ThreadGroups} were implemented and compared.
 \begin{figure}
 	\centering
-	\includegraphics[]{figure_leafparallization}
-		\caption{Visual explanation of leaf paralellization, the down arrows are the threads \cite{chaslot2008parallel}}
+	\includegraphics[]{figure_leafparallisation}
+		\caption{Visual explanation of leaf parallelisation, the down arrows are the threads \cite{chaslot2008parallel}}
 		\label{fig:leaf}
 \end{figure}
 
@@ -345,6 +355,7 @@ All experiments were run on the following machines:
 		\item Machine 3, Intel i5 5257U 2.7GHz, 8GB ram
 	\item Machine 4, Intel i5 3210M 2.5GHz, 6GB ram
 \end{itemize}
+
 Every test was run 20 times, with each algorithm being player one 10 times. For the first experiment, simulations per iteration (SPI) and the exploration coefficient (C) were changed to find the best combination of the two. These results will be used when testing the MCTS evaluation function comparison and MCTS parallelization tests. 
 
 In the second test, the different evaluation functions for MCTS were compared to see which one is superior. This will be used when MCTS is compared against the Alpha-Beta algorithm. 
@@ -358,7 +369,7 @@ Every test was run 20 times, with each algorithm being player one 10 times.
 Explanation of results of the experiments
 \section{Conclusion}
 Conclusion on the explanation of the result of the experiments
-\bibliographystyle{apacite}
+
 \bibliography{biblio}
 
 

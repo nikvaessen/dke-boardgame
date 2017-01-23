@@ -1,0 +1,78 @@
+\newcommand{\etalchar}[1]{{\noexpand\em ~et~al.}}
+\begin{thebibliography}{[100]}
+
+\bibitem{anshelevich2002hierarchical}
+Anshelevich, Vadim~V (2002).
+\newblock A hierarchical approach to computer hex.
+\newblock {\sl Artificial Intelligence}, Vol.~134, No.~1-2, pp. 101--120.
+
+\bibitem{arneson2010monte}
+Arneson, Broderick, Hayward, Ryan~B, and Henderson, Philip (2010).
+\newblock "monte carlo tree search in hex".
+\newblock {\sl IEEE Transactions on Computational Intelligence and AI in
+  Games}, Vol.~2, No.~4, pp. 251--258.
+
+\bibitem{auer2002using}
+Auer, Peter (2002).
+\newblock Using confidence bounds for exploitation-exploration trade-offs.
+\newblock {\sl Journal of Machine Learning Research}, Vol.~3, No.~Nov, pp.
+  397--422.
+
+\bibitem{browne2012survey}
+Browne, Cameron~B, Powley, Edward, Whitehouse, Daniel, Lucas, Simon~M, Cowling,
+  Peter~I, Rohlfshagen, Philipp, Tavener, Stephen, Perez, Diego, Samothrakis,
+  Spyridon, and Colton, Simon (2012).
+\newblock "a survey of monte carlo tree search methods".
+\newblock {\sl IEEE Transactions on Computational Intelligence and AI in
+  Games}, Vol.~4, No.~1, pp. 1--43.
+
+\bibitem{chalup2005machine}
+Chalup, Stephan~K, Mellor, Drew, and Rosamond, Fran (2005).
+\newblock The machine intelligence hex project.
+\newblock {\sl Computer Science Education}, Vol.~15, No.~4, pp. 245--273.
+
+\bibitem{chaslot2008progressive}
+Chaslot, Guillaume M~JB, Winands, Mark~HM, HERIK, H JAAP VAN~DEN, Uiterwijk,
+  Jos~WHM, and Bouzy, Bruno (2008a).
+\newblock Progressive strategies for monte-carlo tree search.
+\newblock {\sl New Mathematics and Natural Computation}, Vol.~4, No.~03, pp.
+  343--357.
+
+\bibitem{chaslot2008parallel}
+Chaslot, Guillaume MJ-B, Winands, Mark~HM, and Den~Herik, H~Jaap van (2008b).
+\newblock "parallel monte-carlo tree search".
+\newblock {\sl International Conference on Computers and Games}, pp. 60--71,
+  Springer.
+
+\bibitem{gardener1959hex}
+Gardener, Martin (1959).
+\newblock "hexaflexagons and other mathematical diversions - the first
+  scientific american book of puzzles and games".
+\newblock pp. 73--75.
+
+\bibitem{gelly2011monte}
+Gelly, Sylvain and Silver, David (2011).
+\newblock "monte-carlo tree search and rapid action value estimation in
+  computer go".
+\newblock {\sl Artificial Intelligence}, Vol.~175, No.~11, pp. 1856--1875.
+
+\bibitem{nash1952}
+Nash, John (1952).
+\newblock "some games and machines for playing them".
+
+\bibitem{russell1995modern}
+Russell, Stuart, Norvig, Peter, and Intelligence, Artificial (1995).
+\newblock A modern approach.
+\newblock {\sl Artificial Intelligence. Prentice-Hall, Egnlewood Cliffs},
+  Vol.~25, p.~27.
+
+\bibitem{shannon1953computers}
+Shannon, Claude~E (1953).
+\newblock Computers and automata.
+\newblock {\sl Proceedings of the IRE}, Vol.~41, No.~10, pp. 1234--1241.
+
+\bibitem{sironicomparison}
+Sironi, Chiara~F and Winands, Mark~HMComparison of rapid action value
+  estimation variants for general game playing.
+
+\end{thebibliography}

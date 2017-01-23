@@ -1,0 +1,50 @@
+\RequirePackage{filecontents}
+%% Set up 3 test entries
+\begin{filecontents}{mybib.bib}
+@article{a,
+  author  = "Anne Author",
+  title   = "Thoughts",
+  journal = "Circularity Today",
+  year    = 3001,
+  volume  = 1,
+  number  = 2,
+  pages   = "3--4",
+}
+@article{b,
+  author  = "Anne Author and Bert Buthor",
+  title   = "Further Thoughts",
+  journal = "Circularity Today",
+  year    = 3005,
+  volume  = 5,
+  number  = 6,
+  pages   = "7--8",
+}
+@article{c,
+  author  = "Anne Author and Bert Buthor and Carla Cuthor",
+  title   = "Final Thoughts",
+  journal = "Circularity Today",
+  year    = 3009,
+  volume  = 9,
+  number  = 10,
+  pages   = "11--12",
+}
+\end{filecontents}
+
+\documentclass{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[ngerman]{babel}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+\usepackage[natbibapa]{apacite}
+\bibliographystyle{apacite}
+
+\begin{document}
+\citet{a}, \citet{b}, \citet{c}
+
+\citep{a}, \citep{b}, \citep{c}
+
+\bibliography{mybib}
+\end{document} 

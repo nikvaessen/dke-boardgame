@@ -1,0 +1,27 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: group_5_report.aux
+The style file: ba-kecs.bst
+Illegal, another \bibstyle command---line 65 of file group_5_report.aux
+ : \bibstyle
+ :          {apacite}
+I'm skipping whatever remains of this command
+Database file #1: biblio.bib
+Repeated entry---line 61 of file biblio.bib
+ : @article{gelly2011monte
+ :                        ,
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 118 of file biblio.bib
+ : 
+ : @article{nash1952,
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+`year' is a missing field, not a string, for entry sironicomparison
+while executing---line 1390 of file ba-kecs.bst
+Warning--empty journal in gardener1959hex
+Warning--there's no volume number in gardener1959hex
+Warning--empty journal in nash1952
+Warning--there's no volume number in nash1952
+Warning--there's no year year in sironicomparison
+Warning--empty year in sironicomparison
+Warning--empty journal in sironicomparison
+Warning--there's no volume number in sironicomparison
+(There were 4 error messages)
