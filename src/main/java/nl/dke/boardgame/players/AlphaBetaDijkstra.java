@@ -22,9 +22,9 @@ import java.util.*;
 /**
  * Created by Xavier on 1-11-2016.
  */
-public class AlphaBetaPlayer extends HexPlayer {
+public class AlphaBetaDijkstra extends HexPlayer {
 
-    public AlphaBetaPlayer(TileState state) {
+    public AlphaBetaDijkstra(TileState state) {
         super(state);
         if(this.claimsAs() == TileState.PLAYER2) counter =2;
         else counter =1;
@@ -40,25 +40,40 @@ public class AlphaBetaPlayer extends HexPlayer {
     Dijkstra dijkstraObject;
     int counter;
     int numberOfLeafNodes = 0;
-
+    public int boardSize;
+    int boardWidth;
 
     public void finishMove(Move move) {
         Board currentBoard = move.getBoard();
         dijkstraObject = new Dijkstra();
         maximizer = this.claimsAs();
 
-        //Run alpha-Beta algorithm, returns the boardPlusScore at the leafNode it found
-        BoardPlusScore result = alphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
+        boardSize = currentBoard.getSize();
+        boardWidth = currentBoard.getWidth();
+
+        BoardPlusScore result = new BoardPlusScore();
+
+        int HOWMANYSEC = 5000;
+        double timeNow = System.currentTimeMillis();
+        System.out.println(System.currentTimeMillis() - timeNow );
+        for(int i = 2; i <= 5; i++){
+            System.out.println(i + "th time");
+            System.out.println("timedifference: " + (System.currentTimeMillis() - timeNow));
+            if((System.currentTimeMillis() - timeNow) <= HOWMANYSEC) {
+                result = alphaBeta(i, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
+            }
+        }
+
         System.out.println("final board:" + result.score );
         result.board.printBoard();
 
         //Boardhistory of the board alpha-beta returned
         int [][] history = result.board.getHistory();
-        System.out.println("BoardHistory: ");
-        for(int i = 0; i < history.length; i++){
-            System.out.print("row: " + history[i][0]);
-            System.out.print(" column: " + history[i][1] +"\n");
-        }
+//        System.out.println("BoardHistory: ");
+//        for(int i = 0; i < history.length; i++){
+//            System.out.print("row: " + history[i][0]);
+//            System.out.print(" column: " + history[i][1] +"\n");
+//        }
         //set the move to be the move alpha-beta wants to make (the first newest move in the boardhistory)
         move.setRow(history[counter - 1][0]);
         move.setColumn(history[counter - 1][1]);
@@ -116,6 +131,8 @@ public class AlphaBetaPlayer extends HexPlayer {
     class BoardPlusScore{
         Board board;
         int score;
+        public BoardPlusScore(){}
+
         public BoardPlusScore(Board board){
             this.board = board;
         }
@@ -130,7 +147,7 @@ public class AlphaBetaPlayer extends HexPlayer {
     }
 
     public PossiblePlayers getTypeOfPlayer() {
-        return PossiblePlayers.alphabeta;
+        return PossiblePlayers.alphabetaDijkstra;
     }
 
     public TileState switchClaimer(TileState t) {
@@ -169,39 +186,39 @@ public class AlphaBetaPlayer extends HexPlayer {
         So let's say you have a claimed tile next to a neutral tile, the weight of the edge between would be 0 + 1 = 1.
         */
 
-        int[][] graph = new int[123][123];
+        int[][] graph = new int[boardSize+2][boardSize+2];
         for (int i = 0; i < graph.length; i++) {
             for (int j = 0; j < graph[0].length; j++) {
                 graph[i][j] = 999;
             }
         }
         if(tilestate.equals(TileState.PLAYER1)){//edgepieces from left to right--RED
-            for(int i = 1; i <= 11; i++){
-                graph[0][i + (i-1)*10] = getEdgeValue(board, i-1, 0, 0, tilestate);
-                graph[i + (i-1)*10][0] = getEdgeValue(board, i-1, 0, 0, tilestate);
+            for(int i = 1; i <= boardWidth; i++){
+                graph[0][i + (i-1)*boardWidth-1] = getEdgeValue(board, i-1, 0, 0, tilestate);
+                graph[i + (i-1)*boardWidth-1][0] = getEdgeValue(board, i-1, 0, 0, tilestate);
 
-                graph[122][i*11] = getEdgeValue(board,i-1,10,0,tilestate);
-                graph[i*11][122] = getEdgeValue(board,i-1,10,0,tilestate);
+                graph[boardSize+1][i*boardWidth] = getEdgeValue(board,i-1,boardWidth-1,0,tilestate);
+                graph[i*boardWidth][boardSize+1] = getEdgeValue(board,i-1,boardWidth-1,0,tilestate);
             }
         }
         if(tilestate.equals(TileState.PLAYER2)){//edgepieces from top to bottom--BLUE
-            for(int i = 1; i <= 11; i++){
+            for(int i = 1; i <= boardWidth; i++){
                 graph[0][i] = getEdgeValue(board, 0, i-1, 0, tilestate);
                 graph[i][0] = getEdgeValue(board, 0, i-1, 0, tilestate);
-
-                graph[122][i+110] = getEdgeValue(board, 10, i-1, 0,tilestate);
-                graph[i+110][122] = getEdgeValue(board, 10, i-1, 0,tilestate);
+                //110
+                graph[boardSize+1][i+(boardSize-boardWidth)] = getEdgeValue(board, boardWidth-1, i-1, 0,tilestate);
+                graph[i+(boardSize-boardWidth)][boardSize+1] = getEdgeValue(board, boardWidth-1, i-1, 0,tilestate);
             }
         }
 
         //populate the matrix
-        for (int i = 0; i < 11; i++) {
-            for (int j = 0; j < 11; j++) {
+        for (int i = 0; i < boardWidth; i++) {
+            for (int j = 0; j < boardWidth; j++) {
                 //we need the value of the currentTile & the neighbouring tiles, then add the values & put these in the matrix
                 //we also need the 'indexes/locations' of the neighbouring tiles
                 List<HexTile> neighbourList = board.getNeighbours(i, j);
                 for (HexTile neighbour : neighbourList) {
-                    graph[(11 * i) + j + 1][(neighbour.getRow() * 11) + neighbour.getColumn() + 1] = getEdgeValue(board, i, j, neighbour.getRow(), neighbour.getColumn(), tilestate);
+                    graph[(boardWidth * i) + j + 1][(neighbour.getRow() * boardWidth) + neighbour.getColumn() + 1] = getEdgeValue(board, i, j, neighbour.getRow(), neighbour.getColumn(), tilestate);
                 }
             }
         }
@@ -221,15 +238,15 @@ public class AlphaBetaPlayer extends HexPlayer {
         int row;int column;
         int path1Counter = 0;int path2Counter = 0;
 
-        List<Integer> path1 = dijkstraObject.dijkstra(graphPlayerOne,0,122);
+        List<Integer> path1 = dijkstraObject.dijkstra(graphPlayerOne,0,boardSize+1);
         for(Integer x: path1){
-            if(x == 122){}
+            if(x == boardSize+1){}
             else {
-                row = x / 11;
-                column = (x % 11) - 1;
-                if(x % 11 == 0){
-                    row = (x / 11) - 1;
-                    column = 10;
+                row = x / boardWidth;
+                column = (x % boardWidth) - 1;
+                if(x % boardWidth == 0){
+                    row = (x / boardWidth) - 1;
+                    column = boardWidth-1;
                 }
 
                 if (board.getState(row, column).equals(TileState.NEUTRAL)) {
@@ -239,13 +256,13 @@ public class AlphaBetaPlayer extends HexPlayer {
         }
         List<Integer> path2 = dijkstraObject.dijkstra(graphPlayerTwo,0,122);
         for(Integer x: path2){
-            if(x == 122){}
+            if(x == boardSize+1){}
             else {
-                row = x / 11;
-                column = (x % 11) - 1;
-                if(x % 11 == 0){
-                    row = (x / 11) - 1;
-                    column = 10;
+                row = x / boardWidth;
+                column = (x % boardWidth) - 1;
+                if(x % boardWidth == 0){
+                    row = (x / boardWidth) - 1;
+                    column = boardWidth-1;
                 }
 
                 if (board.getState(row, column).equals(TileState.NEUTRAL)) {
@@ -388,7 +405,7 @@ class Dijkstra {
 
             }
         }
-        makePath(parent, 122);
+        makePath(parent, G.length-1);
         //printPath(path);
 
 //        if (distance[j] == Integer.MAX_VALUE || distance[j] < 0) {

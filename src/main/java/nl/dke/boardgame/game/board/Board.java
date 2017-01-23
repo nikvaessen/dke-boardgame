@@ -24,11 +24,10 @@ public class Board
 {
     int counter = 0;
     int[][] boardHistory = new int[19*19][2];
-
     /**
      * The 2D array of Tiles which together make the game board
      */
-    private HexTile[][] board;
+    public HexTile[][] board;
 
     /**
      * List of watchers to notify when the board changes
@@ -38,12 +37,12 @@ public class Board
     /**
      * The width of the board
      */
-    private int width;
+    public int width;
 
     /**
      * The height of the board
      */
-    private int height;
+    public int height;
 
     /**
      * Constructs the Hex game board
@@ -73,7 +72,7 @@ public class Board
                 //if the tile is neutral, clone the board, but with this tile as claimed as player.claimsAs()
                 if(this.getState(i,j) == TileState.NEUTRAL){
 
-                    Board newBoard = this.clone();
+                    Board newBoard = this.clone(true);
                     try
                     {
                         newBoard.claim(i,j,t);
@@ -213,7 +212,7 @@ public class Board
      * @return the state of the HexTile at the given position
      * @throws IllegalArgumentException when the given location is not valid
      */
-    private HexTile getTile(int row, int column)
+    public HexTile getTile(int row, int column)
             throws IllegalArgumentException
     {
         if (!canAccess(row, column))
@@ -387,7 +386,7 @@ public class Board
      * @return an identical Board class with the same claimed tiles
      */
     Board clone;
-    public Board clone()
+    public Board clone(boolean bool)
     {
         clone = new Board(width, height);
         for(int i = 0; i < height; i++)
@@ -408,8 +407,10 @@ public class Board
                 }
             }
         }
+        if(bool == true){
         clone.boardHistory = cloneHistory();
         clone.counter = counter;
+    }
         return clone;
     }
     public int[][] getHistory(){

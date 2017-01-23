@@ -48,8 +48,17 @@ public class AlphaBetaElectrical extends HexPlayer {
 
         maximizer = this.claimsAs();
 
-        //Run alpha-Beta algorithm, returns the boardPlusScore at the leafNode it found
-        BoardPlusScore result = alphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
+        BoardPlusScore result = new BoardPlusScore();
+        int HOWMANYSEC = 5000;
+        double timeNow = System.currentTimeMillis();
+        System.out.println(System.currentTimeMillis() - timeNow );
+        for(int i = 2; i <= 5; i++){
+            System.out.println(i + "th time");
+            System.out.println("timedifference: " + (System.currentTimeMillis() - timeNow));
+            if((System.currentTimeMillis() - timeNow) <= HOWMANYSEC) {
+                result = alphaBeta(i, Integer.MIN_VALUE, Integer.MAX_VALUE, currentBoard, maximizer);
+            }
+        }
         System.out.println("final board:" + result.score );
         result.board.printBoard();
 
@@ -91,12 +100,12 @@ public class AlphaBetaElectrical extends HexPlayer {
             for(Board b : allPossibleBoards){
                 justToStoreBoardandScore = alphaBeta(depth-1,alpha,beta,b,switchClaimer(t));
                 if(justToStoreBoardandScore == null){
-                    System.out.println("dis bitch is null");
-                    System.out.println("dis bitch is null");
+                    //System.out.println("dis bitch is null");
+                    //System.out.println("dis bitch is null");
                     justToStoreBoardandScore = new BoardPlusScore(boardAB, Integer.MIN_VALUE);
-                    System.out.println("dis bitch is null");
+                    //System.out.println("dis bitch is null");
                 }
-                System.out.println("justtofuckscore:" + justToStoreBoardandScore.score);
+                //System.out.println("justtofuckscore:" + justToStoreBoardandScore.score);
                 if(justToStoreBoardandScore.score > bestScore && justToStoreBoardandScore != null){
                     bestScore = justToStoreBoardandScore.score;
                     bestBoardandScore = justToStoreBoardandScore;
@@ -106,14 +115,15 @@ public class AlphaBetaElectrical extends HexPlayer {
                     break;
                 }
             }
-            System.out.println("arrived");
+            //System.out.println("arrived");
             return bestBoardandScore;
         }else{
             double bestScore = Integer.MAX_VALUE;
             for(Board b: allPossibleBoards) {
                 justToStoreBoardandScore = alphaBeta(depth-1,alpha,beta,b,switchClaimer(t));
                 if(justToStoreBoardandScore == null){
-                    System.out.println("dis bitch is null2: ");
+                    //
+                    //System.out.println("dis bitch is null2: ");
                     justToStoreBoardandScore = new BoardPlusScore(boardAB, Integer.MAX_VALUE);
                 }
                 if(justToStoreBoardandScore.score < bestScore && justToStoreBoardandScore != null ){
@@ -133,6 +143,7 @@ public class AlphaBetaElectrical extends HexPlayer {
     class BoardPlusScore{
         Board board;
         double score;
+        public BoardPlusScore(){}
         public BoardPlusScore(Board board){
             this.board = board;
         }
@@ -282,7 +293,7 @@ public class AlphaBetaElectrical extends HexPlayer {
             }
             //winining bitch
         }
-        System.out.println("AFTER DOING THE REFERENCE NODE:");
+        //System.out.println("AFTER DOING THE REFERENCE NODE:");
         //graphPlayer.printAdjacencyList();
 
         /*First we change the graphs.
