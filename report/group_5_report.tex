@@ -246,7 +246,13 @@ To reduce the cost of using threads we implemented both the \textit{Java Executo
 The ordinary implementation of Monte-Carlo Tree Search builds a new tree for every move a player has to make. An obvious improvement to speed up the algorithm would be that the program does not build a tree every move but it tries to keep the tree it made in the previous move by searching through the children of the previous move and check if the node already exist. Since the program does not know the move of the opponent it could be that the move does not exist This strategy enables the algorithm to have already some reward values for certain moves so the predictions can be done more accurately.
 
 \section{Experiments}
-Explanation of experiments and results, comparing different parameters
+All experiments were run on the following machines:
+\begin{description}
+\item[Machine 1] Intel i5 2600 2.4GHz, 8GB ram
+\item[Machine 2] Intel i7 4720HQ 2.6GHz, 8GB ram
+\item[Machine 3] Intel i5 5257U 2.7GHz, 8GB ram
+\end{description}
+Every test was run 20 times, with each algorithm being player 1 10 times.
 \section{Results}
 Explanation of results of the experiments
 \section{Conclusion}
