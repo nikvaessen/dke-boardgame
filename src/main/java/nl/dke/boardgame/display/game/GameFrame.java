@@ -1,6 +1,5 @@
 package nl.dke.boardgame.display.game;
 
-import nl.dke.boardgame.Tester;
 import nl.dke.boardgame.game.HexGame;
 import nl.dke.boardgame.util.Watcher;
 

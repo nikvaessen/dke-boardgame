@@ -6,6 +6,7 @@ import nl.dke.boardgame.game.HexGame;
 import nl.dke.boardgame.game.HexPlayer;
 import nl.dke.boardgame.game.board.TileState;
 import nl.dke.boardgame.mcts.hex.randomImpl.MultiThreadRandomHexBoardSimulation;
+import nl.dke.boardgame.mcts.hex.randomImpl.OldMultiThreadRandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.randomImpl.SingleThreadRandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.policy.UCTTreePolicy;
 import nl.dke.boardgame.players.MCTSPlayer;
@@ -244,6 +245,67 @@ public class TestAlgorithm
         }
 
         singleThreadTesting(callables);
+    }
+
+    @Test
+    public void testBetterMTTechnique()
+    {
+        for(int i = 0; i < 20; i++)
+        {
+            HexPlayer player1;
+            HexPlayer player2;
+            String p1;
+            String p2;
+            if(i < 10)
+            {
+                player1 = new MCTSPlayer(
+                        TileState.PLAYER1,
+                        new UCTTreePolicy<>(0.6d),
+                        new MultiThreadRandomHexBoardSimulation(4),
+                        100,
+                        10000,
+                        PossiblePlayers.MCTSLeafPar,
+                        false);
+                player2 = new MCTSPlayer(
+                        TileState.PLAYER2,
+                        new UCTTreePolicy<>(0.6d),
+                        new OldMultiThreadRandomHexBoardSimulation(4),
+                        100,
+                        10000,
+                        PossiblePlayers.MCTSLeafPar,
+                        false);
+                p1 = "Player 1 is using new MT";
+                p2 = "Player 2 is using old MT";
+            }
+            else
+            {
+
+                player1 = new MCTSPlayer(
+                        TileState.PLAYER1,
+                        new UCTTreePolicy<>(0.6d),
+                        new OldMultiThreadRandomHexBoardSimulation(4),
+                        100,
+                        10000,
+                        PossiblePlayers.MCTSLeafPar,
+                        false);
+                player2 = new MCTSPlayer(
+                        TileState.PLAYER2,
+                        new UCTTreePolicy<>(0.6d),
+                        new MultiThreadRandomHexBoardSimulation(4),
+                        100,
+                        10000,
+                        PossiblePlayers.MCTSLeafPar,
+                        false);
+                p1 = "Player 1 is using new MT";
+                p2 = "Player 2 is using old MT";
+            }
+
+            GameState state = testAlgorithm(player1, player2);
+            System.out.println("### Game " + i + "  ###");
+            System.out.println(p1);
+            System.out.println(p2);
+            System.out.println("winner: " + state.getWinner());
+        }
     }
 
     private void multiThreadTesting(Collection<Callable<TestResult>> callables)

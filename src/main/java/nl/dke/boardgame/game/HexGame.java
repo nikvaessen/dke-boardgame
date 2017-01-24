@@ -3,8 +3,6 @@ package nl.dke.boardgame.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.dke.boardgame.Tester;
-import nl.dke.boardgame.display.game.GameFrame;
 import nl.dke.boardgame.exceptions.AlreadyClaimedException;
 import nl.dke.boardgame.exceptions.MoveNotCompletedException;
 import nl.dke.boardgame.game.board.Board;

@@ -18,7 +18,7 @@ public class TestResultReader
     public static void main(String[] args)
             throws Exception
     {
-        File file = new File("/home/nik/workspace/dke-boardgame/results/test_jeroen");
+        File file = new File("/home/nik/workspace/dke-boardgame/results/test_multicore");
 //        Scanner in = new Scanner(file);
 //        String s = getOneResult(in);
 //        System.out.println(s);
@@ -76,7 +76,7 @@ public class TestResultReader
             String[] p1 = r.getP1();
             String[] p2 = r.getP2();
 
-            System.out.printf("c: %s, spi: %s vs c: %s, spi: %s%n%n",
+            System.out.printf("core: %s, spi: %s vs core: %s, spi: %s%n%n",
                     p1[1], p1[2], p2[1], p2[2]);
 
             int p1count = 0;
@@ -201,7 +201,7 @@ public class TestResultReader
                 return line;
             }
         }
-        throw new Exception("Couldn't find string toFind");
+        throw new Exception("Couldn't find string toFind: " + toFind);
     }
 
     private static String[] findValues(String s)
