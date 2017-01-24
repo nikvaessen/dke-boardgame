@@ -20,7 +20,7 @@ public class Table
     public final static int TIME_ALLOWED_FOR_MCTS_IN_MS = 10000;
     public final static double EXPLORATION_PARAMETER_FOR_UCT = 0.7d;
     public final static double AMAF_BIAS_VALUE = 1;
-    public final static boolean REUSE_TREE = true;
+    public final static boolean REUSE_TREE = false;
 
     private HexPlayer player1;
 
