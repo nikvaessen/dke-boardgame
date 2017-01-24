@@ -71,62 +71,6 @@ public class Board
         initBoard(width, height);
     }
 
-    public ArrayList<Board> getAllPossibleBoardsAfter1Move(TileState t)
-    {
-
-        ArrayList<Board> allPossibleBoards = new ArrayList<Board>();
-
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                //if the tile is neutral, clone the board, but with this tile as claimed as player.claimsAs()
-                if(this.getState(i, j) == TileState.NEUTRAL)
-                {
-
-                    Board newBoard = this.clone();
-                    try
-                    {
-                        newBoard.claim(i, j, t);
-                        allPossibleBoards.add(newBoard);
-                    } catch(AlreadyClaimedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return allPossibleBoards;
-    }
-
-    public void printBoard()
-    {
-        String spaces = " ";
-        for(int i = 0; i < 11; i++)
-        {
-            System.out.print(spaces);
-            for(int j = 0; j < 11; j++)
-            {
-
-                if(this.getState(i, j) == TileState.NEUTRAL)
-                {
-                    System.out.print("- ");
-                }
-                else if(this.getState(i, j) == TileState.PLAYER1)
-                {
-                    System.out.print("R ");
-                }
-                else
-                {
-                    System.out.print("B ");
-                }
-            }
-            spaces = spaces + " ";
-            System.out.print("\n");
-        }
-        System.out.print("\n");
-    }
-
     /**
      * Return the width of the board, or the amount of columns in each row
      *
@@ -333,9 +277,6 @@ public class Board
         }
         board[row][column].claim(state);
         claimedTiles++;
-        //boardHistory[counter][0] = row;
-        //boardHistory[counter][1] = column;
-        //counter++;
         notifyWatchers();
     }
 

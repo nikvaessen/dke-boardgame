@@ -2,8 +2,6 @@ package nl.dke.boardgame.game;
 
 import nl.dke.boardgame.display.game.InputProcessor;
 import nl.dke.boardgame.game.board.TileState;
-import nl.dke.boardgame.mcts.hex.HexBoardAction;
-import nl.dke.boardgame.mcts.hex.HexBoardState;
 import nl.dke.boardgame.mcts.hex.randomImpl.MultiThreadRandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.randomImpl.OldMultiThreadRandomHexBoardSimulation;
 import nl.dke.boardgame.mcts.hex.randomImpl.SingleThreadRandomHexBoardSimulation;
@@ -19,11 +17,10 @@ import nl.dke.boardgame.players.*;
 public class Table
 {
     public final static int AMOUNT_OF_SIMULATIONS_PER_ITERATION = 1;
-    public final static int TIME_ALLOWED_FOR_MCTS_IN_MS = 1000;
+    public final static int TIME_ALLOWED_FOR_MCTS_IN_MS = 10000;
     public final static double EXPLORATION_PARAMETER_FOR_UCT = 0.7d;
     public final static double AMAF_BIAS_VALUE = 1;
     public final static boolean REUSE_TREE = true;
-    public final static int ALPHA_BETA_LIMIT = 1;
 
     private HexPlayer player1;
 
@@ -114,8 +111,10 @@ public class Table
                             TIME_ALLOWED_FOR_MCTS_IN_MS,
                             PossiblePlayers.MCTSAMAF,
                             REUSE_TREE);
-            case alphabeta:
-                return new AlphaBetaPlayer(player, ALPHA_BETA_LIMIT);
+            case alphabetaDijkstra:
+                return new AlphaBetaDijkstra(player);
+            case alphabetaElectrical:
+                return new AlphaBetaElectrical(player);
             default:
                 throw new IllegalArgumentException("couldn't create a" +
                         "HexPlayer, given argument" + type + " is not " +

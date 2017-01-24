@@ -14,5 +14,6 @@ public enum PossiblePlayers
     MCTSNoReuse,
     human,
     random,
-    alphabeta
+    alphabetaDijkstra,
+    alphabetaElectrical
 }
